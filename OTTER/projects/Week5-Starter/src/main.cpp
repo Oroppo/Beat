@@ -194,6 +194,8 @@ int main() {
 	glm::mat4 transform = glm::mat4(1.0f);
 	glm::mat4 transform2 = glm::mat4(1.0f);
 	glm::mat4 transform3 = glm::mat4(1.0f);
+	// Transform for translations
+	glm::mat4 transform0 = glm::mat4(1.0f);
 
 	// Our high-precision timer
 	double lastFrame = glfwGetTime();
@@ -239,6 +241,9 @@ int main() {
 		if (isRotating) {
 			transform  = glm::rotate(glm::mat4(1.0f), static_cast<float>(thisFrame), glm::vec3(0, 0, 1));
 		}
+		// transform 0 will translate an object for some reason the axis are kinda weird but it goes
+		// forward backwards, left and right, up/down in relation to the monkey heads
+		transform0 = glm::translate(glm::mat4(1.0f), glm::vec3(0.0f, 2.0f, 0.0f));
 		transform2 = glm::rotate(glm::mat4(1.0f), -static_cast<float>(thisFrame), glm::vec3(0, 0, 1)) * glm::translate(glm::mat4(1.0f), glm::vec3(0, 0.0f, glm::sin(static_cast<float>(thisFrame))));
 		transform3 = glm::rotate(glm::mat4(1.0f), -static_cast<float>(thisFrame), glm::vec3(1, 0, 0)) * glm::translate(glm::mat4(1.0f), glm::vec3(0, glm::sin(static_cast<float>(thisFrame)), 0.0f));
 
@@ -257,7 +262,8 @@ int main() {
 	//	vao3->Draw();
 
 		// Draw OBJ loaded model
-		shader->SetUniformMatrix("u_ModelViewProjection", camera->GetViewProjection() * transform3);
+		// When adding a new transform simply multiply it in the order that you want them to apply
+		shader->SetUniformMatrix("u_ModelViewProjection", camera->GetViewProjection() * transform * transform0);
 		vao4->Draw();
 
 		shader->SetUniformMatrix("u_ModelViewProjection", camera->GetViewProjection() * transform);
