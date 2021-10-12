@@ -25,6 +25,8 @@
 
 #define LOG_GL_NOTIFICATIONS
 
+//TEST TO SEE IF PUSHING THE REPO WORKS
+
 /*
 	Handles debug messages from OpenGL
 	https://www.khronos.org/opengl/wiki/Debug_Output#Message_Components
