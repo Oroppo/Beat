@@ -116,6 +116,7 @@ public:
 
 	// We'll disallow moving and copying, since we want to manually control when the destructor is called
 	// We'll use these classes via pointers
+
 	VertexArrayObject(const VertexArrayObject& other) = delete;
 	VertexArrayObject(VertexArrayObject&& other) = delete;
 	VertexArrayObject& operator=(const VertexArrayObject& other) = delete;

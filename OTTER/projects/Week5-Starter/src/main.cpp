@@ -64,7 +64,7 @@ GLFWwindow* window;
 // The current size of our window in pixels
 glm::ivec2 windowSize = glm::ivec2(800, 800);
 // The title of our GLFW window
-std::string windowTitle = "Kai Joseph - 100783670";
+std::string windowTitle = "Amnesia Interactive : Beat!";
 
 void GlfwWindowResizedCallback(GLFWwindow* window, int width, int height) {
 	glViewport(0, 0, width, height);
@@ -217,10 +217,12 @@ int main() {
 
 		// WEEK 5: Input handling
 		if (glfwGetKey(window, GLFW_KEY_W)) {
+
 			if (!isButtonPressed) {
 				// This is the action we want to perform on key press
 				isRotating = !isRotating;
 			}
+
 			isButtonPressed = true;
 		}
 		else {
@@ -246,16 +248,19 @@ int main() {
 		// Bind our shader and upload the uniform
 		shader->Bind();
 
-		// Draw spinny triangle
-		shader->SetUniformMatrix("u_ModelViewProjection", camera->GetViewProjection() * transform);
-		vao->Draw();
+	//	// Draw spinny triangle
+	//	shader->SetUniformMatrix("u_ModelViewProjection", camera->GetViewProjection() * transform);
+	//	vao->Draw();
 
-		// Draw MeshFactory Sample
-		shader->SetUniformMatrix("u_ModelViewProjection", camera->GetViewProjection()* transform2);
-		vao3->Draw();
+	//	// Draw MeshFactory Sample
+	//	shader->SetUniformMatrix("u_ModelViewProjection", camera->GetViewProjection()* transform2);
+	//	vao3->Draw();
 
 		// Draw OBJ loaded model
 		shader->SetUniformMatrix("u_ModelViewProjection", camera->GetViewProjection() * transform3);
+		vao4->Draw();
+
+		shader->SetUniformMatrix("u_ModelViewProjection", camera->GetViewProjection() * transform);
 		vao4->Draw();
 
 		VertexArrayObject::Unbind();
