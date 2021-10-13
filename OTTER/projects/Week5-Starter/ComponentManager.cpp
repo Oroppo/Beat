@@ -1,4 +1,6 @@
 #include "ComponentManager.h"
+#include "IComponentArray.h"
+#include "ComponentArray.h"
 
 
 using Entity = uint32_t;
