@@ -7,17 +7,20 @@
 // We're gonna need to swap GLM/glm.hpp for our own Vec3 class for the sake of efficiency at some point
 
 //					TO DO:
-//	Finish Object Loader
-//	Finish the Component Manager
-//	Create a Test Environment
+//	Finish Object Loader		[In progress...]
+//	Finish the Component Manager [Done!]
+//	Create a Test Environment	[In Progress...]
 //	Implement Each Component we need to use
+//	Build a physics system
+//	Build an obfuscated Render Component
 // 
 //				Nice To Haves:
 //	Implement a Fixed Update Loop for Physics 
 //	Implement Dynamic Lighting
+//	Window Event System (currently using GLFW's Event Listener glfwPollEvents() which is pretty limiting)
 //	Optimize Shaders
 //	Dynamic Rendering
-//	
+//	Particle System (basically just uses OBJ loader + interesting use of shaders)
 //
 
 // If you want to add a component, add it here:
@@ -38,15 +41,16 @@ struct RigidBody {
 };
 
 struct Gravity {
-	int gravityConstant;
+	glm::vec3  force;
 };
 
 struct SoundSource {
-	
+	//fmod code here
 };
 
 struct Camera {
-
+	glm::vec3 viewProjection;
+	bool isOrtho;
 };
 
 struct CharacterController {

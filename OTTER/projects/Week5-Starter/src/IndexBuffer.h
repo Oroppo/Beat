@@ -77,6 +77,8 @@ protected:
 // Basically, by leaving the template arguments empty and providing explicit types to our parameters, we
 // can have specialized behaviour for each of the types, neat!
 
+
+
 template<>
 inline void IndexBuffer::LoadData<uint8_t>(const uint8_t* data, size_t count) {
 	IBuffer::LoadData<uint8_t>(data, count);

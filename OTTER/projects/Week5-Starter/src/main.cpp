@@ -66,6 +66,8 @@ glm::ivec2 windowSize = glm::ivec2(800, 800);
 // The title of our GLFW window
 std::string windowTitle = "Amnesia Interactive : Beat!";
 
+
+
 void GlfwWindowResizedCallback(GLFWwindow* window, int width, int height) {
 	glViewport(0, 0, width, height);
 	windowSize = glm::ivec2(width, height);
@@ -92,6 +94,8 @@ bool initGLFW() {
 
 	return true;
 }
+
+
 
 /// <summary>
 /// Handles initializing GLAD and preparing our GLFW window for OpenGL calls
@@ -162,6 +166,7 @@ int main() {
 		3, 0, 1,
 		3, 1, 2
 	};
+
 	IndexBuffer::Sptr interleaved_ibo = IndexBuffer::Create();
 	interleaved_ibo->LoadData(indices, 3 * 2);
 
@@ -189,6 +194,8 @@ int main() {
 	Camera::Sptr camera = Camera::Create();
 	camera->SetPosition(glm::vec3(0, 3, 3));
 	camera->LookAt(glm::vec3(0.0f));
+	camera->SetOrthoVerticalScale(10);
+
 
 	// Create a mat4 to store our mvp (for now)
 	glm::mat4 transform = glm::mat4(1.0f);
@@ -213,21 +220,39 @@ int main() {
 
 	bool isButtonPressed = false;
 
+	bool isOrtho = false;
+
 	///// Game loop /////
 	while (!glfwWindowShouldClose(window)) {
 		glfwPollEvents();
 
 		// WEEK 5: Input handling
-		if (glfwGetKey(window, GLFW_KEY_W)) {
+		if (glfwGetKey(window, GLFW_KEY_SPACE)) {
 
 			if (!isButtonPressed) {
 				// This is the action we want to perform on key press
-				isRotating = !isRotating;
-			}
+				//isRotating = !isRotating;
+				if (!isOrtho) {
+					camera->SetOrthoEnabled(true);
+					camera->SetPosition(glm::vec3(8, 0, 0));
+					camera->LookAt(glm::vec3(0.0f));
 
+
+					isOrtho = !isOrtho;
+				}
+				else {
+					camera->SetOrthoEnabled(false);
+					camera->SetPosition(glm::vec3(0, 3, 3));
+					camera->LookAt(glm::vec3(0.0f));
+					isOrtho = !isOrtho;
+				}
+				
+			}
+			
 			isButtonPressed = true;
 		}
 		else {
+			
 			isButtonPressed = false;
 		}
 
@@ -239,11 +264,13 @@ int main() {
 
 		// Rotate our models around the z axis
 		if (isRotating) {
-			transform  = glm::rotate(glm::mat4(1.0f), static_cast<float>(thisFrame), glm::vec3(0, 0, 1));
+
+			transform  = glm::rotate(glm::mat4(1.0f), static_cast<float>(thisFrame), glm::vec3(0, 0, 1)) * glm::translate(glm::mat4(1.0f), glm::vec3(0,0,0));
+
 		}
 		// transform 0 will translate an object for some reason the axis are kinda weird but it goes
 		// forward backwards, left and right, up/down in relation to the monkey heads
-		transform0 = glm::translate(glm::mat4(1.0f), glm::vec3(0.0f, 2.0f, 0.0f));
+		transform0 = glm::translate(glm::mat4(1.0f), glm::vec3(0.0f, 0.0f, 0.0f));
 		transform2 = glm::rotate(glm::mat4(1.0f), -static_cast<float>(thisFrame), glm::vec3(0, 0, 1)) * glm::translate(glm::mat4(1.0f), glm::vec3(0, 0.0f, glm::sin(static_cast<float>(thisFrame))));
 		transform3 = glm::rotate(glm::mat4(1.0f), -static_cast<float>(thisFrame), glm::vec3(1, 0, 0)) * glm::translate(glm::mat4(1.0f), glm::vec3(0, glm::sin(static_cast<float>(thisFrame)), 0.0f));
 
@@ -263,7 +290,7 @@ int main() {
 
 		// Draw OBJ loaded model
 		// When adding a new transform simply multiply it in the order that you want them to apply
-		shader->SetUniformMatrix("u_ModelViewProjection", camera->GetViewProjection() * transform * transform0);
+		shader->SetUniformMatrix("u_ModelViewProjection", camera->GetViewProjection() * transform);
 		vao4->Draw();
 
 		shader->SetUniformMatrix("u_ModelViewProjection", camera->GetViewProjection() * transform);

@@ -2,7 +2,6 @@
 #include <iostream>
 #include <unordered_map>
 #include <cassert>
-#include <unordered_map>
 #include "ComponentArray.h"
 
 
