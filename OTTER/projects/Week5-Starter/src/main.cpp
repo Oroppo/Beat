@@ -23,6 +23,10 @@
 #include "Utils/ObjLoader.h"
 #include "VertexTypes.h"
 
+#include "imgui.h"
+#include "imgui_impl_glfw.h"
+#include "imgui_impl_opengl3.h"
+
 #define LOG_GL_NOTIFICATIONS
 
 //TEST TO SEE IF PUSHING THE REPO WORKS
@@ -67,7 +71,7 @@ glm::ivec2 windowSize = glm::ivec2(800, 800);
 std::string windowTitle = "Amnesia Interactive : Beat!";
 
 
-
+//Call this Whenever Window is Resized
 void GlfwWindowResizedCallback(GLFWwindow* window, int width, int height) {
 	glViewport(0, 0, width, height);
 	windowSize = glm::ivec2(width, height);
@@ -125,58 +129,61 @@ int main() {
 	glEnable(GL_DEBUG_OUTPUT_SYNCHRONOUS);
 	glDebugMessageCallback(GlDebugMessage, nullptr);
 
-	static const GLfloat points[] = {
-		-0.5f, -0.5f, 0.5f,
-		0.5f, -0.5f, 0.5f,
-		-0.5f, 0.5f, 0.5f
-	};
+#pragma region Legacy Code for Reference
+	//static const GLfloat points[] = {
+	//	-0.5f, -0.5f, 0.5f,
+	//	0.5f, -0.5f, 0.5f,
+	//	-0.5f, 0.5f, 0.5f
+	//};
+	//
+	//static const GLfloat colors[] = {
+	//	1.0f, 0.0f, 0.0f,
+	//	0.0f, 1.0f, 0.0f,
+	//	0.0f, 0.0f, 1.0f
+	//};
+	//
+	////VBO - Vertex buffer object
+	//VertexBuffer::Sptr posVbo = VertexBuffer::Create();
+	//posVbo->LoadData(points, 9);
+	//
+	//VertexBuffer::Sptr color_vbo = VertexBuffer::Create();
+	//color_vbo->LoadData(colors, 9);
+	//
+	//VertexArrayObject::Sptr vao = VertexArrayObject::Create();
+	//vao->AddVertexBuffer(posVbo, {
+	//	BufferAttribute(0, 3, AttributeType::Float, 0, NULL, AttribUsage::Position)
+	//	});
+	//vao->AddVertexBuffer(color_vbo, {
+	//	{ 1, 3, AttributeType::Float, 0, NULL, AttribUsage::Color }
+	//	});
+	//
+	//static const float interleaved[] = {
+	//	// X      Y    Z       R     G     B
+	//	 0.5f, -0.5f, 0.5f,   0.0f, 0.0f, 0.0f,
+	//	 0.5f,  0.5f, 0.5f,   0.3f, 0.2f, 0.5f,
+	//	-0.5f,  0.5f, 0.5f,   1.0f, 1.0f, 0.0f,
+	//	-0.5f, -0.5f, 0.5f,   1.0f, 1.0f, 1.0f
+	//};
+	//VertexBuffer::Sptr interleaved_vbo = VertexBuffer::Create();
+	//interleaved_vbo->LoadData(interleaved, 6 * 4);
+	//
+	//static const uint16_t indices[] = {
+	//	3, 0, 1,
+	//	3, 1, 2
+	//};
+	//
+	//IndexBuffer::Sptr interleaved_ibo = IndexBuffer::Create();
+	//interleaved_ibo->LoadData(indices, 3 * 2);
+	//
+	//size_t stride = sizeof(float) * 6;
+	//VertexArrayObject::Sptr vao2 = VertexArrayObject::Create();
+	//vao2->AddVertexBuffer(interleaved_vbo, {
+	//	BufferAttribute(0, 3, AttributeType::Float, stride, 0, AttribUsage::Position),
+	//	BufferAttribute(1, 3, AttributeType::Float, stride, sizeof(float) * 3, AttribUsage::Color),
+	//	});
+	//vao2->SetIndexBuffer(interleaved_ibo);
+#pragma endregion
 
-	static const GLfloat colors[] = {
-		1.0f, 0.0f, 0.0f,
-		0.0f, 1.0f, 0.0f,
-		0.0f, 0.0f, 1.0f
-	};
-
-	//VBO - Vertex buffer object
-	VertexBuffer::Sptr posVbo = VertexBuffer::Create();
-	posVbo->LoadData(points, 9);
-
-	VertexBuffer::Sptr color_vbo = VertexBuffer::Create();
-	color_vbo->LoadData(colors, 9);
-
-	VertexArrayObject::Sptr vao = VertexArrayObject::Create();
-	vao->AddVertexBuffer(posVbo, {
-		BufferAttribute(0, 3, AttributeType::Float, 0, NULL, AttribUsage::Position)
-	});
-	vao->AddVertexBuffer(color_vbo, {
-		{ 1, 3, AttributeType::Float, 0, NULL, AttribUsage::Color }
-	});
-
-	static const float interleaved[] = {
-		// X      Y    Z       R     G     B
-		 0.5f, -0.5f, 0.5f,   0.0f, 0.0f, 0.0f,
-		 0.5f,  0.5f, 0.5f,   0.3f, 0.2f, 0.5f,
-		-0.5f,  0.5f, 0.5f,   1.0f, 1.0f, 0.0f,
-		-0.5f, -0.5f, 0.5f,   1.0f, 1.0f, 1.0f
-	};
-	VertexBuffer::Sptr interleaved_vbo = VertexBuffer::Create();
-	interleaved_vbo->LoadData(interleaved, 6 * 4);
-
-	static const uint16_t indices[] = {
-		3, 0, 1,
-		3, 1, 2
-	};
-
-	IndexBuffer::Sptr interleaved_ibo = IndexBuffer::Create();
-	interleaved_ibo->LoadData(indices, 3 * 2);
-
-	size_t stride = sizeof(float) * 6;
-	VertexArrayObject::Sptr vao2 = VertexArrayObject::Create();
-	vao2->AddVertexBuffer(interleaved_vbo, {
-		BufferAttribute(0, 3, AttributeType::Float, stride, 0, AttribUsage::Position),
-		BufferAttribute(1, 3, AttributeType::Float, stride, sizeof(float) * 3, AttribUsage::Color),
-	});
-	vao2->SetIndexBuffer(interleaved_ibo);
 
 	// Load our shaders
 	Shader* shader = new Shader();
@@ -199,16 +206,12 @@ int main() {
 
 	// Create a mat4 to store our mvp (for now)
 	glm::mat4 transform = glm::mat4(1.0f);
-	glm::mat4 transform2 = glm::mat4(1.0f);
-	glm::mat4 transform3 = glm::mat4(1.0f);
-	// Transform for translations
-	glm::mat4 transform0 = glm::mat4(1.0f);
 
 	// Our high-precision timer
 	double lastFrame = glfwGetTime();
 
+	//Mesh Code Example:
 	LOG_INFO("Starting mesh build");
-
 	MeshBuilder<VertexPosCol> mesh;
 	MeshFactory::AddIcoSphere(mesh, glm::vec3(1.0f, 0.0f, 0.0f), glm::vec3(0.5f), 3);
 	MeshFactory::AddCube(mesh, glm::vec3(0.0f), glm::vec3(0.5f));
@@ -217,10 +220,21 @@ int main() {
 	VertexArrayObject::Sptr vao4 = ObjLoader::LoadFromFile("Monkey.obj");
 
 	bool isRotating = true;
-
 	bool isButtonPressed = false;
-
 	bool isOrtho = false;
+
+	bool drawObject = true;
+	float translateObjectX = 0.f;
+	float translateObjectY = 0.f;
+	float translateObjectZ = 0.f;
+
+	//IMGUI Init...
+	IMGUI_CHECKVERSION();
+	ImGui::CreateContext();
+	ImGuiIO& io = ImGui::GetIO(); (void)io;
+	ImGui::StyleColorsDark();
+	ImGui_ImplGlfw_InitForOpenGL(window, true);
+	ImGui_ImplOpenGL3_Init("#version 330");
 
 	///// Game loop /////
 	while (!glfwWindowShouldClose(window)) {
@@ -263,43 +277,67 @@ int main() {
 		// TODO: Week 5 - toggle code
 
 		// Rotate our models around the z axis
+
+
 		if (isRotating) {
 
-			transform  = glm::rotate(glm::mat4(1.0f), static_cast<float>(thisFrame), glm::vec3(0, 0, 1)) * glm::translate(glm::mat4(1.0f), glm::vec3(0,0,0));
+			transform  = glm::rotate(glm::mat4(1.0f), static_cast<float>(thisFrame), glm::vec3(0, 0, 1)) *
+				glm::translate(glm::mat4(1.0f), glm::vec3(0 + translateObjectX,0 + translateObjectY, 0 + translateObjectZ));
 
 		}
-		// transform 0 will translate an object for some reason the axis are kinda weird but it goes
-		// forward backwards, left and right, up/down in relation to the monkey heads
-		transform0 = glm::translate(glm::mat4(1.0f), glm::vec3(0.0f, 0.0f, 0.0f));
-		transform2 = glm::rotate(glm::mat4(1.0f), -static_cast<float>(thisFrame), glm::vec3(0, 0, 1)) * glm::translate(glm::mat4(1.0f), glm::vec3(0, 0.0f, glm::sin(static_cast<float>(thisFrame))));
-		transform3 = glm::rotate(glm::mat4(1.0f), -static_cast<float>(thisFrame), glm::vec3(1, 0, 0)) * glm::translate(glm::mat4(1.0f), glm::vec3(0, glm::sin(static_cast<float>(thisFrame)), 0.0f));
 
 		// Clear the color and depth buffers
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
+		ImGui_ImplOpenGL3_NewFrame();
+		ImGui_ImplGlfw_NewFrame();
+		ImGui::NewFrame();
+
 		// Bind our shader and upload the uniform
 		shader->Bind();
 
-	//	// Draw spinny triangle
-	//	shader->SetUniformMatrix("u_ModelViewProjection", camera->GetViewProjection() * transform);
-	//	vao->Draw();
 
-	//	// Draw MeshFactory Sample
-	//	shader->SetUniformMatrix("u_ModelViewProjection", camera->GetViewProjection()* transform2);
-	//	vao3->Draw();
+		glm::vec4 color(1.0f,1.0f,1.0f,1.0f);
+
+
 
 		// Draw OBJ loaded model
 		// When adding a new transform simply multiply it in the order that you want them to apply
-		shader->SetUniformMatrix("u_ModelViewProjection", camera->GetViewProjection() * transform);
-		vao4->Draw();
+		
+		//shader->SetUniformMatrix("u_ModelViewProjection", camera->GetViewProjection() * transform);
+		//vao4->Draw();
 
 		shader->SetUniformMatrix("u_ModelViewProjection", camera->GetViewProjection() * transform);
-		vao4->Draw();
+
+		if (drawObject) {
+			vao4->Draw();
+		}
+
 
 		VertexArrayObject::Unbind();
 
+		//This must be written Before glfwSwapBuffers and After an Draw Calls
+		ImGui::Begin("This here is a Window...");
+		ImGui::Text("Hello there young Traveler...");
+		ImGui::Checkbox("Draw Object", &drawObject);
+		ImGui::SliderFloat("Position X", &translateObjectX, -2.0f, 2.0f);
+		ImGui::SliderFloat("Position Y", &translateObjectY, -2.0f, 2.0f);
+		ImGui::SliderFloat("Position Z", &translateObjectZ, -2.0f, 2.0f);
+		ImGui::ColorEdit4("Color", &color.x);
+		ImGui::End();
+
+		ImGui::Render();
+		ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
+
+
 		glfwSwapBuffers(window);
+
+		
 	}
+	//Clean up the processes once the application is done.
+	ImGui_ImplOpenGL3_Shutdown();
+	ImGui_ImplGlfw_Shutdown();
+	ImGui::DestroyContext();
 
 	// Clean up the toolkit logger so we don't leak memory
 	Logger::Uninitialize();

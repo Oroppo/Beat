@@ -137,7 +137,6 @@ VertexArrayObject::Sptr ObjLoader::LoadFromFile(const std::string& filename)
               // indexes.push_back(vertices.size()-1);
 
                if (!dupeFlag) {
-                   std::cout << "Value of vertices: " << vertexIndices.x << "/" << vertexIndices.y << "/" << vertexIndices.z << "\n";
 
                    indexes.push_back(vertices.size());
                    vertices.push_back(vertexIndices);
