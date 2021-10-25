@@ -27,6 +27,9 @@
 
 struct Transform
 {
+	Transform(glm::vec3 ) {
+
+	}
 	//once we decide to use Quaternions we'll swap rotation for a vec4
 	glm::vec3 position;
 	glm::vec3 rotation;

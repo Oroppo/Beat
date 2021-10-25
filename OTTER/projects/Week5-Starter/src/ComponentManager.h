@@ -5,8 +5,8 @@
 #include "ComponentArray.h"
 
 
-using Entity = uint32_t;
-using ComponentType = uint32_t;
+using Entity = std::uint32_t;
+
 
 class ComponentManager
 {

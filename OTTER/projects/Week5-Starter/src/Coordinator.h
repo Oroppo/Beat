@@ -12,6 +12,7 @@ public:
 		mComponentManager = std::make_unique<ComponentManager>();
 		mEntityManager = std::make_unique<EntityManager>();
 		mSystemManager = std::make_unique<SystemManager>();
+		//mPhysicsManager = std::make_unique<PhysicsManager>();
 	}
 
 
@@ -28,6 +29,8 @@ public:
 		mComponentManager->EntityDestroyed(entity);
 
 		mSystemManager->EntityDestroyed(entity);
+
+		//mPhysicsManager->DestroyObject(entity);
 	}
 
 
