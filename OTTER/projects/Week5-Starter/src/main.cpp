@@ -204,8 +204,10 @@ int main() {
 	camera->SetOrthoVerticalScale(10);
 
 
+
 	// Create a mat4 to store our mvp (for now)
 	glm::mat4 transform = glm::mat4(1.0f);
+	glm::mat4 hardTransform = glm::mat4(1.0f);
 
 	// Our high-precision timer
 	double lastFrame = glfwGetTime();
@@ -217,7 +219,7 @@ int main() {
 	MeshFactory::AddCube(mesh, glm::vec3(0.0f), glm::vec3(0.5f));
 	VertexArrayObject::Sptr vao3 = mesh.Bake();
 
-	VertexArrayObject::Sptr vao4 = ObjLoader::LoadFromFile("Monkey.obj");
+	VertexArrayObject::Sptr vao4 = ObjLoader::LoadFromFile("BaseModel.obj");
 
 	bool isRotating = true;
 	bool isButtonPressed = false;
@@ -227,6 +229,11 @@ int main() {
 	float translateObjectX = 0.f;
 	float translateObjectY = 0.f;
 	float translateObjectZ = 0.f;
+	float rotateObjectX = 0.f;
+	float rotateObjectY = 0.f;
+	float rotateObjectZ = 0.f;
+	float rotationDelta = 0;
+
 
 	//IMGUI Init...
 	IMGUI_CHECKVERSION();
@@ -281,8 +288,8 @@ int main() {
 
 		if (isRotating) {
 
-			transform  = glm::rotate(glm::mat4(1.0f), static_cast<float>(thisFrame), glm::vec3(0, 0, 1)) *
-				glm::translate(glm::mat4(1.0f), glm::vec3(0 + translateObjectX,0 + translateObjectY, 0 + translateObjectZ));
+			transform = glm::translate(glm::mat4(1.0f), glm::vec3(0 + translateObjectX, 0 + translateObjectY, 0 + translateObjectZ));
+			hardTransform = glm::rotate(glm::mat4(1.0f), static_cast<float>(rotationDelta), glm::vec3(0+rotateObjectX, 0+rotateObjectY, 1+rotateObjectZ));
 
 		}
 
@@ -307,7 +314,7 @@ int main() {
 		//shader->SetUniformMatrix("u_ModelViewProjection", camera->GetViewProjection() * transform);
 		//vao4->Draw();
 
-		shader->SetUniformMatrix("u_ModelViewProjection", camera->GetViewProjection() * transform);
+		shader->SetUniformMatrix("u_ModelViewProjection", camera->GetViewProjection() * transform*hardTransform);
 
 		if (drawObject) {
 			vao4->Draw();
@@ -316,13 +323,18 @@ int main() {
 
 		VertexArrayObject::Unbind();
 
-		//This must be written Before glfwSwapBuffers and After an Draw Calls
+		//This must be written Before glfwSwapBuffers and After any Draw Calls
 		ImGui::Begin("This here is a Window...");
 		ImGui::Text("Hello there young Traveler...");
 		ImGui::Checkbox("Draw Object", &drawObject);
 		ImGui::SliderFloat("Position X", &translateObjectX, -2.0f, 2.0f);
 		ImGui::SliderFloat("Position Y", &translateObjectY, -2.0f, 2.0f);
 		ImGui::SliderFloat("Position Z", &translateObjectZ, -2.0f, 2.0f);
+		ImGui::SliderFloat("DeltaRotation", &rotationDelta, -4.0f, 4.0f);
+
+		ImGui::SliderFloat("Rotation X", &rotateObjectX, 0.f, 1.0f);
+		ImGui::SliderFloat("Rotation Y", &rotateObjectY, 0.f, 1.0f);
+		ImGui::SliderFloat("Rotation Z", &rotateObjectZ, 0.f, 1.0f);
 		ImGui::ColorEdit4("Color", &color.x);
 		ImGui::End();
 
