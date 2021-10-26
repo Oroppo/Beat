@@ -56,7 +56,7 @@ struct RigidBody {
             
             (ColliderStats->position.x+ColliderStats->scale.x/2>ObjectStats->position.x)&&(ColliderStats->position.x<ObjectStats->position.x+ObjectStats->scale.x/2)&&
             //check if colliding in y axis
-            (ColliderStats->position.y+ColliderStats->scale.y,2>ObjectStats->position.y)&&(ColliderStats->position.y<ObjectStats->position.y+ObjectStats->scale.y/2)&&
+            (ColliderStats->position.y+ColliderStats->scale.y/2>ObjectStats->position.y)&&(ColliderStats->position.y<ObjectStats->position.y+ObjectStats->scale.y/2)&&
             //check if colliding in z axis
             (ColliderStats->position.z + ColliderStats->scale.z/2 > ObjectStats->position.z) && (ColliderStats->position.z < ObjectStats->position.z + ObjectStats->scale.z/2)
            
