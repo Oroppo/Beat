@@ -30,11 +30,7 @@ public:
             auto& transform = gCoordinator.GetComponent<Transform>(entity);
             auto& gravity = gCoordinator.GetComponent<Gravity>(entity);
 
-
-            RigidBody* rigidBodyp = &rigidBody;
-            Transform* transformp = &transform;
-
-            gravity.applyGravity(transformp, rigidBodyp, dt);
+            gravity.applyGravity(transform, rigidBody, dt);
         }
        //PhysicsManager::Update(dt);
     }

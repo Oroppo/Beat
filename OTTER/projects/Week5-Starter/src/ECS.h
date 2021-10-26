@@ -49,16 +49,16 @@ struct RigidBody {
 
 
     //since the only thing that will be colliding with anythin else willbe the player, check if the player is colliding 
-    bool CubicCollisionDetection(Transform* ColliderStats, RigidBody* ColliderBody, Transform* ObjectStats, RigidBody* ObjectBody) {
+    bool CubicCollisionDetection(Transform ColliderStats, Transform ObjectStats) {
 
-        //check if colliding in x axis
+       
         if (
-            
-            (ColliderStats->position.x+ColliderStats->scale.x/2>ObjectStats->position.x)&&(ColliderStats->position.x<ObjectStats->position.x+ObjectStats->scale.x/2)&&
+            //check if colliding in x axis
+            (ColliderStats.position.x+ColliderStats.scale.x/2>ObjectStats.position.x)&&(ColliderStats.position.x<ObjectStats.position.x+ObjectStats.scale.x/2)&&
             //check if colliding in y axis
-            (ColliderStats->position.y+ColliderStats->scale.y/2>ObjectStats->position.y)&&(ColliderStats->position.y<ObjectStats->position.y+ObjectStats->scale.y/2)&&
+            (ColliderStats.position.y+ColliderStats.scale.y/2>ObjectStats.position.y)&&(ColliderStats.position.y<ObjectStats.position.y+ObjectStats.scale.y/2)&&
             //check if colliding in z axis
-            (ColliderStats->position.z + ColliderStats->scale.z/2 > ObjectStats->position.z) && (ColliderStats->position.z < ObjectStats->position.z + ObjectStats->scale.z/2)
+            (ColliderStats.position.z + ColliderStats.scale.z/2 > ObjectStats.position.z) && (ColliderStats.position.z < ObjectStats.position.z + ObjectStats.scale.z/2)
            
             )
         {
@@ -69,8 +69,25 @@ struct RigidBody {
         }
      
     }
-    bool SphericalCollisionDetection() {
+    bool SphericalCollisionDetection(Transform ColliderStats, Transform ObjectStats) {
+
+    
         return true;
+    }
+
+
+
+    void ApplyImpulse(glm::vec3 impulse, Transform transform) 
+    {
+
+    }
+    void ApplyForce() 
+    {
+
+    }
+    void StopMotion() 
+    {
+
     }
 
 };
@@ -79,17 +96,17 @@ struct Gravity {
 
     glm::vec3  grav = glm::vec3(0.0f, 9.81, 0.0f);
 
-     void applyGravity(Transform* transform, RigidBody* body, float dt) {
+     void applyGravity(Transform transform, RigidBody body, float dt) {
 
         //force+=mass*grav
-        body->force += body->mass * grav;
+        body.force += body.mass * grav;
         //Velocity+=force*dt
-        body->velocity += body->force * dt;
+        body.velocity += body.force * dt;
         //position+=velocity
-        transform->position += body->velocity;
+        transform.position += body.velocity;
 
         //reset force applied by grav so it doesnt compound twice
-        body->force = glm::vec3(0.0f, 0.0f, 0.0f);
+        body.force = glm::vec3(0.0f, 0.0f, 0.0f);
 
     }
 };
