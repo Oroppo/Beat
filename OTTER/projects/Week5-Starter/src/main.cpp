@@ -28,6 +28,7 @@
 #include "imgui_impl_opengl3.h"
 
 #include "Coordinator.h"
+#include "ECS.h"
 
 #define LOG_GL_NOTIFICATIONS
 
@@ -329,6 +330,7 @@ int main() {
 		ImGui::Begin("This here is a Window...");
 		ImGui::Text("Hello there young Traveler...");
 		ImGui::Checkbox("Draw Object", &drawObject);
+
 		ImGui::SliderFloat("Position X", &translateObjectX, -2.0f, 2.0f);
 		ImGui::SliderFloat("Position Y", &translateObjectY, -2.0f, 2.0f);
 		ImGui::SliderFloat("Position Z", &translateObjectZ, -2.0f, 2.0f);
@@ -339,6 +341,7 @@ int main() {
 		ImGui::SliderFloat("Rotation Z", &rotateObjectZ, 0.f, 1.0f);
 		ImGui::ColorEdit4("Color", &color.x);
 		ImGui::End();
+
 
 		ImGui::Render();
 		ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());

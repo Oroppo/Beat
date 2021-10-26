@@ -25,16 +25,18 @@
 
 // If you want to add a component, add it here:
 
-struct Object
+struct Transform
 {
     //once we decide to use Quaternions we'll swap rotation for a vec4
     glm::vec3 position;
     glm::vec3 rotation;
     glm::vec3 scale;
+
 };
 
 struct RigidBody {
     RigidBody() {
+
         force = glm::vec3(0.0f, 0.0f, 0.0f);
         velocity = glm::vec3(0.0f, 0.0f, 0.0f);
         acceleration = glm::vec3(0.0f, 0.0f, 0.0f);
@@ -47,12 +49,17 @@ struct RigidBody {
 };
 
 struct Gravity {
-    glm::vec3  grav = glm::vec3(0.0f, 9.81, 0.0f);
-     void applyGravity(Object* obj, RigidBody* body, float dt) {
 
+    glm::vec3  grav = glm::vec3(0.0f, 9.81, 0.0f);
+
+     void applyGravity(Transform* transform, RigidBody* body, float dt) {
+
+        //force+=mass*grav
         body->force += body->mass * grav;
+        //Velocity+=force*dt
         body->velocity += body->force * dt;
-        obj->position += body->velocity;
+        //position+=velocity
+        transform->position += body->velocity;
 
         //reset force applied by grav so it doesnt compound twice
         body->force = glm::vec3(0.0f, 0.0f, 0.0f);
@@ -64,10 +71,10 @@ struct SoundSource {
     //fmod code here
 };
 
-struct Camera {
-    glm::vec3 viewProjection;
-    bool isOrtho;
-};
+//struct Camera {
+//    glm::vec3 viewProjection;
+//    bool isOrtho;
+//};
 
 struct CharacterController {
 
