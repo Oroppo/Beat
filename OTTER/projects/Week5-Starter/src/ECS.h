@@ -46,6 +46,32 @@ struct RigidBody {
     glm::vec3 velocity;
     glm::vec3 acceleration;
     float mass;
+
+
+    //since the only thing that will be colliding with anythin else willbe the player, check if the player is colliding 
+    bool CubicCollisionDetection(Transform* ColliderStats, RigidBody* ColliderBody, Transform* ObjectStats, RigidBody* ObjectBody) {
+
+        //check if colliding in x axis
+        if (
+            
+            (ColliderStats->position.x+ColliderStats->scale.x>ObjectStats->position.x)&&(ColliderStats->position.x<ObjectStats->position.x+ObjectStats->scale.x)&&
+            //check if colliding in y axis
+            (ColliderStats->position.y+ColliderStats->scale.y>ObjectStats->position.y)&&(ColliderStats->position.y<ObjectStats->position.y+ObjectStats->scale.y)&&
+            //check if colliding in z axis
+            (ColliderStats->position.y + ColliderStats->scale.y > ObjectStats->position.y) && (ColliderStats->position.y < ObjectStats->position.y + ObjectStats->scale.y)
+           
+            )
+        {
+            return true;
+        }
+        else {
+            return false;
+        }
+     
+    }
+    bool SphericalCollisionDetection() {
+        return true;
+    }
 };
 
 struct Gravity {
