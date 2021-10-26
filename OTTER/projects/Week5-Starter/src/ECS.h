@@ -31,7 +31,10 @@ struct Transform
     glm::vec3 position;
     glm::vec3 rotation;
     glm::vec3 scale;
-
+    float dynamicFriction;
+    void SetObjectToSleep() {
+        position = glm::vec3(-100.0f,-100.0f,-100.0f);
+    }
 };
 
 struct RigidBody {
@@ -49,55 +52,48 @@ struct RigidBody {
 
 
     //since the only thing that will be colliding with anythin else willbe the player, check if the player is colliding 
-    bool CubicCollisionDetection(Transform ColliderStats, Transform ObjectStats) {
-
-       
+    bool CubicCollisionDetection(Transform ColliderStats, Transform ObjectStats) {   
         if (
             //check if colliding in x axis
             (ColliderStats.position.x+ColliderStats.scale.x/2>ObjectStats.position.x)&&(ColliderStats.position.x<ObjectStats.position.x+ObjectStats.scale.x/2)&&
             //check if colliding in y axis
             (ColliderStats.position.y+ColliderStats.scale.y/2>ObjectStats.position.y)&&(ColliderStats.position.y<ObjectStats.position.y+ObjectStats.scale.y/2)&&
             //check if colliding in z axis
-            (ColliderStats.position.z + ColliderStats.scale.z/2 > ObjectStats.position.z) && (ColliderStats.position.z < ObjectStats.position.z + ObjectStats.scale.z/2)
-           
+            (ColliderStats.position.z + ColliderStats.scale.z/2 > ObjectStats.position.z) && (ColliderStats.position.z < ObjectStats.position.z + ObjectStats.scale.z/2)          
             )
         {
+            //collision is true 
             return true;
         }
         else {
             return false;
-        }
-     
+        }   
     }
-    bool SphericalCollisionDetection(Transform ColliderStats, Transform ObjectStats) {
 
-    
+
+    bool SphericalCollisionDetection(Transform ColliderStats, Transform ObjectStats) { 
         return true;
     }
 
-
-
-    void ApplyImpulse(glm::vec3 impulse, Transform transform) 
+    void ApplyForce(glm::vec3 force)
     {
-
+        velocity += force;
     }
-    void ApplyForce() 
+    void StopMotion(Entity entity) 
     {
-
+       velocity = glm::vec3(0.0f, 0.0f, 0.0f);
     }
-    void StopMotion() 
-    {
-
-    }
-
+  
 };
 
 struct Gravity {
 
-    glm::vec3  grav = glm::vec3(0.0f, 9.81, 0.0f);
+    glm::vec3 grav = glm::vec3(0.0f, 9.81, 0.0f);
 
-     void applyGravity(Transform transform, RigidBody body, float dt) {
+     void applyGravity(Entity entity, float dt) {
 
+         auto& body = gCoordinator.GetComponent<RigidBody>(entity);
+         auto& transform = gCoordinator.GetComponent<Transform>(entity);
         //force+=mass*grav
         body.force += body.mass * grav;
         //Velocity+=force*dt
@@ -128,9 +124,7 @@ struct AnimationController {
 
 };
 
-struct EventListener {
 
-};
 struct ParticleEmitter {
 
 };
