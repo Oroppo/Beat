@@ -6,6 +6,7 @@
 #include <GLM/glm.hpp>          // for our GLM types
 #include <GLM/gtc/type_ptr.hpp> // for glm::value_ptr
 #include "Logging.h"            // for the logging functions
+#include "IResource.h"
 
 // We can use an enum to make our code more readable and restrict
 // values to only ones we want to accept
@@ -18,7 +19,7 @@ enum class ShaderPartType {
 /// <summary>
 /// This class will wrap around an OpenGL shader program
 /// </summary>
-class Shader final
+class Shader final : public IResource
 {
 public:
 	typedef std::shared_ptr<Shader> Sptr;

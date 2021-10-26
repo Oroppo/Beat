@@ -4,9 +4,9 @@
 #include <vector>
 #include <memory>
 
-// We can declare the classes for IndexBuffer and VertexBuffer here, since we don't need their full definitions in the .h file
 #include "VertexBuffer.h"
 #include "IndexBuffer.h"
+#include "IResource.h"
 
 #include <memory>
 
@@ -105,7 +105,7 @@ struct BufferAttribute
 /// <summary>
 /// The Vertex Array Object wraps around an OpenGL VAO and basically represents all of the data for a mesh
 /// </summary>
-class VertexArrayObject final
+class VertexArrayObject final : public IResource
 {
 public:
 	typedef std::shared_ptr<VertexArrayObject> Sptr;
@@ -116,7 +116,6 @@ public:
 
 	// We'll disallow moving and copying, since we want to manually control when the destructor is called
 	// We'll use these classes via pointers
-
 	VertexArrayObject(const VertexArrayObject& other) = delete;
 	VertexArrayObject(VertexArrayObject&& other) = delete;
 	VertexArrayObject& operator=(const VertexArrayObject& other) = delete;

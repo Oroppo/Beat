@@ -1,5 +1,6 @@
 #include <iostream>
 #include <GLM/glm.hpp>
+#include "Coordinator.h"
 
 // If you're curious or want to know more about how I built our ECS(Entity Component System) refer
 // to this document: https://austinmorlan.com/posts/entity_component_system/
@@ -24,6 +25,7 @@
 //
 
 // If you want to add a component, add it here:
+extern Coordinator gCoordinator;
 
 struct Transform
 {
@@ -92,8 +94,8 @@ struct Gravity {
 
      void applyGravity(Entity entity, float dt) {
 
-         auto& body = gCoordinator.GetComponent<RigidBody>(entity);
-         auto& transform = gCoordinator.GetComponent<Transform>(entity);
+        auto& body = gCoordinator.GetComponent<RigidBody>(entity);
+        auto& transform = gCoordinator.GetComponent<Transform>(entity);
         //force+=mass*grav
         body.force += body.mass * grav;
         //Velocity+=force*dt
