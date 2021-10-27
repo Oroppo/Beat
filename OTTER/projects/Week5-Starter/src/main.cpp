@@ -201,6 +201,7 @@ struct MaterialInfo : IResource {
 // Helper structure to represent an object 
 // with a transform, mesh, and material
 struct RenderObject {
+
 	// Human readable name for the object
 	std::string             Name;
 	// Unique ID for the object
@@ -557,6 +558,27 @@ bool DrawLightImGui(const char* title, Light& light) {
 ////////////////// END OF NEW ////////////////////////
 //////////////////////////////////////////////////////
 
+void cameraInput(Scene::Sptr scene) {
+	//glfw input handling returns an int, treat it as a bool though.
+	if (glfwGetKey(window, GLFW_KEY_W)) {
+		scene->Camera->SetPosition(
+			scene->Camera->GetPosition() + glm::vec3(0.0, 0.0, 0.2));
+	}
+	if (glfwGetKey(window, GLFW_KEY_S)) {
+		scene->Camera->SetPosition(
+			scene->Camera->GetPosition() + glm::vec3(0.0, 0.0, -0.2));
+	}
+	if (glfwGetKey(window, GLFW_KEY_A)) {
+		scene->Camera->SetPosition(
+			scene->Camera->GetPosition() + glm::vec3(0.2, 0.0, 0.0));
+	}
+	if (glfwGetKey(window, GLFW_KEY_D)) {
+		scene->Camera->SetPosition(
+			scene->Camera->GetPosition() + glm::vec3(-0.2, 0.0, 0.0));
+	}
+
+}
+
 int main() {
 	Logger::Init(); // We'll borrow the logger from the toolkit, but we need to initialize it
 
@@ -601,8 +623,14 @@ int main() {
 			{ ShaderPartType::Fragment, "shaders/frag_blinn_phong_textured.glsl" }
 			});
 		Guid monkeyMesh = ResourceManager::CreateMesh("Monkey.obj");
+		Guid characterMesh = ResourceManager::CreateMesh("basemodel.obj");
+		Guid smallPlatformMesh = ResourceManager::CreateMesh("SmallSpeakerPlatform.obj");
+		Guid startPlatformMesh = ResourceManager::CreateMesh("StartPlatform.obj");
+		Guid wallJumpMesh = ResourceManager::CreateMesh("WallJump.obj");
+
 		Guid boxTexture = ResourceManager::CreateTexture("textures/box-diffuse.png");
 		Guid monkeyTex = ResourceManager::CreateTexture("textures/monkey-uvMap.png");
+		Guid baseTextureA = ResourceManager::CreateTexture("textures/BaseTexture.png");
 
 		// Save the asset manifest for all the resources we just loaded
 		ResourceManager::SaveManifest("manifest.json");
@@ -625,6 +653,24 @@ int main() {
 		monkeyMaterial->Texture = ResourceManager::GetTexture(monkeyTex);
 		monkeyMaterial->Shininess = 1.0f;
 		scene->Materials[monkeyMaterial->GetGUID()] = monkeyMaterial;
+
+		MaterialInfo::Sptr smallPlatformMaterial = std::make_shared<MaterialInfo>();
+		smallPlatformMaterial->Shader = scene->BaseShader;
+		smallPlatformMaterial->Texture = ResourceManager::GetTexture(baseTextureA);
+		smallPlatformMaterial->Shininess = 1.0f;
+		scene->Materials[smallPlatformMaterial->GetGUID()] = smallPlatformMaterial;
+
+		MaterialInfo::Sptr startPlatformMaterial = std::make_shared<MaterialInfo>();
+		startPlatformMaterial->Shader = scene->BaseShader;
+		startPlatformMaterial->Texture = ResourceManager::GetTexture(baseTextureA);
+		startPlatformMaterial->Shininess = 1.0f;
+		scene->Materials[startPlatformMaterial->GetGUID()] = startPlatformMaterial;
+
+		MaterialInfo::Sptr wallJumpMaterial = std::make_shared<MaterialInfo>();
+		wallJumpMaterial->Shader = scene->BaseShader;
+		wallJumpMaterial->Texture = ResourceManager::GetTexture(baseTextureA);
+		wallJumpMaterial->Shininess = 1.0f;
+		scene->Materials[wallJumpMaterial->GetGUID()] = wallJumpMaterial;
 
 		// Create some lights for our scene
 		scene->Lights.resize(3);
@@ -673,6 +719,38 @@ int main() {
 		monkey2.Name = "Monkey 2";
 		scene->Objects.push_back(monkey2);
 
+		RenderObject character = RenderObject();
+		character.Position = glm::vec3(0.0f, 0.0f, 2.0f);
+		character.Mesh = ResourceManager::GetMesh(characterMesh);
+		character.Material = monkeyMaterial;//change this material later
+		character.Rotation.x = 90.0f;
+		character.Name = "Character";
+		scene->Objects.push_back(character);
+
+		RenderObject smallPlatform = RenderObject();
+		smallPlatform.Position = glm::vec3(0.0f, 0.0f, 1.0f);
+		smallPlatform.Mesh = ResourceManager::GetMesh(smallPlatformMesh);
+		smallPlatform.Material = smallPlatformMaterial;//change this material later
+		smallPlatform.Rotation.x = 90.0f;
+		smallPlatform.Name = "Small Platform";
+		scene->Objects.push_back(smallPlatform);
+
+		RenderObject startPlatform = RenderObject();
+		startPlatform.Position = glm::vec3(0.0f, 0.0f, 2.0f);
+		startPlatform.Mesh = ResourceManager::GetMesh(startPlatformMesh);
+		startPlatform.Material = startPlatformMaterial;//change this material later
+		startPlatform.Rotation.x = 90.0f;
+		startPlatform.Name = "Start Platform";
+		scene->Objects.push_back(startPlatform);
+
+		RenderObject wallJump = RenderObject();
+		wallJump.Position = glm::vec3(0.0f, 0.0f, 3.0f);
+		wallJump.Mesh = ResourceManager::GetMesh(wallJumpMesh);
+		wallJump.Material = wallJumpMaterial;//change this material later
+		wallJump.Rotation.x = 90.0f;
+		wallJump.Name = "Wall Jump";
+		scene->Objects.push_back(wallJump);
+
 		// Save the scene to a JSON file
 		scene->Save("scene.json");
 	}
@@ -682,6 +760,10 @@ int main() {
 
 	RenderObject* monkey1 = scene->FindObjectByName("Monkey 1");
 	RenderObject* monkey2 = scene->FindObjectByName("Monkey 2");
+	RenderObject* character = scene->FindObjectByName("Character");
+	RenderObject* smallPlatform = scene->FindObjectByName("Small Platform");
+	RenderObject* startPlatform = scene->FindObjectByName("Start Platform");
+	RenderObject* wallJump = scene->FindObjectByName("Wall Jump");
 
 	// We'll use this to allow editing the save/load path
 	// via ImGui, note the reserve to allocate extra space
@@ -699,13 +781,16 @@ int main() {
 		glfwPollEvents();
 		ImGuiHelper::StartFrame();
 
+		// Showcasing how to use the imGui library!
+		bool isDevMode = ImGui::Begin("Debugging");
+
 		// Calculate the time since our last frame (dt)
 		double thisFrame = glfwGetTime();
 		float dt = static_cast<float>(thisFrame - lastFrame);
 
-		// Showcasing how to use the imGui library!
-		bool isDebugWindowOpen = ImGui::Begin("Debugging");
-		if (isDebugWindowOpen) {
+		if (isDevMode)	cameraInput(scene);
+
+		if (isDevMode) {
 
 			// Make a checkbox for the monkey rotation
 			ImGui::Checkbox("Rotating", &isRotating);
@@ -719,6 +804,7 @@ int main() {
 				// Re-fetch the monkeys so we can do a behaviour for them
 				monkey1 = scene->FindObjectByName("Monkey 1");
 				monkey2 = scene->FindObjectByName("Monkey 2");
+				character = scene->FindObjectByName("Character");
 			}
 			ImGui::Separator();
 		}
@@ -743,7 +829,7 @@ int main() {
 		shader->SetUniform("u_CamPos", scene->Camera->GetPosition());
 
 		// Draw some ImGui stuff for the lights
-		if (isDebugWindowOpen) {
+		if (isDevMode) {
 			for (int ix = 0; ix < scene->Lights.size(); ix++) {
 				char buff[256];
 				sprintf_s(buff, "Light %d##%d", ix, ix);
@@ -775,7 +861,7 @@ int main() {
 			object->Mesh->Draw();
 
 			// If our debug window is open, then let's draw some info for our objects!
-			if (isDebugWindowOpen) {
+			if (isDevMode) {
 				// All these elements will go into the last opened window
 				if (ImGui::CollapsingHeader(object->Name.c_str())) {
 					ImGui::PushID(ix); // Push a new ImGui ID scope for this object
@@ -789,7 +875,7 @@ int main() {
 
 		// If our debug window is open, notify that we no longer will render new
 		// elements to it
-		if (isDebugWindowOpen) {
+		if (isDevMode) {
 			ImGui::End();
 		}
 

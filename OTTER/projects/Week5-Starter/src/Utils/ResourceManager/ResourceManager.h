@@ -44,7 +44,7 @@ public:
 	/// Creates a manifest entry for a texture with the given parameters
 	/// </summary>
 	/// <param name="path">The relative path of the image to load</param>
-	/// <param name="desc">An optional texture desctiption to use for the image</param>
+	/// <param name="desc">An optional texture description to use for the image</param>
 	/// <returns>A JSON blob that can be appended to a manifest</returns>
 	static Guid CreateTexture(const std::string& path, const Texture2DDescription& desc = Texture2DDescription());
 	/// <summary>
