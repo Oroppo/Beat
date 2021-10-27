@@ -4,6 +4,7 @@
 #include <glad/glad.h>
 #include <GLFW/glfw3.h>
 
+//File Manipulation
 #include <filesystem>
 #include <json.hpp>
 #include <fstream>
@@ -23,6 +24,7 @@
 #include "Graphics/Texture2D.h"
 #include "Graphics/VertexTypes.h"
 
+//Utilities
 #include "Utils/MeshBuilder.h"
 #include "Utils/MeshFactory.h"
 #include "Utils/ObjLoader.h"
@@ -34,16 +36,16 @@
 #include "Utils/JsonGlmHelpers.h"
 #include "Utils/StringUtils.h"
 
+//imgui
 #include "imgui.h"
 #include "imgui_impl_glfw.h"
 #include "imgui_impl_opengl3.h"
 
+//ECS
 #include "Coordinator.h"
 #include "ECS.h"
 
-#define LOG_GL_NOTIFICATIONS
-
-//TEST TO SEE IF PUSHING THE REPO WORKS
+//#define LOG_GL_NOTIFICATIONS
 
 /*
 	Handles debug messages from OpenGL
@@ -59,21 +61,21 @@
 void GlDebugMessage(GLenum source, GLenum type, GLuint id, GLenum severity, GLsizei length, const GLchar* message, const void* userParam) {
 	std::string sourceTxt;
 	switch (source) {
-		case GL_DEBUG_SOURCE_API: sourceTxt = "DEBUG"; break;
-		case GL_DEBUG_SOURCE_WINDOW_SYSTEM: sourceTxt = "WINDOW"; break;
-		case GL_DEBUG_SOURCE_SHADER_COMPILER: sourceTxt = "SHADER"; break;
-		case GL_DEBUG_SOURCE_THIRD_PARTY: sourceTxt = "THIRD PARTY"; break;
-		case GL_DEBUG_SOURCE_APPLICATION: sourceTxt = "APP"; break;
-		case GL_DEBUG_SOURCE_OTHER: default: sourceTxt = "OTHER"; break;
+	case GL_DEBUG_SOURCE_API: sourceTxt = "DEBUG"; break;
+	case GL_DEBUG_SOURCE_WINDOW_SYSTEM: sourceTxt = "WINDOW"; break;
+	case GL_DEBUG_SOURCE_SHADER_COMPILER: sourceTxt = "SHADER"; break;
+	case GL_DEBUG_SOURCE_THIRD_PARTY: sourceTxt = "THIRD PARTY"; break;
+	case GL_DEBUG_SOURCE_APPLICATION: sourceTxt = "APP"; break;
+	case GL_DEBUG_SOURCE_OTHER: default: sourceTxt = "OTHER"; break;
 	}
 	switch (severity) {
-		case GL_DEBUG_SEVERITY_LOW:          LOG_INFO("[{}] {}", sourceTxt, message); break;
-		case GL_DEBUG_SEVERITY_MEDIUM:       LOG_WARN("[{}] {}", sourceTxt, message); break;
-		case GL_DEBUG_SEVERITY_HIGH:         LOG_ERROR("[{}] {}", sourceTxt, message); break;
-			#ifdef LOG_GL_NOTIFICATIONS
-		case GL_DEBUG_SEVERITY_NOTIFICATION: LOG_INFO("[{}] {}", sourceTxt, message); break;
-			#endif
-		default: break;
+	case GL_DEBUG_SEVERITY_LOW:          LOG_INFO("[{}] {}", sourceTxt, message); break;
+	case GL_DEBUG_SEVERITY_MEDIUM:       LOG_WARN("[{}] {}", sourceTxt, message); break;
+	case GL_DEBUG_SEVERITY_HIGH:         LOG_ERROR("[{}] {}", sourceTxt, message); break;
+#ifdef LOG_GL_NOTIFICATIONS
+	case GL_DEBUG_SEVERITY_NOTIFICATION: LOG_INFO("[{}] {}", sourceTxt, message); break;
+#endif
+	default: break;
 	}
 }
 
@@ -82,10 +84,8 @@ GLFWwindow* window;
 // The current size of our window in pixels
 glm::ivec2 windowSize = glm::ivec2(800, 800);
 // The title of our GLFW window
-std::string windowTitle = "Amnesia Interactive : Beat!";
+std::string windowTitle = "INFR-1350U";
 
-
-//Call this Whenever Window is Resized
 void GlfwWindowResizedCallback(GLFWwindow* window, int width, int height) {
 	glViewport(0, 0, width, height);
 	windowSize = glm::ivec2(width, height);
@@ -106,14 +106,12 @@ bool initGLFW() {
 	//Create a new GLFW window and make it current
 	window = glfwCreateWindow(windowSize.x, windowSize.y, windowTitle.c_str(), nullptr, nullptr);
 	glfwMakeContextCurrent(window);
-	
+
 	// Set our window resized callback
 	glfwSetWindowSizeCallback(window, GlfwWindowResizedCallback);
 
 	return true;
 }
-
-
 
 /// <summary>
 /// Handles initializing GLAD and preparing our GLFW window for OpenGL calls
@@ -203,6 +201,7 @@ struct MaterialInfo : IResource {
 // Helper structure to represent an object 
 // with a transform, mesh, and material
 struct RenderObject {
+
 	// Human readable name for the object
 	std::string             Name;
 	// Unique ID for the object
@@ -559,6 +558,27 @@ bool DrawLightImGui(const char* title, Light& light) {
 ////////////////// END OF NEW ////////////////////////
 //////////////////////////////////////////////////////
 
+void cameraInput(Scene::Sptr scene) {
+	//glfw input handling returns an int, treat it as a bool though.
+	if (glfwGetKey(window, GLFW_KEY_W)) {
+		scene->Camera->SetPosition(
+			scene->Camera->GetPosition() + glm::vec3(0.0, 0.0, 0.2));
+	}
+	if (glfwGetKey(window, GLFW_KEY_S)) {
+		scene->Camera->SetPosition(
+			scene->Camera->GetPosition() + glm::vec3(0.0, 0.0, -0.2));
+	}
+	if (glfwGetKey(window, GLFW_KEY_A)) {
+		scene->Camera->SetPosition(
+			scene->Camera->GetPosition() + glm::vec3(0.2, 0.0, 0.0));
+	}
+	if (glfwGetKey(window, GLFW_KEY_D)) {
+		scene->Camera->SetPosition(
+			scene->Camera->GetPosition() + glm::vec3(-0.2, 0.0, 0.0));
+	}
+
+}
+
 int main() {
 	Logger::Init(); // We'll borrow the logger from the toolkit, but we need to initialize it
 
@@ -575,67 +595,11 @@ int main() {
 	glEnable(GL_DEBUG_OUTPUT_SYNCHRONOUS);
 	glDebugMessageCallback(GlDebugMessage, nullptr);
 
-#pragma region Legacy Code for Reference
-	//static const GLfloat points[] = {
-	//	-0.5f, -0.5f, 0.5f,
-	//	0.5f, -0.5f, 0.5f,
-	//	-0.5f, 0.5f, 0.5f
-	//};
-	//
-	//static const GLfloat colors[] = {
-	//	1.0f, 0.0f, 0.0f,
-	//	0.0f, 1.0f, 0.0f,
-	//	0.0f, 0.0f, 1.0f
-	//};
-	//
-	////VBO - Vertex buffer object
-	//VertexBuffer::Sptr posVbo = VertexBuffer::Create();
-	//posVbo->LoadData(points, 9);
-	//
-	//VertexBuffer::Sptr color_vbo = VertexBuffer::Create();
-	//color_vbo->LoadData(colors, 9);
-	//
-	//VertexArrayObject::Sptr vao = VertexArrayObject::Create();
-	//vao->AddVertexBuffer(posVbo, {
-	//	BufferAttribute(0, 3, AttributeType::Float, 0, NULL, AttribUsage::Position)
-	//	});
-	//vao->AddVertexBuffer(color_vbo, {
-	//	{ 1, 3, AttributeType::Float, 0, NULL, AttribUsage::Color }
-	//	});
-	//
-	//static const float interleaved[] = {
-	//	// X      Y    Z       R     G     B
-	//	 0.5f, -0.5f, 0.5f,   0.0f, 0.0f, 0.0f,
-	//	 0.5f,  0.5f, 0.5f,   0.3f, 0.2f, 0.5f,
-	//	-0.5f,  0.5f, 0.5f,   1.0f, 1.0f, 0.0f,
-	//	-0.5f, -0.5f, 0.5f,   1.0f, 1.0f, 1.0f
-	//};
-	//VertexBuffer::Sptr interleaved_vbo = VertexBuffer::Create();
-	//interleaved_vbo->LoadData(interleaved, 6 * 4);
-	//
-	//static const uint16_t indices[] = {
-	//	3, 0, 1,
-	//	3, 1, 2
-	//};
-	//
-	//IndexBuffer::Sptr interleaved_ibo = IndexBuffer::Create();
-	//interleaved_ibo->LoadData(indices, 3 * 2);
-	//
-	//size_t stride = sizeof(float) * 6;
-	//VertexArrayObject::Sptr vao2 = VertexArrayObject::Create();
-	//vao2->AddVertexBuffer(interleaved_vbo, {
-	//	BufferAttribute(0, 3, AttributeType::Float, stride, 0, AttribUsage::Position),
-	//	BufferAttribute(1, 3, AttributeType::Float, stride, sizeof(float) * 3, AttribUsage::Color),
-	//	});
-	//vao2->SetIndexBuffer(interleaved_ibo);
-#pragma endregion
+	// Initialize our ImGui helper
+	ImGuiHelper::Init(window);
 
-
-	// Load our shaders
-	Shader* shader = new Shader();
-	shader->LoadShaderPartFromFile("shaders/vertex_shader.glsl", ShaderPartType::Vertex);
-	shader->LoadShaderPartFromFile("shaders/frag_shader.glsl", ShaderPartType::Fragment);
-	shader->Link();
+	// Initialize our resource manager
+	ResourceManager::Init();
 
 	// GL states, we'll enable depth testing and backface fulling
 	glEnable(GL_DEPTH_TEST);
@@ -643,154 +607,290 @@ int main() {
 	glCullFace(GL_BACK);
 	glClearColor(0.2f, 0.2f, 0.2f, 1.0f);
 
-	// Get uniform location for the model view projection
-	Camera::Sptr camera = Camera::Create();
-	camera->SetPosition(glm::vec3(10, 0, 0));
-	camera->LookAt(glm::vec3(0.0f));
-	camera->SetOrthoVerticalScale(10);
+	// The scene that we will be rendering
+	Scene::Sptr scene = nullptr;
+	bool loadScene = false;
 
+	// For now we can use a toggle to generate our scene vs load from file
+	if (loadScene) {
+		ResourceManager::LoadManifest("manifest.json");
+		scene = Scene::Load("scene.json");
+	}
+	else {
+		// Create our OpenGL resources
+		Guid defaultShader = ResourceManager::CreateShader({
+			{ ShaderPartType::Vertex, "shaders/vertex_shader.glsl" },
+			{ ShaderPartType::Fragment, "shaders/frag_blinn_phong_textured.glsl" }
+			});
+		Guid monkeyMesh = ResourceManager::CreateMesh("Monkey.obj");
+		Guid characterMesh = ResourceManager::CreateMesh("basemodel.obj");
+		Guid smallPlatformMesh = ResourceManager::CreateMesh("SmallSpeakerPlatform.obj");
+		Guid startPlatformMesh = ResourceManager::CreateMesh("StartPlatform.obj");
+		Guid wallJumpMesh = ResourceManager::CreateMesh("WallJump.obj");
 
+		Guid boxTexture = ResourceManager::CreateTexture("textures/box-diffuse.png");
+		Guid monkeyTex = ResourceManager::CreateTexture("textures/monkey-uvMap.png");
+		Guid baseTextureA = ResourceManager::CreateTexture("textures/BaseTexture.png");
 
-	// Create a mat4 to store our mvp (for now)
-	glm::mat4 transform = glm::mat4(1.0f);
-	glm::mat4 hardTransform = glm::mat4(1.0f);
+		// Save the asset manifest for all the resources we just loaded
+		ResourceManager::SaveManifest("manifest.json");
+
+		// Create an empty scene
+		scene = std::make_shared<Scene>();
+
+		// I hate this
+		scene->BaseShader = ResourceManager::GetShader(defaultShader);
+
+		// Create our materials
+		MaterialInfo::Sptr boxMaterial = std::make_shared<MaterialInfo>();
+		boxMaterial->Shader = scene->BaseShader;
+		boxMaterial->Texture = ResourceManager::GetTexture(boxTexture);
+		boxMaterial->Shininess = 8.0f;
+		scene->Materials[boxMaterial->GetGUID()] = boxMaterial;
+
+		MaterialInfo::Sptr monkeyMaterial = std::make_shared<MaterialInfo>();
+		monkeyMaterial->Shader = scene->BaseShader;
+		monkeyMaterial->Texture = ResourceManager::GetTexture(monkeyTex);
+		monkeyMaterial->Shininess = 1.0f;
+		scene->Materials[monkeyMaterial->GetGUID()] = monkeyMaterial;
+
+		MaterialInfo::Sptr smallPlatformMaterial = std::make_shared<MaterialInfo>();
+		smallPlatformMaterial->Shader = scene->BaseShader;
+		smallPlatformMaterial->Texture = ResourceManager::GetTexture(baseTextureA);
+		smallPlatformMaterial->Shininess = 1.0f;
+		scene->Materials[smallPlatformMaterial->GetGUID()] = smallPlatformMaterial;
+
+		MaterialInfo::Sptr startPlatformMaterial = std::make_shared<MaterialInfo>();
+		startPlatformMaterial->Shader = scene->BaseShader;
+		startPlatformMaterial->Texture = ResourceManager::GetTexture(baseTextureA);
+		startPlatformMaterial->Shininess = 1.0f;
+		scene->Materials[startPlatformMaterial->GetGUID()] = startPlatformMaterial;
+
+		MaterialInfo::Sptr wallJumpMaterial = std::make_shared<MaterialInfo>();
+		wallJumpMaterial->Shader = scene->BaseShader;
+		wallJumpMaterial->Texture = ResourceManager::GetTexture(baseTextureA);
+		wallJumpMaterial->Shininess = 1.0f;
+		scene->Materials[wallJumpMaterial->GetGUID()] = wallJumpMaterial;
+
+		// Create some lights for our scene
+		scene->Lights.resize(3);
+		scene->Lights[0].Position = glm::vec3(0.0f, 1.0f, 3.0f);
+		scene->Lights[0].Color = glm::vec3(0.5f, 0.0f, 0.7f);
+
+		scene->Lights[1].Position = glm::vec3(1.0f, 0.0f, 3.0f);
+		scene->Lights[1].Color = glm::vec3(0.2f, 0.8f, 0.1f);
+
+		scene->Lights[2].Position = glm::vec3(0.0f, 1.0f, 3.0f);
+		scene->Lights[2].Color = glm::vec3(1.0f, 0.2f, 0.1f);
+
+		// Set up the scene's camera
+		scene->Camera = Camera::Create();
+		scene->Camera->SetPosition(glm::vec3(0, 4, 4));
+		scene->Camera->LookAt(glm::vec3(0.0f));
+
+		// Set up all our sample objects
+		RenderObject plane = RenderObject();
+		plane.MeshBuilderParams.push_back(MeshBuilderParam::CreatePlane(ZERO, UNIT_Z, UNIT_X, glm::vec2(10.0f)));
+		plane.GenerateMesh();
+		plane.Name = "Plane";
+		plane.Material = boxMaterial;
+		scene->Objects.push_back(plane);
+
+		RenderObject square = RenderObject();
+		square.MeshBuilderParams.push_back(MeshBuilderParam::CreatePlane(ZERO, UNIT_Z, UNIT_X, glm::vec2(0.5f)));
+		square.GenerateMesh();
+		square.Position = glm::vec3(0.0f, 0.0f, 2.0f);
+		square.Name = "Square";
+		square.Material = boxMaterial;
+		scene->Objects.push_back(square);
+
+		RenderObject monkey1 = RenderObject();
+		monkey1.Position = glm::vec3(1.5f, 0.0f, 1.0f);
+		monkey1.Mesh = ResourceManager::GetMesh(monkeyMesh);
+		monkey1.Material = monkeyMaterial;
+		monkey1.Name = "Monkey 1";
+		scene->Objects.push_back(monkey1);
+
+		RenderObject monkey2 = RenderObject();
+		monkey2.Position = glm::vec3(-1.5f, 0.0f, 1.0f);
+		monkey2.Mesh = ResourceManager::GetMesh(monkeyMesh);
+		monkey2.Material = monkeyMaterial;
+		monkey2.Rotation.z = 180.0f;
+		monkey2.Name = "Monkey 2";
+		scene->Objects.push_back(monkey2);
+
+		RenderObject character = RenderObject();
+		character.Position = glm::vec3(0.0f, 0.0f, 2.0f);
+		character.Mesh = ResourceManager::GetMesh(characterMesh);
+		character.Material = monkeyMaterial;//change this material later
+		character.Rotation.x = 90.0f;
+		character.Name = "Character";
+		scene->Objects.push_back(character);
+
+		RenderObject smallPlatform = RenderObject();
+		smallPlatform.Position = glm::vec3(0.0f, 0.0f, 1.0f);
+		smallPlatform.Mesh = ResourceManager::GetMesh(smallPlatformMesh);
+		smallPlatform.Material = smallPlatformMaterial;//change this material later
+		smallPlatform.Rotation.x = 90.0f;
+		smallPlatform.Name = "Small Platform";
+		scene->Objects.push_back(smallPlatform);
+
+		RenderObject startPlatform = RenderObject();
+		startPlatform.Position = glm::vec3(0.0f, 0.0f, 2.0f);
+		startPlatform.Mesh = ResourceManager::GetMesh(startPlatformMesh);
+		startPlatform.Material = startPlatformMaterial;//change this material later
+		startPlatform.Rotation.x = 90.0f;
+		startPlatform.Name = "Start Platform";
+		scene->Objects.push_back(startPlatform);
+
+		RenderObject wallJump = RenderObject();
+		wallJump.Position = glm::vec3(0.0f, 0.0f, 3.0f);
+		wallJump.Mesh = ResourceManager::GetMesh(wallJumpMesh);
+		wallJump.Material = wallJumpMaterial;//change this material later
+		wallJump.Rotation.x = 90.0f;
+		wallJump.Name = "Wall Jump";
+		scene->Objects.push_back(wallJump);
+
+		// Save the scene to a JSON file
+		scene->Save("scene.json");
+	}
+
+	// Post-load setup
+	SetupShaderAndLights(scene->BaseShader, scene->Lights.data(), scene->Lights.size());
+
+	RenderObject* monkey1 = scene->FindObjectByName("Monkey 1");
+	RenderObject* monkey2 = scene->FindObjectByName("Monkey 2");
+	RenderObject* character = scene->FindObjectByName("Character");
+	RenderObject* smallPlatform = scene->FindObjectByName("Small Platform");
+	RenderObject* startPlatform = scene->FindObjectByName("Start Platform");
+	RenderObject* wallJump = scene->FindObjectByName("Wall Jump");
+
+	// We'll use this to allow editing the save/load path
+	// via ImGui, note the reserve to allocate extra space
+	// for input!
+	std::string scenePath = "scene.json";
+	scenePath.reserve(256);
+
+	bool isRotating = true;
 
 	// Our high-precision timer
 	double lastFrame = glfwGetTime();
 
-	//Mesh Code Example:
-	LOG_INFO("Starting mesh build");
-	MeshBuilder<VertexPosCol> mesh;
-	MeshFactory::AddIcoSphere(mesh, glm::vec3(1.0f, 0.0f, 0.0f), glm::vec3(0.5f), 3);
-	MeshFactory::AddCube(mesh, glm::vec3(0.0f), glm::vec3(0.5f));
-	VertexArrayObject::Sptr vao3 = mesh.Bake();
-
-	VertexArrayObject::Sptr vao4 = ObjLoader::LoadFromFile("BaseModel.obj");
-
-	bool isRotating = true;
-	bool isButtonPressed = false;
-	bool isOrtho = false;
-
-	bool drawObject = true;
-	float translateObject[3] = { 0.f,0.f,0.f };
-	float rotateObject[3] = { 0.f,0.f,0.f };
-	float rotationDelta = 0;
-
-
-	//IMGUI Init...
-	IMGUI_CHECKVERSION();
-	ImGui::CreateContext();
-	ImGuiIO& io = ImGui::GetIO(); (void)io;
-	ImGui::StyleColorsDark();
-	ImGui_ImplGlfw_InitForOpenGL(window, true);
-	ImGui_ImplOpenGL3_Init("#version 330");
-
 	///// Game loop /////
 	while (!glfwWindowShouldClose(window)) {
 		glfwPollEvents();
+		ImGuiHelper::StartFrame();
 
-		// WEEK 5: Input handling
-		if (glfwGetKey(window, GLFW_KEY_SPACE)) {
-
-			if (!isButtonPressed) {
-				// This is the action we want to perform on key press
-				//isRotating = !isRotating;
-				if (!isOrtho) {
-					camera->SetOrthoEnabled(true);
-					camera->SetPosition(glm::vec3(8, 0, 0));
-					camera->LookAt(glm::vec3(0.0f));
-
-
-					isOrtho = !isOrtho;
-				}
-				else {
-					camera->SetOrthoEnabled(false);
-					camera->SetPosition(glm::vec3(0, 3, 3));
-					camera->LookAt(glm::vec3(0.0f));
-					isOrtho = !isOrtho;
-				}
-				
-			}
-			
-			isButtonPressed = true;
-		}
-		else {
-			
-			isButtonPressed = false;
-		}
+		// Showcasing how to use the imGui library!
+		bool isDevMode = ImGui::Begin("Debugging");
 
 		// Calculate the time since our last frame (dt)
 		double thisFrame = glfwGetTime();
 		float dt = static_cast<float>(thisFrame - lastFrame);
 
-		// TODO: Week 5 - toggle code
+		if (isDevMode)	cameraInput(scene);
 
-		// Rotate our models around the z axis
+		if (isDevMode) {
 
+			// Make a checkbox for the monkey rotation
+			ImGui::Checkbox("Rotating", &isRotating);
 
+			// Make a new area for the scene saving/loading
+			ImGui::Separator();
+			if (DrawSaveLoadImGui(scene, scenePath)) {
+				// Re-initialize lights, as they may have moved around
+				SetupShaderAndLights(scene->BaseShader, scene->Lights.data(), scene->Lights.size());
+
+				// Re-fetch the monkeys so we can do a behaviour for them
+				monkey1 = scene->FindObjectByName("Monkey 1");
+				monkey2 = scene->FindObjectByName("Monkey 2");
+				character = scene->FindObjectByName("Character");
+			}
+			ImGui::Separator();
+		}
+
+		// Rotate our models around the z axis at 90 deg per second
 		if (isRotating) {
-
-			transform = glm::translate(glm::mat4(1.0f), glm::vec3(0 + translateObject[0], 0 + translateObject[1], 0 + translateObject[2]));
-			hardTransform = glm::rotate(glm::mat4(1.0f), static_cast<float>(rotationDelta), glm::vec3(0+rotateObject[0], 0+rotateObject[1], 1+rotateObject[2]));
-
+			monkey1->Rotation += glm::vec3(0.0f, 0.0f, dt * 90.0f);
+			monkey2->Rotation -= glm::vec3(0.0f, 0.0f, dt * 90.0f);
 		}
 
 		// Clear the color and depth buffers
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-		ImGui_ImplOpenGL3_NewFrame();
-		ImGui_ImplGlfw_NewFrame();
-		ImGui::NewFrame();
+		// Grab shorthands to the camera and shader from the scene
+		Shader::Sptr shader = scene->BaseShader;
+		Camera::Sptr camera = scene->Camera;
 
-		// Bind our shader and upload the uniform
+		// Bind our shader for use
 		shader->Bind();
 
+		// Update our application level uniforms every frame
+		shader->SetUniform("u_CamPos", scene->Camera->GetPosition());
 
-		glm::vec4 color(1.0f,1.0f,1.0f,1.0f);
-
-
-
-		// Draw OBJ loaded model
-		// When adding a new transform simply multiply it in the order that you want them to apply
-		
-		//shader->SetUniformMatrix("u_ModelViewProjection", camera->GetViewProjection() * transform);
-		//vao4->Draw();
-
-		shader->SetUniformMatrix("u_ModelViewProjection", camera->GetViewProjection() * transform*hardTransform);
-
-		if (drawObject) {
-			vao4->Draw();
+		// Draw some ImGui stuff for the lights
+		if (isDevMode) {
+			for (int ix = 0; ix < scene->Lights.size(); ix++) {
+				char buff[256];
+				sprintf_s(buff, "Light %d##%d", ix, ix);
+				if (DrawLightImGui(buff, scene->Lights[ix])) {
+					SetShaderLight(shader, "u_Lights", ix, scene->Lights[ix]);
+				}
+			}
+			// Split lights from the objects in ImGui
+			ImGui::Separator();
 		}
 
 
+		// Render all our objects
+		for (int ix = 0; ix < scene->Objects.size(); ix++) {
+			RenderObject* object = &scene->Objects[ix];
+
+			// Update the object's transform for rendering
+			object->RecalcTransform();
+
+			// Set vertex shader parameters
+			shader->SetUniformMatrix("u_ModelViewProjection", camera->GetViewProjection() * object->Transform);
+			shader->SetUniformMatrix("u_Model", object->Transform);
+			shader->SetUniformMatrix("u_NormalMatrix", glm::mat3(glm::transpose(glm::inverse(object->Transform))));
+
+			// Apply this object's material
+			object->Material->Apply();
+
+			// Draw the object
+			object->Mesh->Draw();
+
+			// If our debug window is open, then let's draw some info for our objects!
+			if (isDevMode) {
+				// All these elements will go into the last opened window
+				if (ImGui::CollapsingHeader(object->Name.c_str())) {
+					ImGui::PushID(ix); // Push a new ImGui ID scope for this object
+					ImGui::DragFloat3("Position", &object->Position.x, 0.01f);
+					ImGui::DragFloat3("Rotation", &object->Rotation.x, 1.0f);
+					ImGui::DragFloat3("Scale", &object->Scale.x, 0.01f, 0.0f);
+					ImGui::PopID(); // Pop the ImGui ID scope for the object
+				}
+			}
+		}
+
+		// If our debug window is open, notify that we no longer will render new
+		// elements to it
+		if (isDevMode) {
+			ImGui::End();
+		}
+
 		VertexArrayObject::Unbind();
 
-		//This must be written Before glfwSwapBuffers and After any Draw Calls
-		ImGui::Begin("This here is a Window...");
-		ImGui::Text("Hello there young Traveler...");
-		ImGui::Checkbox("Draw Object", &drawObject);
-
-		ImGui::SliderFloat3("Position", &translateObject[0], -2.0f, 2.0f);
-
-		ImGui::SliderFloat("DeltaRotation", &rotationDelta, -4.0f, 4.0f);
-		ImGui::SliderFloat3("Rotations", &rotateObject[0], 0.f, 1.0f);
-
-		ImGui::ColorEdit4("Color", &color.x);
-		ImGui::End();
-
-
-		ImGui::Render();
-		ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
-
-
+		lastFrame = thisFrame;
+		ImGuiHelper::EndFrame();
 		glfwSwapBuffers(window);
-
-		
 	}
-	//Clean up the processes once the application is done.
-	ImGui_ImplOpenGL3_Shutdown();
-	ImGui_ImplGlfw_Shutdown();
-	ImGui::DestroyContext();
+
+	// Clean up the ImGui library
+	ImGuiHelper::Cleanup();
+
+	// Clean up the resource manager
+	ResourceManager::Cleanup();
 
 	// Clean up the toolkit logger so we don't leak memory
 	Logger::Uninitialize();

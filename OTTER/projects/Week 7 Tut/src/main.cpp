@@ -36,6 +36,8 @@
 #include "Utils/JsonGlmHelpers.h"
 #include "Utils/StringUtils.h"
 
+
+
 //#define LOG_GL_NOTIFICATIONS
 
 /*
@@ -578,8 +580,8 @@ int main() {
 
 	// The scene that we will be rendering
 	Scene::Sptr scene = nullptr;
-
 	bool loadScene = false;
+
 	// For now we can use a toggle to generate our scene vs load from file
 	if (loadScene) {
 		ResourceManager::LoadManifest("manifest.json");
@@ -697,6 +699,7 @@ int main() {
 		// Showcasing how to use the imGui library!
 		bool isDebugWindowOpen = ImGui::Begin("Debugging");
 		if (isDebugWindowOpen) {
+
 			// Make a checkbox for the monkey rotation
 			ImGui::Checkbox("Rotating", &isRotating);
 
