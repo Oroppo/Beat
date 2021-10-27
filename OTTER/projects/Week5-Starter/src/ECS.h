@@ -51,9 +51,8 @@ struct RigidBody {
     glm::vec3 velocity;
     glm::vec3 acceleration;
     float mass;
-
-
-    //since the only thing that will be colliding with anythin else willbe the player, check if the player is colliding 
+ 
+    //since the only thing that will be colliding with anythin else will be the player, check if the player is colliding 
     bool CubicCollisionDetection(Transform ColliderStats, Transform ObjectStats) {   
         if (
             //check if colliding in x axis
@@ -71,8 +70,7 @@ struct RigidBody {
             return false;
         }   
     }
-
-
+    //same as cubic but for balls ;)
     bool SphericalCollisionDetection(Transform ColliderStats, Transform ObjectStats) { 
         return true;
     }
@@ -97,6 +95,30 @@ struct RigidBody {
             transformT.position -= difference;
             //above should work but im kinda dumb so im using a cout statement to make sure im right
 
+<<<<<<< Updated upstream
+=======
+    //Collision type: 0.0f==Cubic, 1.0f = Spherical
+    bool CollisionDetection(Transform ColliderStats, Transform ObjectStats, int CollisionType) {
+        switch (CollisionType) {
+        case 0:
+            return CubicCollisionDetection(ColliderStats, ObjectStats);
+        case 1:
+            return SphericalCollisionDetection(ColliderStats, ObjectStats);
+        }
+    }
+
+    //in case the object does not move
+    void ApplyStaticCollision(Entity TargetEntity, Entity StaticObject) {
+        auto& transformT = gCoordinator.GetComponent<Transform>(TargetEntity);
+        auto& transformO = gCoordinator.GetComponent<Transform>(StaticObject);
+
+        //default to cubic detection for the time being
+        if (CollisionDetection(transformT, transformO,0) == true) {
+            glm::vec3 difference = transformT.position - transformO.position;
+            transformT.position -= difference;
+            //above should work but im kinda dumb so im using a cout statement to make sure im right
+ 
+>>>>>>> Stashed changes
         }
     }
     // in case the object moves
@@ -119,9 +141,14 @@ struct Gravity {
     glm::vec3 grav = glm::vec3(0.0f, 9.81, 0.0f);
 
      void applyGravity(Entity entity, float dt) {
+<<<<<<< Updated upstream
 
         auto& body = gCoordinator.GetComponent<RigidBody>(entity);
         auto& transform = gCoordinator.GetComponent<Transform>(entity);
+=======
+         auto& body = gCoordinator.GetComponent<RigidBody>(entity);
+         auto& transform = gCoordinator.GetComponent<Transform>(entity);
+>>>>>>> Stashed changes
         //force+=mass*grav
         body.force += body.mass * grav;
         //Velocity+=force*dt
