@@ -76,7 +76,33 @@ struct RigidBody {
     bool SphericalCollisionDetection(Transform ColliderStats, Transform ObjectStats) { 
         return true;
     }
+    //Collision type: 0.0f==Cubic, 1.0f = Spherical
+    bool CollisionDetection(Transform ColliderStats, Transform ObjectStats, int CollisionType) {
+        switch (CollisionType) {
+        case 0:
+            return CubicCollisionDetection(ColliderStats, ObjectStats);
+        case 1:
+            return SphericalCollisionDetection(ColliderStats, ObjectStats);
+        }
+    }
 
+    //in case the object does not move
+    void ApplyStaticCollision(Entity TargetEntity, Entity StaticObject) {
+        auto& transformT = gCoordinator.GetComponent<Transform>(TargetEntity);
+        auto& transformO = gCoordinator.GetComponent<Transform>(StaticObject);
+
+        //default to cubic detection for the time being
+        if (CollisionDetection(transformT, transformO, 0) == true) {
+            glm::vec3 difference = transformT.position - transformO.position;
+            transformT.position -= difference;
+            //above should work but im kinda dumb so im using a cout statement to make sure im right
+
+        }
+    }
+    // in case the object moves
+    void ApplyDynamicCollision() {
+
+    }
     void ApplyForce(glm::vec3 force)
     {
         velocity += force;
