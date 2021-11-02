@@ -299,7 +299,7 @@ int main() {
 			tableMaterial->Name = "Table";
 			tableMaterial->MatShader = scene->BaseShader;
 			tableMaterial->Texture = tableTex;
-			tableMaterial->Shininess = 256.0f;
+			tableMaterial->Shininess = 2.0f;
 		}
 		Material::Sptr puckMaterial = ResourceManager::CreateAsset<Material>();
 		{
@@ -313,14 +313,14 @@ int main() {
 			paddleRedMaterial->Name = "PaddleRed";
 			paddleRedMaterial->MatShader = scene->BaseShader;
 			paddleRedMaterial->Texture = paddleRedTex;
-			paddleRedMaterial->Shininess = 256.0f;
+			paddleRedMaterial->Shininess = 2.0f;
 		}
 		Material::Sptr paddleBlueMaterial = ResourceManager::CreateAsset<Material>();
 		{
 			paddleBlueMaterial->Name = "PaddleBlue";
 			paddleBlueMaterial->MatShader = scene->BaseShader;
 			paddleBlueMaterial->Texture = paddleBlueTex;
-			paddleBlueMaterial->Shininess = 256.0f;
+			paddleBlueMaterial->Shininess = 2.0f;
 		}
 
 		// Create some lights for our scene
@@ -460,8 +460,8 @@ int main() {
 		GameObject::Sptr paddle2 = scene->CreateGameObject("Paddle2");
 		{
 			// Set position in the scene
-			paddle->SetPostion(glm::vec3(2.0f, 0.0f, 1.0f));
-			paddle->SetRotation(glm::vec3(90.0f, 0.0f, 0.0f));
+			paddle2->SetPostion(glm::vec3(2.0f, 0.0f, 1.0f));
+			paddle2->SetRotation(glm::vec3(90.0f, 0.0f, 0.0f));
 
 			// Create and attach a renderer for the monkey
 			RenderComponent::Sptr renderer = paddle2->Add<RenderComponent>();
@@ -475,8 +475,8 @@ int main() {
 		GameObject::Sptr puck = scene->CreateGameObject("Puck");
 		{
 			// Set position in the scene
-			paddle->SetPostion(glm::vec3(1.5f, 0.0f, 1.0f));
-			paddle->SetRotation(glm::vec3(90.0f, 0.0f, 0.0f));
+			puck->SetPostion(glm::vec3(1.5f, 0.0f, 1.0f));
+			puck->SetRotation(glm::vec3(90.0f, 0.0f, 0.0f));
 
 
 			// Create and attach a renderer for the monkey
