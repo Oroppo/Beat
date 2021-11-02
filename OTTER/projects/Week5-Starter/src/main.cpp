@@ -16,6 +16,8 @@
 #define GLM_ENABLE_EXPERIMENTAL
 #include <GLM/gtx/common.hpp> // for fmod (floating modulus)
 
+#include "bullet/btBulletCollisionCommon.h"
+
 // Graphics
 #include "Graphics/IndexBuffer.h"
 #include "Graphics/VertexBuffer.h"
@@ -44,6 +46,10 @@
 //ECS
 #include "Coordinator.h"
 #include "ECS.h"
+
+#include "Physics.h"
+
+
 
 //#define LOG_GL_NOTIFICATIONS
 
@@ -84,7 +90,7 @@ GLFWwindow* window;
 // The current size of our window in pixels
 glm::ivec2 windowSize = glm::ivec2(800, 800);
 // The title of our GLFW window
-std::string windowTitle = "INFR-1350U";
+std::string windowTitle = "Dante Arruda 100709110";
 
 void GlfwWindowResizedCallback(GLFWwindow* window, int width, int height) {
 	glViewport(0, 0, width, height);
@@ -513,6 +519,7 @@ void SetupShaderAndLights(const Shader::Sptr& shader, Light* lights, int numLigh
 /// <param name="path">Reference to path string storage</param>
 /// <returns>True if a new scene has been loaded</returns>
 bool DrawSaveLoadImGui(Scene::Sptr& scene, std::string& path) {
+
 	// Since we can change the internal capacity of an std::string,
 	// we can do cool things like this!
 	ImGui::InputText("Path", path.data(), path.capacity());
@@ -558,23 +565,66 @@ bool DrawLightImGui(const char* title, Light& light) {
 ////////////////// END OF NEW ////////////////////////
 //////////////////////////////////////////////////////
 
-void cameraInput(Scene::Sptr scene) {
+
+//void onMouseCallback() {
+//	int mouseX = static_cast<int>(x);
+//	int mouseY = static_cast<int>(y);
+//
+//	if (firstMouse) {
+//		lastX = (float)mouseX;
+//		lastY = (float)mouseY;
+//		firstMouse = false;
+//	}
+//
+//	GLfloat xoffset = mouseX - lastX;
+//	GLfloat yoffset = lastY - mouseY; // Reversed
+//	lastX = (float)mouseX;
+//	lastY = (float)mouseY;
+//
+//	GLfloat sensitivity = 0.05f;
+//	xoffset *= sensitivity;
+//	yoffset *= sensitivity;
+//
+//	yaw += xoffset;
+//	pitch += yoffset;
+//
+//	// check for pitch out of bounds otherwise screen gets flipped
+//	if (pitch > 89.0f)
+//		pitch = 89.0f;
+//	if (pitch < -89.0f)
+//		pitch = -89.0f;
+//
+//	glm::vec3 front;
+//	front.x = cos(glm::radians(yaw)) * cos(glm::radians(pitch));
+//	front.y = sin(glm::radians(pitch));
+//	front.z = sin(glm::radians(yaw)) * cos(glm::radians(pitch));
+//
+//	cameraFront = glm::normalize(front);
+//}
+
+void cameraInput(Scene::Sptr scene, float dt) {
+
+	glm::vec3 cameraFront = scene->Camera->GetForward();
+	glm::vec3 cameraUp = scene->Camera->GetUp();
+	GLfloat cameraSpeed = 1.0f * dt;
+	glm::vec3 toMove(0.0f, 0.0f, 0.0f);
+
 	//glfw input handling returns an int, treat it as a bool though.
 	if (glfwGetKey(window, GLFW_KEY_W)) {
 		scene->Camera->SetPosition(
-			scene->Camera->GetPosition() + glm::vec3(0.0, 0.0, 0.2));
+			scene->Camera->GetPosition() + (cameraSpeed * cameraFront));
 	}
 	if (glfwGetKey(window, GLFW_KEY_S)) {
 		scene->Camera->SetPosition(
-			scene->Camera->GetPosition() + glm::vec3(0.0, 0.0, -0.2));
+			scene->Camera->GetPosition() - (cameraSpeed * cameraFront));
 	}
 	if (glfwGetKey(window, GLFW_KEY_A)) {
 		scene->Camera->SetPosition(
-			scene->Camera->GetPosition() + glm::vec3(0.2, 0.0, 0.0));
+			scene->Camera->GetPosition() - glm::normalize(glm::cross(cameraFront,cameraUp))* cameraSpeed);
 	}
 	if (glfwGetKey(window, GLFW_KEY_D)) {
 		scene->Camera->SetPosition(
-			scene->Camera->GetPosition() + glm::vec3(-0.2, 0.0, 0.0));
+			scene->Camera->GetPosition() + glm::normalize(glm::cross(cameraFront, cameraUp)) * cameraSpeed);
 	}
 
 }
@@ -590,16 +640,21 @@ int main() {
 	if (!initGLAD())
 		return 1;
 
-	// Let OpenGL know that we want debug output, and route it to our handler function
-	glEnable(GL_DEBUG_OUTPUT);
-	glEnable(GL_DEBUG_OUTPUT_SYNCHRONOUS);
-	glDebugMessageCallback(GlDebugMessage, nullptr);
-
 	// Initialize our ImGui helper
 	ImGuiHelper::Init(window);
 
 	// Initialize our resource manager
 	ResourceManager::Init();
+
+	
+
+	if (glfwRawMouseMotionSupported())
+		glfwSetInputMode(window, GLFW_RAW_MOUSE_MOTION, GLFW_TRUE);
+
+	// Let OpenGL know that we want debug output, and route it to our handler function
+	glEnable(GL_DEBUG_OUTPUT);
+	glEnable(GL_DEBUG_OUTPUT_SYNCHRONOUS);
+	glDebugMessageCallback(GlDebugMessage, nullptr);
 
 	// GL states, we'll enable depth testing and backface fulling
 	glEnable(GL_DEPTH_TEST);
@@ -609,7 +664,13 @@ int main() {
 
 	// The scene that we will be rendering
 	Scene::Sptr scene = nullptr;
+	
+	Physics thisWorld;
+
+	thisWorld.Init();
+
 	bool loadScene = false;
+	bool isDevMode = true;	
 
 	// For now we can use a toggle to generate our scene vs load from file
 	if (loadScene) {
@@ -628,7 +689,7 @@ int main() {
 		Guid startPlatformMesh = ResourceManager::CreateMesh("StartPlatform.obj");
 		Guid wallJumpMesh = ResourceManager::CreateMesh("WallJump.obj");
 
-		Guid boxTexture = ResourceManager::CreateTexture("textures/box-diffuse.png");
+		Guid boxTexture = ResourceManager::CreateTexture("textures/Yugo.png");
 		Guid monkeyTex = ResourceManager::CreateTexture("textures/monkey-uvMap.png");
 		Guid baseTextureA = ResourceManager::CreateTexture("textures/BaseTexture.png");
 
@@ -722,7 +783,7 @@ int main() {
 		RenderObject character = RenderObject();
 		character.Position = glm::vec3(0.0f, 0.0f, 2.0f);
 		character.Mesh = ResourceManager::GetMesh(characterMesh);
-		character.Material = monkeyMaterial;//change this material later
+		character.Material = smallPlatformMaterial;//change this material later
 		character.Rotation.x = 90.0f;
 		character.Name = "Character";
 		scene->Objects.push_back(character);
@@ -782,15 +843,24 @@ int main() {
 		ImGuiHelper::StartFrame();
 
 		// Showcasing how to use the imGui library!
-		bool isDevMode = ImGui::Begin("Debugging");
+		bool isDebugging = ImGui::Begin("Debugging");
+
+		//locks the Cursor into Our window for our Devmode World Editing
+		//Notably, Doesn't Work When ImGui is your Selected Window, nice functionality!
+		if (isDevMode && glfwGetKey(window, GLFW_KEY_SPACE)) {
+			glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
+		}
+		else {
+			glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_NORMAL);
+		}
 
 		// Calculate the time since our last frame (dt)
 		double thisFrame = glfwGetTime();
 		float dt = static_cast<float>(thisFrame - lastFrame);
 
-		if (isDevMode)	cameraInput(scene);
+		if (isDebugging)	cameraInput(scene, dt);
 
-		if (isDevMode) {
+		if (isDebugging) {
 
 			// Make a checkbox for the monkey rotation
 			ImGui::Checkbox("Rotating", &isRotating);
@@ -829,7 +899,7 @@ int main() {
 		shader->SetUniform("u_CamPos", scene->Camera->GetPosition());
 
 		// Draw some ImGui stuff for the lights
-		if (isDevMode) {
+		if (isDebugging) {
 			for (int ix = 0; ix < scene->Lights.size(); ix++) {
 				char buff[256];
 				sprintf_s(buff, "Light %d##%d", ix, ix);
@@ -841,9 +911,9 @@ int main() {
 			ImGui::Separator();
 		}
 
-
 		// Render all our objects
 		for (int ix = 0; ix < scene->Objects.size(); ix++) {
+
 			RenderObject* object = &scene->Objects[ix];
 
 			// Update the object's transform for rendering
@@ -861,7 +931,7 @@ int main() {
 			object->Mesh->Draw();
 
 			// If our debug window is open, then let's draw some info for our objects!
-			if (isDevMode) {
+			if (isDebugging) {
 				// All these elements will go into the last opened window
 				if (ImGui::CollapsingHeader(object->Name.c_str())) {
 					ImGui::PushID(ix); // Push a new ImGui ID scope for this object
@@ -875,7 +945,7 @@ int main() {
 
 		// If our debug window is open, notify that we no longer will render new
 		// elements to it
-		if (isDevMode) {
+		if (isDebugging) {
 			ImGui::End();
 		}
 

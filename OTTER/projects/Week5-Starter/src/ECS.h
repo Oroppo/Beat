@@ -3,6 +3,14 @@
 #include "Coordinator.h"
 
 
+// check all awake objects for AABB Collision
+// if it's a a cirlce check the radius of the circle versus AA
+//if collision detected = true 
+// bump the vertices out to bounds
+// do the thing
+
+
+
 // If you're curious or want to know more about how I built our ECS(Entity Component System) refer
 // to this document: https://austinmorlan.com/posts/entity_component_system/
 
