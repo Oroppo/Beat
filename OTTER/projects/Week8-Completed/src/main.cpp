@@ -440,12 +440,12 @@ int main() {
 
 			// Add a dynamic rigid body to this monkey
 			RigidBody::Sptr physics = table->Add<RigidBody>(RigidBodyType::Static);
-			physics->AddCollider(BoxCollider::Create());
+			physics->AddCollider(ConvexMeshCollider::Create());
 		}
 		GameObject::Sptr paddle = scene->CreateGameObject("Paddle");
 		{
 			// Set position in the scene
-			paddle->SetPostion(glm::vec3(1.0f, 0.0f, 1.0f));
+			paddle->SetPostion(glm::vec3(1.0f, 0.0f, 1.10f));
 			paddle->SetRotation(glm::vec3(90.0f, 0.0f, 0.0f));
 
 			// Create and attach a renderer for the monkey
@@ -455,12 +455,12 @@ int main() {
 
 			// Add a dynamic rigid body
 			RigidBody::Sptr physics = paddle->Add<RigidBody>(RigidBodyType::Static);
-			physics->AddCollider(BoxCollider::Create());
+			physics->AddCollider(BoxCollider::Create(glm::vec3(0.05f, 0.05f, 0.05f)));
 		}
 		GameObject::Sptr paddle2 = scene->CreateGameObject("Paddle2");
 		{
 			// Set position in the scene
-			paddle2->SetPostion(glm::vec3(2.0f, 0.0f, 1.0f));
+			paddle2->SetPostion(glm::vec3(2.0f, 0.0f, 1.10f));
 			paddle2->SetRotation(glm::vec3(90.0f, 0.0f, 0.0f));
 
 			// Create and attach a renderer for the monkey
@@ -468,14 +468,17 @@ int main() {
 			renderer->SetMesh(paddleMesh);
 			renderer->SetMaterial(paddleRedMaterial);
 
+			//paddle2->Add<>;
+
 			// Add a dynamic rigid body
 			RigidBody::Sptr physics = paddle2->Add<RigidBody>(RigidBodyType::Static);
-			physics->AddCollider(BoxCollider::Create());
+			physics->AddCollider(BoxCollider::Create(glm::vec3(0.05f, 0.05f, 0.05f)));
+
 		}
 		GameObject::Sptr puck = scene->CreateGameObject("Puck");
 		{
 			// Set position in the scene
-			puck->SetPostion(glm::vec3(1.5f, 0.0f, 1.0f));
+			puck->SetPostion(glm::vec3(1.5f, 0.0f, 1.40f));
 			puck->SetRotation(glm::vec3(90.0f, 0.0f, 0.0f));
 
 
@@ -485,8 +488,8 @@ int main() {
 			renderer->SetMaterial(puckMaterial);
 
 			// Add a dynamic rigid body
-			RigidBody::Sptr physics = puck->Add<RigidBody>(RigidBodyType::Static);
-			physics->AddCollider(BoxCollider::Create());
+			RigidBody::Sptr physics = puck->Add<RigidBody>(RigidBodyType::Dynamic);
+			physics->AddCollider(BoxCollider::Create(glm::vec3(0.05f, 0.05f, 0.05f)));
 		}
 
 
@@ -496,14 +499,14 @@ int main() {
 		//physics->AddCollider(ConvexMeshCollider::Create());
 
 		// Create a trigger volume for testing how we can detect collisions with objects!
-		GameObject::Sptr trigger = scene->CreateGameObject("Trigger");
-		{
-			TriggerVolume::Sptr volume = trigger->Add<TriggerVolume>();
-			BoxCollider::Sptr collider = BoxCollider::Create(glm::vec3(3.0f, 3.0f, 1.0f));
-
-			collider->SetPosition(glm::vec3(0.0f, 0.0f, 0.5f));
-			volume->AddCollider(collider);
-		}
+		//GameObject::Sptr trigger = scene->CreateGameObject("Trigger");
+		//{
+		//	TriggerVolume::Sptr volume = trigger->Add<TriggerVolume>();
+		//	BoxCollider::Sptr collider = BoxCollider::Create(glm::vec3(3.0f, 3.0f, 1.0f));
+		//
+		//	collider->SetPosition(glm::vec3(0.0f, 0.0f, 0.5f));
+		//	volume->AddCollider(collider);
+		//}
 
 		// Save the asset manifest for all the resources we just loaded
 		ResourceManager::SaveManifest("manifest.json");
