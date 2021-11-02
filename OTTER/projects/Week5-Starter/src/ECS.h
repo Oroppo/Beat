@@ -60,9 +60,10 @@ struct RigidBody {
     glm::vec3 velocity;
     glm::vec3 acceleration;
     float mass;
-
+ 
     //since the only thing that will be colliding with anythin else will be the player, check if the player is colliding 
     bool CubicCollisionDetection(Transform ColliderStats, Transform ObjectStats) {
+
         if (
             //check if colliding in x axis
             (ColliderStats.position.x + ColliderStats.scale.x / 2 > ObjectStats.position.x) && (ColliderStats.position.x < ObjectStats.position.x + ObjectStats.scale.x / 2) &&
@@ -103,12 +104,14 @@ struct RigidBody {
         if (CollisionDetection(transformT, transformO, 0) == true) {
             glm::vec3 difference = transformT.position - transformO.position;
             transformT.position -= difference;
-            //above should work but im kinda dumb so im using a cout statement to make sure im right
-
         }
+        //above should work but im kinda dumb so im using a cout statement to make sure im right
+
     }
+
     // in case the object moves
     void ApplyDynamicCollision() {
+
 
     }
     void ApplyForce(glm::vec3 force)
@@ -126,9 +129,13 @@ struct Gravity {
 
     glm::vec3 grav = glm::vec3(0.0f, 9.81, 0.0f);
 
+
+
     void applyGravity(Entity entity, float dt) {
+
         auto& body = gCoordinator.GetComponent<RigidBody>(entity);
         auto& transform = gCoordinator.GetComponent<Transform>(entity);
+
         //force+=mass*grav
         body.force += body.mass * grav;
         //Velocity+=force*dt
