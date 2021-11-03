@@ -280,6 +280,16 @@ int main() {
 		Texture2D::Sptr    paddleRedTex = ResourceManager::CreateAsset<Texture2D>("textures/HockeyStickRed.png");
 		Texture2D::Sptr    paddleBlueTex = ResourceManager::CreateAsset<Texture2D>("textures/HockeyStickBlue.png");
 
+		Texture2D::Sptr    R0_Tex = ResourceManager::CreateAsset<Texture2D>("textures/R0.png");
+		Texture2D::Sptr    R1_Tex = ResourceManager::CreateAsset<Texture2D>("textures/R1.png");
+		Texture2D::Sptr    R2_Tex = ResourceManager::CreateAsset<Texture2D>("textures/R2.png");
+		Texture2D::Sptr    R3_Tex = ResourceManager::CreateAsset<Texture2D>("textures/R3.png");
+		Texture2D::Sptr    R4_Tex = ResourceManager::CreateAsset<Texture2D>("textures/R4.png");
+		Texture2D::Sptr    R5_Tex = ResourceManager::CreateAsset<Texture2D>("textures/R5.png");
+		Texture2D::Sptr    R6_Tex = ResourceManager::CreateAsset<Texture2D>("textures/R6.png");
+		Texture2D::Sptr    R7_Tex = ResourceManager::CreateAsset<Texture2D>("textures/R7.png");
+		Texture2D::Sptr    R8_Tex = ResourceManager::CreateAsset<Texture2D>("textures/R8.png");
+		Texture2D::Sptr    R9_Tex = ResourceManager::CreateAsset<Texture2D>("textures/R9.png");
 		// Create an empty scene
 		scene = std::make_shared<Scene>();
 
@@ -329,6 +339,76 @@ int main() {
 			paddleBlueMaterial->MatShader = scene->BaseShader;
 			paddleBlueMaterial->Texture = paddleBlueTex;
 			paddleBlueMaterial->Shininess = 2.0f;
+		}
+		Material::Sptr R0_mat = ResourceManager::CreateAsset<Material>();
+		{
+			R0_mat->Name = "R0";
+			R0_mat->MatShader = scene->BaseShader;
+			R0_mat->Texture = R0_Tex;
+			R0_mat->Shininess = 1.0f;
+		}
+		Material::Sptr R1_mat = ResourceManager::CreateAsset<Material>();
+		{
+			R1_mat->Name = "R1";
+			R1_mat->MatShader = scene->BaseShader;
+			R1_mat->Texture = R1_Tex;
+			R1_mat->Shininess = 1.0f;
+		}
+		Material::Sptr R2_mat = ResourceManager::CreateAsset<Material>();
+		{
+			R2_mat->Name = "R2";
+			R2_mat->MatShader = scene->BaseShader;
+			R2_mat->Texture = R2_Tex;
+			R2_mat->Shininess = 1.0f;
+		}
+		Material::Sptr R3_mat = ResourceManager::CreateAsset<Material>();
+		{
+			R3_mat->Name = "R3";
+			R3_mat->MatShader = scene->BaseShader;
+			R3_mat->Texture = R3_Tex;
+			R3_mat->Shininess = 1.0f;
+		}
+		Material::Sptr R4_mat = ResourceManager::CreateAsset<Material>();
+		{
+			R4_mat->Name = "R4";
+			R4_mat->MatShader = scene->BaseShader;
+			R4_mat->Texture = R4_Tex;
+			R4_mat->Shininess = 1.0f;
+		}
+		Material::Sptr R5_mat = ResourceManager::CreateAsset<Material>();
+		{
+			R5_mat->Name = "R5";
+			R5_mat->MatShader = scene->BaseShader;
+			R5_mat->Texture = R5_Tex;
+			R5_mat->Shininess = 1.0f;
+		}
+		Material::Sptr R6_mat = ResourceManager::CreateAsset<Material>();
+		{
+			R6_mat->Name = "R6";
+			R6_mat->MatShader = scene->BaseShader;
+			R6_mat->Texture = R6_Tex;
+			R6_mat->Shininess = 1.0f;
+		}
+		Material::Sptr R7_mat = ResourceManager::CreateAsset<Material>();
+		{
+			R7_mat->Name = "R7";
+			R7_mat->MatShader = scene->BaseShader;
+			R7_mat->Texture = R0_Tex;
+			R7_mat->Shininess = 1.0f;
+		}
+		Material::Sptr R8_mat = ResourceManager::CreateAsset<Material>();
+		{
+			R8_mat->Name = "R8";
+			R8_mat->MatShader = scene->BaseShader;
+			R8_mat->Texture = R8_Tex;
+			R8_mat->Shininess = 1.0f;
+		}
+		Material::Sptr R9_mat = ResourceManager::CreateAsset<Material>();
+		{
+			R9_mat->Name = "R9";
+			R9_mat->MatShader = scene->BaseShader;
+			R9_mat->Texture = R9_Tex;
+			R9_mat->Shininess = 1.0f;
 		}
 
 		// Create some lights for our scene
