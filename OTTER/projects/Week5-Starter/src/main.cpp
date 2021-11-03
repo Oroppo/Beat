@@ -566,41 +566,42 @@ bool DrawLightImGui(const char* title, Light& light) {
 //////////////////////////////////////////////////////
 
 
-//void onMouseCallback() {
-//	int mouseX = static_cast<int>(x);
-//	int mouseY = static_cast<int>(y);
-//
-//	if (firstMouse) {
-//		lastX = (float)mouseX;
-//		lastY = (float)mouseY;
-//		firstMouse = false;
-//	}
-//
-//	GLfloat xoffset = mouseX - lastX;
-//	GLfloat yoffset = lastY - mouseY; // Reversed
-//	lastX = (float)mouseX;
-//	lastY = (float)mouseY;
-//
-//	GLfloat sensitivity = 0.05f;
-//	xoffset *= sensitivity;
-//	yoffset *= sensitivity;
-//
-//	yaw += xoffset;
-//	pitch += yoffset;
-//
-//	// check for pitch out of bounds otherwise screen gets flipped
-//	if (pitch > 89.0f)
-//		pitch = 89.0f;
-//	if (pitch < -89.0f)
-//		pitch = -89.0f;
-//
-//	glm::vec3 front;
-//	front.x = cos(glm::radians(yaw)) * cos(glm::radians(pitch));
-//	front.y = sin(glm::radians(pitch));
-//	front.z = sin(glm::radians(yaw)) * cos(glm::radians(pitch));
-//
-//	cameraFront = glm::normalize(front);
-//}
+void onMouseCallback() {
+
+	int mouseX = static_cast<int>(x);
+	int mouseY = static_cast<int>(y);
+
+	if (firstMouse) {
+		lastX = (float)mouseX;
+		lastY = (float)mouseY;
+		firstMouse = false;
+	}
+
+	GLfloat xoffset = mouseX - lastX;
+	GLfloat yoffset = lastY - mouseY; // Reversed
+	lastX = (float)mouseX;
+	lastY = (float)mouseY;
+
+	GLfloat sensitivity = 0.05f;
+	xoffset *= sensitivity;
+	yoffset *= sensitivity;
+
+	yaw += xoffset;
+	pitch += yoffset;
+
+	// check for pitch out of bounds otherwise screen gets flipped
+	if (pitch > 89.0f)
+		pitch = 89.0f;
+	if (pitch < -89.0f)
+		pitch = -89.0f;
+
+	glm::vec3 front;
+	front.x = cos(glm::radians(yaw)) * cos(glm::radians(pitch));
+	front.y = sin(glm::radians(pitch));
+	front.z = sin(glm::radians(yaw)) * cos(glm::radians(pitch));
+
+	cameraFront = glm::normalize(front);
+}
 
 void cameraInput(Scene::Sptr scene, float dt) {
 

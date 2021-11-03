@@ -81,6 +81,13 @@ namespace Gameplay {
 		/// </summary>
 		const glm::mat4& GetViewProjection() const;
 
+		float GetNearPlane() {
+			return _nearPlane;
+		}
+		void SetNearPlane(float foo) {
+			_nearPlane = foo;
+		}
+
 	protected:
 		float _nearPlane;
 		float _farPlane;

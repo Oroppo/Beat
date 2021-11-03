@@ -18,6 +18,7 @@
 #include <GLM/gtc/type_ptr.hpp>
 #define GLM_ENABLE_EXPERIMENTAL
 #include <GLM/gtx/common.hpp> // for fmod (floating modulus)
+#include "Utils/GlmBulletConversions.h"
 
 // Graphics
 #include "Graphics/IndexBuffer.h"
@@ -47,10 +48,11 @@
 #include "Gameplay/Components/IComponent.h"
 #include "Gameplay/Components/Camera.h"
 #include "Gameplay/Components/RotatingBehaviour.h"
+#include "Gameplay/Components/CharacterController.h"
 #include "Gameplay/Components/JumpBehaviour.h"
 #include "Gameplay/Components/RenderComponent.h"
 #include "Gameplay/Components/MaterialSwapBehaviour.h"
-
+#include "Gameplay/Components/MoveThings.h"
 // Physics
 #include "Gameplay/Physics/RigidBody.h"
 #include "Gameplay/Physics/Colliders/BoxCollider.h"
@@ -59,6 +61,7 @@
 #include "Gameplay/Physics/Colliders/ConvexMeshCollider.h"
 #include "Gameplay/Physics/TriggerVolume.h"
 #include "Graphics/DebugDraw.h"
+
 
 //#define LOG_GL_NOTIFICATIONS
 
@@ -237,7 +240,9 @@ int main() {
 	ComponentManager::RegisterType<RenderComponent>();
 	ComponentManager::RegisterType<RigidBody>();
 	ComponentManager::RegisterType<TriggerVolume>();
+	ComponentManager::RegisterType<MoveThings>();
 	ComponentManager::RegisterType<RotatingBehaviour>();
+	ComponentManager::RegisterType<CharacterController>();
 	ComponentManager::RegisterType<JumpBehaviour>();
 	ComponentManager::RegisterType<MaterialSwapBehaviour>();
 
@@ -343,13 +348,13 @@ int main() {
 		// Set up the scene's camera
 		GameObject::Sptr camera = scene->CreateGameObject("Main Camera");
 		{
-			camera->SetPostion(glm::vec3(1.5, 0, 2));			
+			camera->SetPostion(glm::vec3(1.5, -0.75, 1.2));			
 			camera->LookAt(glm::vec3(0.0f));
-			camera->SetRotation(glm::vec3(0, 0, 180));
+			camera->SetRotation(glm::vec3(-110, 0, 180));
 
 			Camera::Sptr cam = camera->Add<Camera>();
 			cam->SetFovRadians(105.f);
-			
+			cam->SetNearPlane(0.3);
 
 			// Make sure that the camera is set as the scene's main camera!
 			scene->MainCamera = cam;
@@ -456,8 +461,8 @@ int main() {
 			Box4->SetPosition(glm::vec3(-0.0f, 0.140f, -0.5f));
 			Box4->SetRotation(glm::vec3(0.0f, 90.0f, 0.0f));
 
-			ICollider::Sptr Box5 = physics->AddCollider(BoxCollider::Create(glm::vec3(1.0f, 0.1f, 0.5f)));
-			Box5->SetPosition(glm::vec3(0.0f, 0.0f, 0.0f));
+			ICollider::Sptr Box5 = physics->AddCollider(BoxCollider::Create(glm::vec3(2.0f, 0.7f, 0.5f)));
+			Box5->SetPosition(glm::vec3(0.0f, -0.7f, 0.0f));
 			Box5->SetRotation(glm::vec3(0.0f, 0.0f, 0.0f));
 
 
@@ -465,8 +470,11 @@ int main() {
 		GameObject::Sptr paddle = scene->CreateGameObject("Paddle");
 		{
 			// Set position in the scene
-			paddle->SetPostion(glm::vec3(1.0f, 0.0f, 1.10f));
-			paddle->SetRotation(glm::vec3(90.0f, 0.0f, 0.0f));
+			paddle->SetPostion(glm::vec3(1.0f, -0.01f, 1.00f));
+			paddle->SetRotation(glm::vec3(90.0f, 0.04f, 0.0f));
+
+			//paddle->Add<CharacterController>();
+			paddle->Add<CharacterController>();
 
 			// Create and attach a renderer for the monkey
 			RenderComponent::Sptr renderer = paddle->Add<RenderComponent>();
@@ -474,13 +482,17 @@ int main() {
 			renderer->SetMaterial(paddleBlueMaterial);
 
 			// Add a dynamic rigid body
-			RigidBody::Sptr physics = paddle->Add<RigidBody>(RigidBodyType::Static);
-			physics->AddCollider(BoxCollider::Create(glm::vec3(0.05f, 0.05f, 0.05f)));
+			RigidBody::Sptr physics = paddle->Add<RigidBody>(RigidBodyType::Kinematic);
+
+			ICollider::Sptr Box1 = physics->AddCollider(BoxCollider::Create(glm::vec3(0.05f, 0.04f, 0.05f)));
+			Box1->SetPosition(glm::vec3(0.0f, 0.04f, 0.0f));
+
+
 		}
 		GameObject::Sptr paddle2 = scene->CreateGameObject("Paddle2");
 		{
 			// Set position in the scene
-			paddle2->SetPostion(glm::vec3(2.0f, 0.0f, 1.10f));
+			paddle2->SetPostion(glm::vec3(2.0f, -0.01f, 1.00f));
 			paddle2->SetRotation(glm::vec3(90.0f, 0.0f, 0.0f));
 
 			// Create and attach a renderer for the monkey
@@ -488,19 +500,20 @@ int main() {
 			renderer->SetMesh(paddleMesh);
 			renderer->SetMaterial(paddleRedMaterial);
 
-			//paddle2->Add<>;
-
 			// Add a dynamic rigid body
-			RigidBody::Sptr physics = paddle2->Add<RigidBody>(RigidBodyType::Static);
-			physics->AddCollider(BoxCollider::Create(glm::vec3(0.05f, 0.05f, 0.05f)));
-
+			RigidBody::Sptr physics = paddle2->Add<RigidBody>(RigidBodyType::Kinematic);
+			ICollider::Sptr Box1 = physics->AddCollider(BoxCollider::Create(glm::vec3(0.05f, 0.04f, 0.05f)));
+			Box1->SetPosition(glm::vec3(0.0f, 0.04f, 0.0f));
 		}
+
 		GameObject::Sptr puck = scene->CreateGameObject("Puck");
 		{
 			// Set position in the scene
-			puck->SetPostion(glm::vec3(1.5f, 0.0f, 1.03f));
+			puck->SetPostion(glm::vec3(1.5f, 0.0f, 1.055f));
 			puck->SetRotation(glm::vec3(90.0f, 0.0f, 0.0f));
 
+			MoveThings::Sptr movement = puck->Add<MoveThings>();
+			movement->SetCoefficient(0.1);
 
 			// Create and attach a renderer for the monkey
 			RenderComponent::Sptr renderer = puck->Add<RenderComponent>();
@@ -509,9 +522,6 @@ int main() {
 
 			// Add a dynamic rigid body
 			RigidBody::Sptr physics = puck->Add<RigidBody>(RigidBodyType::Dynamic);
-
-			//Add a Jump Component
-			JumpBehaviour::Sptr Input = puck->Add<JumpBehaviour>();
 
 			ICollider::Sptr Box1 = physics->AddCollider(ConvexMeshCollider::Create());
 		}

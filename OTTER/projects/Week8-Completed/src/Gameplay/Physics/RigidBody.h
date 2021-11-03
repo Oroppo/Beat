@@ -88,7 +88,7 @@ namespace Gameplay::Physics {
 		/// Applies a direct change in velocity on the object
 		/// </summary>
 		/// <param name="worldForce">The force in world space and m/s</param>
-		void ApplyImpulse(const glm::vec3& worldForce);
+		void ApplyImpulse(const glm::vec3& worldForce);;
 		/// <summary>
 		/// Applies a direct change in velocity on the object, relative to a given
 		/// offset to the object
@@ -106,6 +106,15 @@ namespace Gameplay::Physics {
 		/// </summary>
 		/// <param name="worldTorque">The torque, in radians per second and world space</param>
 		void ApplyTorqueImpulse(const glm::vec3& worldTorque);
+
+		btRigidBody* GetBody() {
+			return _body;
+		}
+
+		void SetBody(btRigidBody* foo) {
+			_body = foo;
+		}
+
 
 		/// <summary>
 		/// Sets the type of rigid body (static, dynamic, kinematic)
@@ -137,6 +146,8 @@ namespace Gameplay::Physics {
 		static RigidBody::Sptr FromJson(const nlohmann::json& data);
 		MAKE_TYPENAME(RigidBody)
 
+			private:
+			
 
 	protected:
 		// The physics update mode for the body (static, dynamic, kinematic)
@@ -153,9 +164,12 @@ namespace Gameplay::Physics {
 		mutable bool _isDampingDirty;
 
 		// Our bullet state stuff
-		btRigidBody*     _body;
+
+		btRigidBody*	_body;
 		btMotionState*   _motionState;
 		btVector3        _inertia;
+
+		glm::vec3 _velocity;
 
 		// Handles resolving any dirty state stuff for our object
 		void _HandleStateDirty();

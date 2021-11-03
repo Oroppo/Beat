@@ -20,8 +20,9 @@ namespace Gameplay::Physics {
 		_body(nullptr),
 		_motionState(nullptr),
 		_linearDamping(0.0f),
-		_angularDamping(0.005f),
-		_inertia(btVector3())
+		_angularDamping(0.05f),
+		_inertia(btVector3()),
+		_velocity(glm::vec3(0,0,0))
 	{ }
 
 	RigidBody::~RigidBody() {
@@ -100,6 +101,7 @@ namespace Gameplay::Physics {
 			if (_type == RigidBodyType::Kinematic) {
 				_body->setCollisionFlags(flags | btCollisionObject::CF_KINEMATIC_OBJECT);
 			}
+
 			// If the object is static, disable it's gravity and notify bullet
 			else if (_type == RigidBodyType::Static) {
 				_body->setCollisionFlags(flags | btCollisionObject::CF_KINEMATIC_OBJECT);
