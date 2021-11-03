@@ -53,6 +53,8 @@
 #include "Gameplay/Components/RenderComponent.h"
 #include "Gameplay/Components/MaterialSwapBehaviour.h"
 #include "Gameplay/Components/MoveThings.h"
+#include "Gameplay/Components/MouseController.h"
+
 // Physics
 #include "Gameplay/Physics/RigidBody.h"
 #include "Gameplay/Physics/Colliders/BoxCollider.h"
@@ -241,6 +243,7 @@ int main() {
 	ComponentManager::RegisterType<RigidBody>();
 	ComponentManager::RegisterType<TriggerVolume>();
 	ComponentManager::RegisterType<MoveThings>();
+	ComponentManager::RegisterType<MouseController>();
 	ComponentManager::RegisterType<RotatingBehaviour>();
 	ComponentManager::RegisterType<CharacterController>();
 	ComponentManager::RegisterType<JumpBehaviour>();
@@ -494,6 +497,8 @@ int main() {
 			// Set position in the scene
 			paddle2->SetPostion(glm::vec3(2.0f, -0.01f, 1.00f));
 			paddle2->SetRotation(glm::vec3(90.0f, 0.0f, 0.0f));
+
+			paddle2->Add<MouseController>();
 
 			// Create and attach a renderer for the monkey
 			RenderComponent::Sptr renderer = paddle2->Add<RenderComponent>();

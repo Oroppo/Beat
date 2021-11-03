@@ -48,7 +48,7 @@ void MoveThings::Update(float deltaTime) {
 	GetGameObject()->SetPostion(
 		(GetGameObject()->GetPosition() + (fuckery * cumDuggery)));
 	bullshit->setAngularVelocity(ToBt(glm::vec3(0, 0, 0)));
-	bullshit->setFriction(0);
+	bullshit->setFriction(0.01);
 	bullshit->setDamping(0,0);
 	bullshit->setRestitution(0);
 

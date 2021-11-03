@@ -11,9 +11,8 @@ void CharacterController::Awake()
 		IsEnabled = false;
 	}
 
-	if (glfwRawMouseMotionSupported())
-		glfwSetInputMode(GetGameObject()->GetScene()->Window, GLFW_RAW_MOUSE_MOTION, GLFW_TRUE);
 }
+
 
 void CharacterController::RenderImGui() {
 	
@@ -43,7 +42,6 @@ void CharacterController::Update(float deltaTime) {
     bool _D = glfwGetKey(GetGameObject()->GetScene()->Window, GLFW_KEY_D);
     bool _W = glfwGetKey(GetGameObject()->GetScene()->Window, GLFW_KEY_W);
 
-    
 
     if (_A) {
         GetGameObject()->SetPostion(GetGameObject()->GetPosition() + glm::vec3(-0.005f, 0.0f, 0.0f));
