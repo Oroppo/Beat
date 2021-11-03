@@ -351,9 +351,9 @@ int main() {
 		// Set up the scene's camera
 		GameObject::Sptr camera = scene->CreateGameObject("Main Camera");
 		{
-			camera->SetPostion(glm::vec3(1.5, -0.75, 1.2));			
+			camera->SetPostion(glm::vec3(1.5, -0.4, 2.45));			
 			camera->LookAt(glm::vec3(0.0f));
-			camera->SetRotation(glm::vec3(-110, 0, 180));
+			camera->SetRotation(glm::vec3(-30, 0, 180));
 
 			Camera::Sptr cam = camera->Add<Camera>();
 			cam->SetFovRadians(105.f);
@@ -485,7 +485,7 @@ int main() {
 			renderer->SetMaterial(paddleBlueMaterial);
 
 			// Add a dynamic rigid body
-			RigidBody::Sptr physics = paddle->Add<RigidBody>(RigidBodyType::Kinematic);
+			RigidBody::Sptr physics = paddle->Add<RigidBody>(RigidBodyType::Static);
 
 			ICollider::Sptr Box1 = physics->AddCollider(BoxCollider::Create(glm::vec3(0.05f, 0.04f, 0.05f)));
 			Box1->SetPosition(glm::vec3(0.0f, 0.04f, 0.0f));
@@ -506,7 +506,7 @@ int main() {
 			renderer->SetMaterial(paddleRedMaterial);
 
 			// Add a dynamic rigid body
-			RigidBody::Sptr physics = paddle2->Add<RigidBody>(RigidBodyType::Kinematic);
+			RigidBody::Sptr physics = paddle2->Add<RigidBody>(RigidBodyType::Static);
 			ICollider::Sptr Box1 = physics->AddCollider(BoxCollider::Create(glm::vec3(0.05f, 0.04f, 0.05f)));
 			Box1->SetPosition(glm::vec3(0.0f, 0.04f, 0.0f));
 		}

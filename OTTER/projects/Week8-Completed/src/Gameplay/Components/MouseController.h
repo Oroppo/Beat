@@ -23,12 +23,26 @@ public:
 	virtual nlohmann::json ToJson() const override;
 	static MouseController::Sptr FromJson(const nlohmann::json& blob);
 
+	void SetLastFrame(glm::vec2 foo) {
+		lastFrame = foo;
+	}
+	glm::vec2 GetLastFrame() {
+		return lastFrame;
+	}
 
+	void SetThisFrame(glm::vec2 foo) {
+		thisFrame = foo;
+	}
+
+	glm::vec2 GetThisFrame() {
+		return thisFrame;
+	}
 
 protected:
 	double xPos = 0, yPos = 0;
 	int windowHeight = 0, windowWidth = 0;
 	float _impulse;
-
+	glm::vec2 lastFrame;
+	glm::vec2 thisFrame;
 	Gameplay::Physics::RigidBody::Sptr _body;
 };

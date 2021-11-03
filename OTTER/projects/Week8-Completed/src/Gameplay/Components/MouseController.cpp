@@ -20,11 +20,12 @@ void MouseController::Awake()
         glfwSetInputMode(GetGameObject()->GetScene()->Window, GLFW_RAW_MOUSE_MOTION, GLFW_TRUE);
         glfwSetInputMode(GetGameObject()->GetScene()->Window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
     }
+    SetLastFrame(glm::vec2(0, 0));
 
 
 }
 
-
+ 
 void MouseController::RenderImGui() {
 
 }
@@ -51,29 +52,33 @@ void MouseController::Update(float deltaTime) {
     glfwGetCursorPos(GetGameObject()->GetScene()->Window, &xPos, &yPos);
     glfwGetWindowSize(GetGameObject()->GetScene()->Window, &windowWidth, &windowHeight);
 
-    float x = xPos / windowWidth;
-    float y = yPos / windowHeight;
-
-    if (x > 2.3) {
-        x = 2.3;
-    }
-    else if (x < 1.9) {
-        x = 1.9;
-    }
-
-    if (y > 0.3) {
-        y = 0.3;
-    }
-    else if (y < -0.3) {
-        y = -0.3;
-    }
+    float x = xPos;
+    float y = yPos;
     
+    SetThisFrame(glm::vec2(x, y));
+
+
+    //Normalizing Vector
+    glm::vec2 temp(thisFrame * thisFrame + lastFrame * lastFrame);
+    glm::vec2 normalized(temp/temp);
+
+    float thisMagnitude = (thisFrame.x + thisFrame.y) / (thisFrame.x + thisFrame.y);
+    float lastMagnitude = (lastFrame.x + lastFrame.y) / (lastFrame.x + lastFrame.y);
+
+
+    normalized *=1;
+
+    GetThisFrame();
+    GetLastFrame();
+
+    
+
     std::cout << "Cursor: " << x << ", " << y << std::endl;
 
 
-    GetGameObject()->SetPostion(glm::vec3(x, y, 0.0f));
+    GetGameObject()->SetPostion(GetGameObject()->GetPosition() + glm::vec3(normalized, 0.0f));
 
 
-
+   SetLastFrame(thisFrame);
 }
 
