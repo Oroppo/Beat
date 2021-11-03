@@ -440,7 +440,27 @@ int main() {
 
 			// Add a dynamic rigid body to this monkey
 			RigidBody::Sptr physics = table->Add<RigidBody>(RigidBodyType::Static);
-			physics->AddCollider(ConvexMeshCollider::Create());
+			//physics->AddCollider(BoxCollider::Create(glm::vec3(1.0f, 1.0f, 1.0f)));
+
+			ICollider::Sptr Box1 = physics->AddCollider(BoxCollider::Create(glm::vec3(0.05f, 0.2f, 0.5f)));
+			Box1->SetPosition(glm::vec3( -0.930f, 0.140f, 0.0f));
+
+			ICollider::Sptr Box2 = physics->AddCollider(BoxCollider::Create(glm::vec3(0.05f, 0.2f, 0.5f)));
+			Box2->SetPosition(glm::vec3(0.930f, 0.140f, 0.0f));
+
+			ICollider::Sptr Box3 = physics->AddCollider(BoxCollider::Create(glm::vec3(0.05f, 0.2f, 1.0f)));
+			Box3->SetPosition(glm::vec3(0.0f, 0.140f, 0.5f));
+			Box3->SetRotation(glm::vec3(0.0f, 90.0f, 0.0f));
+
+			ICollider::Sptr Box4 = physics->AddCollider(BoxCollider::Create(glm::vec3(0.05f, 0.2f, 1.0f)));
+			Box4->SetPosition(glm::vec3(-0.0f, 0.140f, -0.5f));
+			Box4->SetRotation(glm::vec3(0.0f, 90.0f, 0.0f));
+
+			ICollider::Sptr Box5 = physics->AddCollider(BoxCollider::Create(glm::vec3(1.0f, 0.1f, 0.5f)));
+			Box5->SetPosition(glm::vec3(0.0f, 0.0f, 0.0f));
+			Box5->SetRotation(glm::vec3(0.0f, 0.0f, 0.0f));
+
+
 		}
 		GameObject::Sptr paddle = scene->CreateGameObject("Paddle");
 		{
@@ -478,7 +498,7 @@ int main() {
 		GameObject::Sptr puck = scene->CreateGameObject("Puck");
 		{
 			// Set position in the scene
-			puck->SetPostion(glm::vec3(1.5f, 0.0f, 1.40f));
+			puck->SetPostion(glm::vec3(1.5f, 0.0f, 1.03f));
 			puck->SetRotation(glm::vec3(90.0f, 0.0f, 0.0f));
 
 
@@ -489,7 +509,11 @@ int main() {
 
 			// Add a dynamic rigid body
 			RigidBody::Sptr physics = puck->Add<RigidBody>(RigidBodyType::Dynamic);
-			physics->AddCollider(BoxCollider::Create(glm::vec3(0.05f, 0.05f, 0.05f)));
+
+			//Add a Jump Component
+			JumpBehaviour::Sptr Input = puck->Add<JumpBehaviour>();
+
+			ICollider::Sptr Box1 = physics->AddCollider(ConvexMeshCollider::Create());
 		}
 
 
