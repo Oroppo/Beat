@@ -248,7 +248,7 @@ int main() {
 	ComponentManager::RegisterType<RotatingBehaviour>();
 	ComponentManager::RegisterType<CharacterController>();
 	ComponentManager::RegisterType<JumpBehaviour>();
-	//ComponentManager::RegisterType<ScoreComponent>();
+	ComponentManager::RegisterType<ScoreComponent>();
 	ComponentManager::RegisterType<MaterialSwapBehaviour>();
 
 	// GL states, we'll enable depth testing and backface fulling
@@ -538,6 +538,26 @@ int main() {
 			ScoreP2->SetRotation(glm::vec3(45, 0, -180));
 			ScoreP2->SetScale(glm::vec3(2.0f, 2.0f, 2.0f));
 
+		GameObject::Sptr ScoreP1 = scene->CreateGameObject("ScoreP1");
+		{
+			ScoreP1->SetPostion(glm::vec3(1.0f, 1.5f, 1.0f));
+			ScoreP1->SetRotation(glm::vec3(45, 0, -180));
+		
+		
+			RenderComponent::Sptr renderer = ScoreP1->Add<RenderComponent>();
+			renderer->SetMesh(ScoreBoard);
+			renderer->SetMaterial(R2_mat);
+
+			RigidBody::Sptr physics = ScoreP1->Add<RigidBody>(RigidBodyType::Static);
+			ICollider::Sptr Box1 = physics->AddCollider(BoxCollider::Create(glm::vec3(0.5f)));
+
+		
+			// We'll add a behaviour that will interact with our trigger volumes
+			MaterialSwapBehaviour::Sptr triggerInteraction = ScoreP1->Add<MaterialSwapBehaviour>();
+		
+			triggerInteraction->EnterMaterial = R0_mat;
+			triggerInteraction->ExitMaterial = R1_mat;
+		}
 
 			RenderComponent::Sptr renderer = ScoreP2->Add<RenderComponent>();
 			renderer->SetMesh(ScoreBoard);
@@ -578,7 +598,15 @@ int main() {
 			Box5->SetPosition(glm::vec3(0.0f, -0.7f, 0.0f));
 			Box5->SetRotation(glm::vec3(0.0f, 0.0f, 0.0f));
 		}
+			Ltrigger->SetPostion(glm::vec3(1.5f, 0.0f, 1.0f));
 
+			// Add a dynamic rigid body to this monkey
+			RigidBody::Sptr physics = Ltrigger->Add<RigidBody>(RigidBodyType::Static);
+			physics->AddCollider(BoxCollider::Create());
+
+
+
+		}
 
 
 		GameObject::Sptr paddle = scene->CreateGameObject("Paddle");
@@ -621,7 +649,6 @@ int main() {
 			ICollider::Sptr Box1 = physics->AddCollider(BoxCollider::Create(glm::vec3(0.05f, 0.04f, 0.05f)));
 			Box1->SetPosition(glm::vec3(0.0f, 0.04f, 0.0f));
 		}
-
 		GameObject::Sptr puck = scene->CreateGameObject("Puck");
 		{
 			// Set position in the scene
@@ -648,15 +675,15 @@ int main() {
 		//RigidBody::Sptr physics = monkey2->Add<RigidBody>(RigidBodyType::Kinematic);
 		//physics->AddCollider(ConvexMeshCollider::Create());
 
-		// Create a trigger volume for testing how we can detect collisions with objects!
-		//GameObject::Sptr trigger = scene->CreateGameObject("Trigger");
-		//{
-		//	TriggerVolume::Sptr volume = trigger->Add<TriggerVolume>();
-		//	BoxCollider::Sptr collider = BoxCollider::Create(glm::vec3(3.0f, 3.0f, 1.0f));
-		//
-		//	collider->SetPosition(glm::vec3(0.0f, 0.0f, 0.5f));
-		//	volume->AddCollider(collider);
-		//}
+		//Create a trigger volume for testing how we can detect collisions with objects!
+		GameObject::Sptr trigger = scene->CreateGameObject("Trigger");
+		{
+			TriggerVolume::Sptr volume = trigger->Add<TriggerVolume>();
+			BoxCollider::Sptr collider = BoxCollider::Create(glm::vec3(0.5f, 0.5f, 0.5f));
+		
+			collider->SetPosition(glm::vec3(0.0f, 0.0f, 0.5f));
+			volume->AddCollider(collider);
+		}
 
 		// Save the asset manifest for all the resources we just loaded
 		ResourceManager::SaveManifest("manifest.json");
