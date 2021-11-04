@@ -30,6 +30,5 @@ public:
 
 protected:
 
-	bool contactFlag;
 	RenderComponent::Sptr _renderer;
 };

@@ -12,6 +12,7 @@ using Signature = std::bitset<MAX_COMPONENTS>;
 
 
 
+
 class SystemManager
 {
 public:

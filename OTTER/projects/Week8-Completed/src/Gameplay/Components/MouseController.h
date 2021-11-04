@@ -26,6 +26,7 @@ public:
 	void SetLastFrame(glm::vec2 foo) {
 		lastFrame = foo;
 	}
+
 	glm::vec2 GetLastFrame() {
 		return lastFrame;
 	}

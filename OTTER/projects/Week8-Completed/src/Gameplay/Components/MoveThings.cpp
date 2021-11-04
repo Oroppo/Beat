@@ -8,6 +8,7 @@
 void MoveThings::Awake()
 {
 	_body = GetComponent<Gameplay::Physics::RigidBody>();
+
 	if (_body == nullptr) {
 		IsEnabled = false;
 	}
@@ -55,15 +56,19 @@ void MoveThings::Update(float deltaTime) {
 
 	if (GetGameObject()->GetPosition().x < 0.6) {
 		GetGameObject()->SetPostion(glm::vec3(1.5f, 0.01f, 1.255f));
+		bullshit->setLinearVelocity(ToBt(glm::vec3(0.f,0.f,0.f)));
 	}
 	if (GetGameObject()->GetPosition().x > 2.40) {
 		GetGameObject()->SetPostion(glm::vec3(1.5f, 0.01f, 1.255f));
+		bullshit->setLinearVelocity(ToBt(glm::vec3(0.f, 0.f, 0.f)));
 	}
 	if (GetGameObject()->GetPosition().y > 0.5) {
 		GetGameObject()->SetPostion(glm::vec3(1.5f, 0.01f, 1.255f));
+		bullshit->setLinearVelocity(ToBt(glm::vec3(0.f, 0.f, 0.f)));
 	}
 	if (GetGameObject()->GetPosition().y < -0.5) {
 		GetGameObject()->SetPostion(glm::vec3(1.5f, 0.01f, 1.255f));
+		bullshit->setLinearVelocity(ToBt(glm::vec3(0.f, 0.f, 0.f)));
 	}
 	
 }

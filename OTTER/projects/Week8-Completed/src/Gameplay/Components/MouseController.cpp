@@ -54,9 +54,9 @@ void MouseController::Update(float deltaTime) {
     //glfw wants doubles and glm::vec2 wants floats, 
     //casting is just messy to read so we're doing a quick type swap here:
     float x = xPos;
-    if (x = 0.f)x = 0.001f;
+    if (x == 0.f)x = 0.001f;
     float y = yPos;
-    if (y = 0.f)y = 0.001f;
+    if (y == 0.f)y = 0.001f;
     
     
     SetThisFrame(glm::vec2(x, y));
@@ -68,9 +68,9 @@ void MouseController::Update(float deltaTime) {
 
     //Calculate X and Y Distance
     float DistanceX = (thisFrame.x - lastFrame.x);
-    if (DistanceX = 0.f) DistanceX = 0.001f;
+    if (DistanceX == 0.f) DistanceX = 0.001f;
     float DistanceY = (thisFrame.y - lastFrame.y);
-    if (DistanceY = 0.f) DistanceY = 0.001f;
+    if (DistanceY == 0.f) DistanceY = 0.001f;
 
     //Divide By window height/width to make the movement proportional to % of screen moved
     DistanceX /= windowWidth;

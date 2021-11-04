@@ -54,6 +54,7 @@
 #include "Gameplay/Components/MaterialSwapBehaviour.h"
 #include "Gameplay/Components/MoveThings.h"
 #include "Gameplay/Components/MouseController.h"
+#include "Gameplay/Components/ScoreComponent.h"
 
 // Physics
 #include "Gameplay/Physics/RigidBody.h"
@@ -247,6 +248,7 @@ int main() {
 	ComponentManager::RegisterType<RotatingBehaviour>();
 	ComponentManager::RegisterType<CharacterController>();
 	ComponentManager::RegisterType<JumpBehaviour>();
+	//ComponentManager::RegisterType<ScoreComponent>();
 	ComponentManager::RegisterType<MaterialSwapBehaviour>();
 
 	// GL states, we'll enable depth testing and backface fulling
@@ -515,16 +517,25 @@ int main() {
 		//	RotatingBehaviour::Sptr behaviour = monkey2->Add<RotatingBehaviour>();
 		//	behaviour->RotationSpeed = glm::vec3(0.0f, 0.0f, -90.0f);
 		//}
-		GameObject::Sptr ScoreP1 = scene->CreateGameObject("ScoreP1"); {
-			ScoreP1->SetPostion(glm::vec3(1.0f, 1.5f, 1.00f));
-			ScoreP1->SetRotation(glm::vec3(45, 0, -180));
-			ScoreP1->SetScale(glm::vec3 (2.0f, 2.0f, 2.0f));
+		//GameObject::Sptr ScoreP1 = scene->CreateGameObject("ScoreP1");
+		//{
+		//	ScoreP1->SetPostion(glm::vec3(1.0f, 1.5f, 1.00f));
+		//	ScoreP1->SetRotation(glm::vec3(45, 0, -180));
+		//	ScoreP1->SetScale(glm::vec3 (2.0f, 2.0f, 2.0f));
+		//
+		//
+		//	RenderComponent::Sptr renderer = ScoreP1->Add<RenderComponent>();
+		//	renderer->SetMesh(ScoreBoard);
+		//	renderer->SetMaterial(R2_mat);
+		//
+		//	// We'll add a behaviour that will interact with our trigger volumes
+		//	MaterialSwapBehaviour::Sptr triggerInteraction = ScoreP1->Add<MaterialSwapBehaviour>();
+		//
+		//	triggerInteraction->EnterMaterial = R0_Tex;
+		//	triggerInteraction->ExitMaterial = R1_Tex;
+		//}
 
 
-			RenderComponent::Sptr renderer = ScoreP1->Add<RenderComponent>();
-			renderer->SetMesh(ScoreBoard);
-			renderer->SetMaterial(R2_mat);
-		}
 		GameObject::Sptr table = scene->CreateGameObject("Table");
 		{
 			// Set position in the scene
@@ -560,6 +571,20 @@ int main() {
 
 
 		}
+		GameObject::Sptr Ltrigger = scene->CreateGameObject("Ltrigger");
+		{
+			// Set position in the scene
+			Ltrigger->SetPostion(glm::vec3(1.5f, 0.0f, 1.0f));
+
+			// Add a dynamic rigid body to this monkey
+			RigidBody::Sptr physics = Ltrigger->Add<RigidBody>(RigidBodyType::Static);
+			physics->AddCollider(BoxCollider::Create());
+
+
+
+		}
+
+
 		GameObject::Sptr paddle = scene->CreateGameObject("Paddle");
 		{
 			// Set position in the scene

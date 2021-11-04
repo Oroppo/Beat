@@ -13,6 +13,7 @@ MaterialSwapBehaviour::MaterialSwapBehaviour() :
 MaterialSwapBehaviour::~MaterialSwapBehaviour() = default;
 
 void MaterialSwapBehaviour::OnEnteredTrigger(const Gameplay::Physics::TriggerVolume::Sptr& trigger) {
+
 	if (_renderer && EnterMaterial) {
 		_renderer->SetMaterial(EnterMaterial);
 	}
@@ -29,6 +30,7 @@ void MaterialSwapBehaviour::OnLeavingTrigger(const Gameplay::Physics::TriggerVol
 
 void MaterialSwapBehaviour::Awake() {
 	_renderer = GetComponent<RenderComponent>();
+	//_renderer = GetComponent<ScoreComponent>();
 }
 
 void MaterialSwapBehaviour::RenderImGui() { }
