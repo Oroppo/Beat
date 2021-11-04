@@ -1,3 +1,20 @@
+
+
+//-----------------------------------------------------------------------------
+// Dante Arruda - 100709110
+//-----------------------------------------------------------------------------
+//Ice Hockey Computer Graphics Midterm
+// 
+// Player 1 Controls: W,A,S,D
+//	Player 2 Controls: Mouse Control
+// 
+// To Exit: Press alt+tab and close the window
+// 
+//-----------------------------------------------------------------------------
+// Ryan Fieldhouse - 100784589
+//-----------------------------------------------------------------------------
+
+
 #include <Logging.h>
 #include <iostream>
 
@@ -729,8 +746,9 @@ int main() {
 		float dt = static_cast<float>(thisFrame - lastFrame);
 
 		// Showcasing how to use the imGui library!
-		bool isDebugWindowOpen = ImGui::Begin("Debugging");
-
+		//bool isDebugWindowOpen = ImGui::Begin("Debugging");
+		bool isDebugWindowOpen = false;
+		scene->IsPlaying = true;
 		if (isDebugWindowOpen) {
 			// Draws a button to control whether or not the game is currently playing
 			static char buttonLabel[64];
@@ -860,7 +878,7 @@ int main() {
 
 
 		// End our ImGui window
-		ImGui::End();
+		//ImGui::End();
 
 		VertexArrayObject::Unbind();
 
