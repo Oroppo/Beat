@@ -3,27 +3,27 @@
 #include "Gameplay/GameObject.h"
 
 ScoreComponent::ScoreComponent() :
-	IComponent()
+	IComponent(),
+	_renderer(nullptr)
 { }
 
 ScoreComponent::~ScoreComponent() = default;
 
 
 void ScoreComponent::Awake() {
+
 	_renderer = GetComponent<RenderComponent>();
+
 }
 
 void ScoreComponent::RenderImGui() { }
 
 nlohmann::json ScoreComponent::ToJson() const {
-	return {
-	};
+	return {};
 }
 
 void ScoreComponent::Update() {
 	
-	SetScore(_score++);
-	std::cout << _score << std::endl;
 
 }
 

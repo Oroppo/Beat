@@ -7,8 +7,6 @@ MaterialSwapBehaviour::MaterialSwapBehaviour() :
 	_renderer(nullptr),
 	EnterMaterial(nullptr),
 	ExitMaterial(nullptr)
-
-
 { }
 MaterialSwapBehaviour::~MaterialSwapBehaviour() = default;
 

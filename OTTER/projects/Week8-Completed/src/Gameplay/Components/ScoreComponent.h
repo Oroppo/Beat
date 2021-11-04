@@ -8,7 +8,7 @@
 /// of the game object the component is attached to when entering or leaving a trigger
 /// </summary>
 class ScoreComponent : public Gameplay::IComponent {
-
+	
 public:
 	typedef std::shared_ptr<ScoreComponent> Sptr;
 	ScoreComponent();
@@ -21,17 +21,22 @@ public:
 	static ScoreComponent::Sptr FromJson(const nlohmann::json& blob);
 	MAKE_TYPENAME(ScoreComponent);
 
-	virtual void Update() override;
+	virtual void Update();
 
 	int GetScore(){
 		return _score;
+	}
+
+	void IncrementScore() {
+		_score++;
 	}
 
 	void SetScore(int foo) {
 		_score = foo;
 	}
 
+
 protected:
-	int _score;
+	int _score = 0;
 	RenderComponent::Sptr _renderer;
 };

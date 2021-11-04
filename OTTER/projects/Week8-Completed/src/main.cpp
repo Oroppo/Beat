@@ -518,35 +518,35 @@ int main() {
 		//	behaviour->RotationSpeed = glm::vec3(0.0f, 0.0f, -90.0f);
 		//}
 
-		GameObject::Sptr ScoreP1 = scene->CreateGameObject("ScoreP1");
-		{
-			ScoreP1->SetPostion(glm::vec3(1.0f, 1.5f, 1.00f));
-			ScoreP1->SetRotation(glm::vec3(45, 0, -180));
-			ScoreP1->SetScale(glm::vec3 (2.0f, 2.0f, 2.0f));
-		
-		
-			RenderComponent::Sptr renderer = ScoreP1->Add<RenderComponent>();
-			renderer->SetMesh(ScoreBoard);
-			renderer->SetMaterial(R0_mat);
-		
-			// We'll add a behaviour that will interact with our trigger volumes
-		}
-
 		GameObject::Sptr ScoreP2 = scene->CreateGameObject("ScoreP2");
+		ScoreComponent::Sptr score2 = ScoreP2->Add<ScoreComponent>();
+		std::string p2 = score2 != nullptr ? score2->GetGUID().str() : "null";
 		{
 			ScoreP2->SetPostion(glm::vec3(2.0f, 1.5f, 1.00f));
 			ScoreP2->SetRotation(glm::vec3(45, 0, -180));
 			ScoreP2->SetScale(glm::vec3(2.0f, 2.0f, 2.0f));
 
+
+
+			RenderComponent::Sptr renderer = ScoreP2->Add<RenderComponent>();
+			renderer->SetMesh(ScoreBoard);
+			renderer->SetMaterial(R0_mat);
+			// We'll add a behaviour that will interact with our trigger volumes
+		}
+
+
 		GameObject::Sptr ScoreP1 = scene->CreateGameObject("ScoreP1");
+		ScoreComponent::Sptr score1 = ScoreP1->Add<ScoreComponent>();
+		std::string p1 = score1 != nullptr ? score1->GetGUID().str() : "null";
 		{
 			ScoreP1->SetPostion(glm::vec3(1.0f, 1.5f, 1.0f));
 			ScoreP1->SetRotation(glm::vec3(45, 0, -180));
-		
+			
+
 		
 			RenderComponent::Sptr renderer = ScoreP1->Add<RenderComponent>();
 			renderer->SetMesh(ScoreBoard);
-			renderer->SetMaterial(R2_mat);
+			renderer->SetMaterial(R0_mat);
 
 			RigidBody::Sptr physics = ScoreP1->Add<RigidBody>(RigidBodyType::Static);
 			ICollider::Sptr Box1 = physics->AddCollider(BoxCollider::Create(glm::vec3(0.5f)));
@@ -557,12 +557,6 @@ int main() {
 		
 			triggerInteraction->EnterMaterial = R0_mat;
 			triggerInteraction->ExitMaterial = R1_mat;
-		}
-
-			RenderComponent::Sptr renderer = ScoreP2->Add<RenderComponent>();
-			renderer->SetMesh(ScoreBoard);
-			renderer->SetMaterial(R0_mat);
-			// We'll add a behaviour that will interact with our trigger volumes
 		}
 
 		GameObject::Sptr table = scene->CreateGameObject("Table");
@@ -598,16 +592,6 @@ int main() {
 			Box5->SetPosition(glm::vec3(0.0f, -0.7f, 0.0f));
 			Box5->SetRotation(glm::vec3(0.0f, 0.0f, 0.0f));
 		}
-			Ltrigger->SetPostion(glm::vec3(1.5f, 0.0f, 1.0f));
-
-			// Add a dynamic rigid body to this monkey
-			RigidBody::Sptr physics = Ltrigger->Add<RigidBody>(RigidBodyType::Static);
-			physics->AddCollider(BoxCollider::Create());
-
-
-
-		}
-
 
 		GameObject::Sptr paddle = scene->CreateGameObject("Paddle");
 		{
@@ -656,6 +640,9 @@ int main() {
 			puck->SetRotation(glm::vec3(90.0f, 0.0f, 0.0f));
 
 			MoveThings::Sptr movement = puck->Add<MoveThings>();
+			movement->GrabGuid1(p1);
+			movement->GrabGuid2(p2);
+
 			movement->SetCoefficient(0.1);
 
 			// Create and attach a renderer for the monkey
@@ -668,12 +655,6 @@ int main() {
 
 			ICollider::Sptr Box1 = physics->AddCollider(ConvexMeshCollider::Create());
 		}
-
-
-		// Kinematic rigid bodies are those controlled by some outside controller
-		// and ONLY collide with dynamic objects
-		//RigidBody::Sptr physics = monkey2->Add<RigidBody>(RigidBodyType::Kinematic);
-		//physics->AddCollider(ConvexMeshCollider::Create());
 
 		//Create a trigger volume for testing how we can detect collisions with objects!
 		GameObject::Sptr trigger = scene->CreateGameObject("Trigger");
@@ -690,6 +671,15 @@ int main() {
 		// Save the scene to a JSON file
 		scene->Save("scene.json");
 	}
+
+
+
+		
+
+
+
+
+
 
 	// Call scene awake to start up all of our components
 	scene->Window = window;

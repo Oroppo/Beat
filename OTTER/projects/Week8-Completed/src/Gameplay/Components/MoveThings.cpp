@@ -4,6 +4,9 @@
 #include "Gameplay/Scene.h"
 #include "Utils/ImGuiHelper.h"
 #include "Utils/GlmBulletConversions.h"
+#include "ComponentManager.h"
+#include "ScoreComponent.h"
+
 
 void MoveThings::Awake()
 {
@@ -12,6 +15,8 @@ void MoveThings::Awake()
 	if (_body == nullptr) {
 		IsEnabled = false;
 	}
+
+	
 }
 
 void MoveThings::RenderImGui() {
@@ -57,10 +62,18 @@ void MoveThings::Update(float deltaTime) {
 	if (GetGameObject()->GetPosition().x < 0.6) {
 		GetGameObject()->SetPostion(glm::vec3(1.5f, 0.01f, 1.255f));
 		currentVel->setLinearVelocity(ToBt(glm::vec3(0.f,0.f,0.f)));
+
+		_scoreP2->IncrementScore();
+		std::cout << _scoreP2->GetScore() << std::endl;
+
 	}
 	if (GetGameObject()->GetPosition().x > 2.40) {
 		GetGameObject()->SetPostion(glm::vec3(1.5f, 0.01f, 1.255f));
 		currentVel->setLinearVelocity(ToBt(glm::vec3(0.f, 0.f, 0.f)));
+
+		_scoreP1->IncrementScore();
+		std::cout << _scoreP1->GetScore() << std::endl;
+
 	}
 	if (GetGameObject()->GetPosition().y > 0.5) {
 		GetGameObject()->SetPostion(glm::vec3(1.5f, 0.01f, 1.255f));
