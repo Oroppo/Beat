@@ -272,6 +272,7 @@ int main() {
 		MeshResource::Sptr tableMesh = ResourceManager::CreateAsset<MeshResource>("table.obj");
 		MeshResource::Sptr puckMesh = ResourceManager::CreateAsset<MeshResource>("puck.obj");
 		MeshResource::Sptr paddleMesh = ResourceManager::CreateAsset<MeshResource>("paddle.obj");
+		MeshResource::Sptr ScoreBoard = ResourceManager::CreateAsset<MeshResource>("ScoreBoard.obj");
 
 		Texture2D::Sptr    boxTexture = ResourceManager::CreateAsset<Texture2D>("textures/box-diffuse.png");
 		Texture2D::Sptr    monkeyTex  = ResourceManager::CreateAsset<Texture2D>("textures/monkey-uvMap.png");
@@ -345,21 +346,21 @@ int main() {
 			R0_mat->Name = "R0";
 			R0_mat->MatShader = scene->BaseShader;
 			R0_mat->Texture = R0_Tex;
-			R0_mat->Shininess = 1.0f;
+			R0_mat->Shininess = 0.0f;
 		}
 		Material::Sptr R1_mat = ResourceManager::CreateAsset<Material>();
 		{
 			R1_mat->Name = "R1";
 			R1_mat->MatShader = scene->BaseShader;
 			R1_mat->Texture = R1_Tex;
-			R1_mat->Shininess = 1.0f;
+			R1_mat->Shininess = 0.0f;
 		}
 		Material::Sptr R2_mat = ResourceManager::CreateAsset<Material>();
 		{
 			R2_mat->Name = "R2";
 			R2_mat->MatShader = scene->BaseShader;
 			R2_mat->Texture = R2_Tex;
-			R2_mat->Shininess = 1.0f;
+			R2_mat->Shininess = 0.0f;
 		}
 		Material::Sptr R3_mat = ResourceManager::CreateAsset<Material>();
 		{
@@ -424,10 +425,10 @@ int main() {
 		scene->Lights[2].Color = glm::vec3(1.0f, 0.2f, 0.1f);
 
 		// We'll create a mesh that is a simple plane that we can resize later
-		MeshResource::Sptr planeMesh = ResourceManager::CreateAsset<MeshResource>();
-		planeMesh->AddParam(MeshBuilderParam::CreatePlane(ZERO, UNIT_Z, UNIT_X, glm::vec2(1.0f)));
-		planeMesh->GenerateMesh();
-
+	//	MeshResource::Sptr planeMesh = ResourceManager::CreateAsset<MeshResource>();
+	//	planeMesh->AddParam(MeshBuilderParam::CreatePlane(ZERO, UNIT_Z, UNIT_X, glm::vec2(1.0f)));
+	//	planeMesh->GenerateMesh();
+	//
 		// Set up the scene's camera
 		GameObject::Sptr camera = scene->CreateGameObject("Main Camera");
 		{
@@ -514,7 +515,16 @@ int main() {
 		//	RotatingBehaviour::Sptr behaviour = monkey2->Add<RotatingBehaviour>();
 		//	behaviour->RotationSpeed = glm::vec3(0.0f, 0.0f, -90.0f);
 		//}
+		GameObject::Sptr ScoreP1 = scene->CreateGameObject("ScoreP1"); {
+			ScoreP1->SetPostion(glm::vec3(1.0f, 1.5f, 1.00f));
+			ScoreP1->SetRotation(glm::vec3(45, 0, -180));
+			ScoreP1->SetScale(glm::vec3 (2.0f, 2.0f, 2.0f));
 
+
+			RenderComponent::Sptr renderer = ScoreP1->Add<RenderComponent>();
+			renderer->SetMesh(ScoreBoard);
+			renderer->SetMaterial(R2_mat);
+		}
 		GameObject::Sptr table = scene->CreateGameObject("Table");
 		{
 			// Set position in the scene
