@@ -42,6 +42,7 @@ void CharacterController::Update(float deltaTime) {
     bool _D = glfwGetKey(GetGameObject()->GetScene()->Window, GLFW_KEY_D);
     bool _W = glfwGetKey(GetGameObject()->GetScene()->Window, GLFW_KEY_W);
 
+    glm::vec3 CurrentPosition = GetGameObject()->GetPosition();
 
     if (_A) {
         GetGameObject()->SetPostion(GetGameObject()->GetPosition() + glm::vec3(-0.005f, 0.0f, 0.0f));
@@ -55,6 +56,20 @@ void CharacterController::Update(float deltaTime) {
     if (_S) {
         GetGameObject()->SetPostion(GetGameObject()->GetPosition() + glm::vec3(0.0f, -0.005f, 0.0f));
     }
+
+    if (GetGameObject()->GetPosition().x < 0.775) {
+        GetGameObject()->SetPostion(glm::vec3(0.780f, CurrentPosition.y, CurrentPosition.z));
+    }
+    if (GetGameObject()->GetPosition().x > 1.40) {
+        GetGameObject()->SetPostion(glm::vec3(1.395f, CurrentPosition.y, CurrentPosition.z));
+    }
+    if (GetGameObject()->GetPosition().y > 0.4) {
+        GetGameObject()->SetPostion(glm::vec3(CurrentPosition.x, 0.395f, CurrentPosition.z));
+    }
+    if (GetGameObject()->GetPosition().y < -0.4) {
+        GetGameObject()->SetPostion(glm::vec3(CurrentPosition.x, -0.395f, CurrentPosition.z));
+    }
+
 
 }
 

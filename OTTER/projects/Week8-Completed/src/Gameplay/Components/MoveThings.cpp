@@ -42,16 +42,29 @@ void MoveThings::Update(float deltaTime) {
 	btRigidBody* bullshit = _body->GetBody();
 	bullshit->getLinearVelocity();
 	glm::vec3 fuckery = ToGlm(bullshit->getLinearVelocity());
-
-	
 	
 	GetGameObject()->SetPostion(
 		(GetGameObject()->GetPosition() + (fuckery * cumDuggery)));
+
 	bullshit->setAngularVelocity(ToBt(glm::vec3(0, 0, 0)));
 	bullshit->setFriction(0.01);
 	bullshit->setDamping(0,0);
 	bullshit->setRestitution(0);
 
+	glm::vec3 CurrentPosition = GetGameObject()->GetPosition();
 
+	if (GetGameObject()->GetPosition().x < 0.6) {
+		GetGameObject()->SetPostion(glm::vec3(1.5f, 0.01f, 1.255f));
+	}
+	if (GetGameObject()->GetPosition().x > 2.40) {
+		GetGameObject()->SetPostion(glm::vec3(1.5f, 0.01f, 1.255f));
+	}
+	if (GetGameObject()->GetPosition().y > 0.5) {
+		GetGameObject()->SetPostion(glm::vec3(1.5f, 0.01f, 1.255f));
+	}
+	if (GetGameObject()->GetPosition().y < -0.5) {
+		GetGameObject()->SetPostion(glm::vec3(1.5f, 0.01f, 1.255f));
+	}
+	
 }
 

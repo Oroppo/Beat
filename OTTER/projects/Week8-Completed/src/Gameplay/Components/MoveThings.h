@@ -28,10 +28,11 @@ public:
 		cumDuggery = foo;
 	}
 
-
 protected:
 
 	float cumDuggery;
+	int score;
+
 	bool _isPressed = false;
 	Gameplay::Physics::RigidBody::Sptr _body;
 };

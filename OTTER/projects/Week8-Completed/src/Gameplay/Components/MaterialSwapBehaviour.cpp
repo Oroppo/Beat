@@ -7,6 +7,8 @@ MaterialSwapBehaviour::MaterialSwapBehaviour() :
 	_renderer(nullptr),
 	EnterMaterial(nullptr),
 	ExitMaterial(nullptr)
+
+
 { }
 MaterialSwapBehaviour::~MaterialSwapBehaviour() = default;
 
@@ -14,6 +16,7 @@ void MaterialSwapBehaviour::OnEnteredTrigger(const Gameplay::Physics::TriggerVol
 	if (_renderer && EnterMaterial) {
 		_renderer->SetMaterial(EnterMaterial);
 	}
+
 	LOG_INFO("Entered trigger: {}", trigger->GetGameObject()->Name);
 }
 

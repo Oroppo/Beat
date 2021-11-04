@@ -575,7 +575,7 @@ int main() {
 			renderer->SetMaterial(paddleBlueMaterial);
 
 			// Add a dynamic rigid body
-			RigidBody::Sptr physics = paddle->Add<RigidBody>(RigidBodyType::Static);
+			RigidBody::Sptr physics = paddle->Add<RigidBody>(RigidBodyType::Kinematic);
 
 			ICollider::Sptr Box1 = physics->AddCollider(BoxCollider::Create(glm::vec3(0.05f, 0.04f, 0.05f)));
 			Box1->SetPosition(glm::vec3(0.0f, 0.04f, 0.0f));
@@ -596,7 +596,7 @@ int main() {
 			renderer->SetMaterial(paddleRedMaterial);
 
 			// Add a dynamic rigid body
-			RigidBody::Sptr physics = paddle2->Add<RigidBody>(RigidBodyType::Static);
+			RigidBody::Sptr physics = paddle2->Add<RigidBody>(RigidBodyType::Kinematic);
 			ICollider::Sptr Box1 = physics->AddCollider(BoxCollider::Create(glm::vec3(0.05f, 0.04f, 0.05f)));
 			Box1->SetPosition(glm::vec3(0.0f, 0.04f, 0.0f));
 		}
@@ -604,7 +604,7 @@ int main() {
 		GameObject::Sptr puck = scene->CreateGameObject("Puck");
 		{
 			// Set position in the scene
-			puck->SetPostion(glm::vec3(1.5f, 0.0f, 1.055f));
+			puck->SetPostion(glm::vec3(1.5f, 0.01f, 1.255f));
 			puck->SetRotation(glm::vec3(90.0f, 0.0f, 0.0f));
 
 			MoveThings::Sptr movement = puck->Add<MoveThings>();
