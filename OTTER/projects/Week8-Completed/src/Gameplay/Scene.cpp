@@ -113,6 +113,7 @@ namespace Gameplay {
 				obj->Update(dt);
 			}
 		}
+
 	}
 
 	void Scene::SetShaderLight(int index, bool update /*= true*/) {

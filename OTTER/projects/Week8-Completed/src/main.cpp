@@ -417,14 +417,16 @@ int main() {
 		// Create some lights for our scene
 		scene->Lights.resize(3);
 		scene->Lights[0].Position = glm::vec3(0.0f, 1.0f, 3.0f);
-		scene->Lights[0].Color = glm::vec3(0.5f, 0.0f, 0.7f);
-		scene->Lights[0].Range = 10.0f;
+		scene->Lights[0].Color = glm::vec3(1.0f, 1.0f, 1.0f);
+		scene->Lights[0].Range = 0.1f;
 
 		scene->Lights[1].Position = glm::vec3(1.0f, 0.0f, 3.0f);
-		scene->Lights[1].Color = glm::vec3(0.2f, 0.8f, 0.1f);
+		scene->Lights[1].Color = glm::vec3(0.2f, 0.8f, 1.0f);
+		scene->Lights[1].Range = 0.5f;
 
 		scene->Lights[2].Position = glm::vec3(0.0f, 1.0f, 3.0f);
-		scene->Lights[2].Color = glm::vec3(1.0f, 0.2f, 0.1f);
+		scene->Lights[2].Color = glm::vec3(1.0f, 0.2f, 1.0f);
+		scene->Lights[2].Range = 0.5f;
 
 		// We'll create a mesh that is a simple plane that we can resize later
 	//	MeshResource::Sptr planeMesh = ResourceManager::CreateAsset<MeshResource>();
@@ -529,9 +531,18 @@ int main() {
 
 
 			RenderComponent::Sptr renderer = ScoreP2->Add<RenderComponent>();
+
 			renderer->SetMesh(ScoreBoard);
 			renderer->SetMaterial(R0_mat);
+			
 			// We'll add a behaviour that will interact with our trigger volumes
+			MaterialSwapBehaviour::Sptr triggerInteraction = ScoreP2->Add<MaterialSwapBehaviour>();
+
+			RigidBody::Sptr physics = ScoreP2->Add<RigidBody>(RigidBodyType::Kinematic);
+			ICollider::Sptr Box1 = physics->AddCollider(BoxCollider::Create(glm::vec3(0.25f)));
+
+			triggerInteraction->EnterMaterial = R0_mat;
+			triggerInteraction->ExitMaterial = R1_mat;
 		}
 
 
@@ -541,15 +552,15 @@ int main() {
 		{
 			ScoreP1->SetPostion(glm::vec3(1.0f, 1.5f, 1.0f));
 			ScoreP1->SetRotation(glm::vec3(45, 0, -180));
+			ScoreP1->SetScale(glm::vec3(2.0f, 2.0f, 2.0f));
 			
-
 		
 			RenderComponent::Sptr renderer = ScoreP1->Add<RenderComponent>();
 			renderer->SetMesh(ScoreBoard);
 			renderer->SetMaterial(R0_mat);
 
-			RigidBody::Sptr physics = ScoreP1->Add<RigidBody>(RigidBodyType::Static);
-			ICollider::Sptr Box1 = physics->AddCollider(BoxCollider::Create(glm::vec3(0.5f)));
+			RigidBody::Sptr physics = ScoreP1->Add<RigidBody>(RigidBodyType::Kinematic);
+			ICollider::Sptr Box1 = physics->AddCollider(BoxCollider::Create(glm::vec3(0.25f)));
 
 		
 			// We'll add a behaviour that will interact with our trigger volumes
@@ -591,6 +602,22 @@ int main() {
 			ICollider::Sptr Box5 = physics->AddCollider(BoxCollider::Create(glm::vec3(2.0f, 0.7f, 0.5f)));
 			Box5->SetPosition(glm::vec3(0.0f, -0.7f, 0.0f));
 			Box5->SetRotation(glm::vec3(0.0f, 0.0f, 0.0f));
+
+			ICollider::Sptr Box6 = physics->AddCollider(BoxCollider::Create(glm::vec3(0.05f, 0.2f, 0.2f)));
+			Box6->SetPosition(glm::vec3(-0.84f, 0.10f, -0.390f));
+			Box6->SetRotation(glm::vec3(0.0f, 0.0f, 0.0f));
+
+			ICollider::Sptr Box7 = physics->AddCollider(BoxCollider::Create(glm::vec3(0.05f, 0.2f, 0.2f)));
+			Box7->SetPosition(glm::vec3(-0.84f, 0.150f, 0.320f));
+			Box7->SetRotation(glm::vec3(0.0f, 0.0f, 0.0f));
+
+			ICollider::Sptr Box8 = physics->AddCollider(BoxCollider::Create(glm::vec3(0.05f, 0.2f, 0.2f)));
+			Box8->SetPosition(glm::vec3(0.84f, 0.10f, -0.390f));
+			Box8->SetRotation(glm::vec3(0.0f, 0.0f, 0.0f));
+
+			ICollider::Sptr Box9 = physics->AddCollider(BoxCollider::Create(glm::vec3(0.05f, 0.2f, 0.2f)));
+			Box9->SetPosition(glm::vec3(0.84f, 0.150f, 0.320f));
+			Box9->SetRotation(glm::vec3(0.0f, 0.0f, 0.0f));
 		}
 
 		GameObject::Sptr paddle = scene->CreateGameObject("Paddle");
@@ -599,7 +626,6 @@ int main() {
 			paddle->SetPostion(glm::vec3(1.0f, -0.01f, 1.00f));
 			paddle->SetRotation(glm::vec3(90.0f, 0.04f, 0.0f));
 
-			//paddle->Add<CharacterController>();
 			paddle->Add<CharacterController>();
 
 			// Create and attach a renderer for the monkey
@@ -661,7 +687,6 @@ int main() {
 		{
 			TriggerVolume::Sptr volume = trigger->Add<TriggerVolume>();
 			BoxCollider::Sptr collider = BoxCollider::Create(glm::vec3(0.5f, 0.5f, 0.5f));
-		
 			collider->SetPosition(glm::vec3(0.0f, 0.0f, 0.5f));
 			volume->AddCollider(collider);
 		}
@@ -671,15 +696,6 @@ int main() {
 		// Save the scene to a JSON file
 		scene->Save("scene.json");
 	}
-
-
-
-		
-
-
-
-
-
 
 	// Call scene awake to start up all of our components
 	scene->Window = window;
@@ -714,6 +730,7 @@ int main() {
 
 		// Showcasing how to use the imGui library!
 		bool isDebugWindowOpen = ImGui::Begin("Debugging");
+
 		if (isDebugWindowOpen) {
 			// Draws a button to control whether or not the game is currently playing
 			static char buttonLabel[64];

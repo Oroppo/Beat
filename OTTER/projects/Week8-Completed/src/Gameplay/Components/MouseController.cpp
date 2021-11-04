@@ -103,5 +103,6 @@ void MouseController::Update(float deltaTime) {
 
     //this frame last frame
     SetLastFrame(thisFrame);
+    GetGameObject()->GetScene()->Lights[2].Position = GetGameObject()->GetPosition();
 }
 

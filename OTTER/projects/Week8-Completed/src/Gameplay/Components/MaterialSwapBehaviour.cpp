@@ -16,6 +16,8 @@ void MaterialSwapBehaviour::OnEnteredTrigger(const Gameplay::Physics::TriggerVol
 		_renderer->SetMaterial(EnterMaterial);
 	}
 
+	std::cout << "Collision Detected" << std::endl;
+
 	LOG_INFO("Entered trigger: {}", trigger->GetGameObject()->Name);
 }
 

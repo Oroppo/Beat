@@ -6,6 +6,7 @@
 #include "Utils/GlmBulletConversions.h"
 #include "ComponentManager.h"
 #include "ScoreComponent.h"
+#include <string>
 
 
 void MoveThings::Awake()
@@ -59,20 +60,20 @@ void MoveThings::Update(float deltaTime) {
 
 	glm::vec3 CurrentPosition = GetGameObject()->GetPosition();
 
-	if (GetGameObject()->GetPosition().x < 0.6) {
+	if (GetGameObject()->GetPosition().x < 0.7) {
 		GetGameObject()->SetPostion(glm::vec3(1.5f, 0.01f, 1.255f));
 		currentVel->setLinearVelocity(ToBt(glm::vec3(0.f,0.f,0.f)));
 
 		_scoreP2->IncrementScore();
-		std::cout << _scoreP2->GetScore() << std::endl;
+		std::cout << "Player 2 Score: "<< _scoreP2->GetScore() << std::endl;
 
 	}
-	if (GetGameObject()->GetPosition().x > 2.40) {
+	if (GetGameObject()->GetPosition().x > 2.30) {
 		GetGameObject()->SetPostion(glm::vec3(1.5f, 0.01f, 1.255f));
 		currentVel->setLinearVelocity(ToBt(glm::vec3(0.f, 0.f, 0.f)));
 
 		_scoreP1->IncrementScore();
-		std::cout << _scoreP1->GetScore() << std::endl;
+		std::cout << "Player 1 Score: " << _scoreP1->GetScore() << std::endl;
 
 	}
 	if (GetGameObject()->GetPosition().y > 0.5) {
@@ -83,6 +84,6 @@ void MoveThings::Update(float deltaTime) {
 		GetGameObject()->SetPostion(glm::vec3(1.5f, 0.01f, 1.255f));
 		currentVel->setLinearVelocity(ToBt(glm::vec3(0.f, 0.f, 0.f)));
 	}
-	
+	GetGameObject()->GetScene()->Lights[0].Position = GetGameObject()->GetPosition();
 }
 

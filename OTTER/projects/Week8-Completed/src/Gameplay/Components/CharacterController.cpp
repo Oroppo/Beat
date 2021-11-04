@@ -45,16 +45,16 @@ void CharacterController::Update(float deltaTime) {
     glm::vec3 CurrentPosition = GetGameObject()->GetPosition();
 
     if (_A) {
-        GetGameObject()->SetPostion(GetGameObject()->GetPosition() + glm::vec3(-0.005f, 0.0f, 0.0f));
+        GetGameObject()->SetPostion(GetGameObject()->GetPosition() + glm::vec3(-0.02f, 0.0f, 0.0f));
     }
     if (_D) {
-        GetGameObject()->SetPostion(GetGameObject()->GetPosition() + glm::vec3(0.005f, 0.0f, 0.0f));
+        GetGameObject()->SetPostion(GetGameObject()->GetPosition() + glm::vec3(0.02f, 0.0f, 0.0f));
     }
     if (_W) {
-        GetGameObject()->SetPostion(GetGameObject()->GetPosition() + glm::vec3(0.0f, 0.005f, 0.0f));
+        GetGameObject()->SetPostion(GetGameObject()->GetPosition() + glm::vec3(0.0f, 0.02f, 0.0f));
     }
     if (_S) {
-        GetGameObject()->SetPostion(GetGameObject()->GetPosition() + glm::vec3(0.0f, -0.005f, 0.0f));
+        GetGameObject()->SetPostion(GetGameObject()->GetPosition() + glm::vec3(0.0f, -0.02f, 0.0f));
     }
 
     if (GetGameObject()->GetPosition().x < 0.775) {
@@ -70,6 +70,6 @@ void CharacterController::Update(float deltaTime) {
         GetGameObject()->SetPostion(glm::vec3(CurrentPosition.x, -0.395f, CurrentPosition.z));
     }
 
-
+    GetGameObject()->GetScene()->Lights[1].Position = GetGameObject()->GetPosition();
 }
 
