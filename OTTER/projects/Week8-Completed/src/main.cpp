@@ -517,24 +517,33 @@ int main() {
 		//	RotatingBehaviour::Sptr behaviour = monkey2->Add<RotatingBehaviour>();
 		//	behaviour->RotationSpeed = glm::vec3(0.0f, 0.0f, -90.0f);
 		//}
-		//GameObject::Sptr ScoreP1 = scene->CreateGameObject("ScoreP1");
-		//{
-		//	ScoreP1->SetPostion(glm::vec3(1.0f, 1.5f, 1.00f));
-		//	ScoreP1->SetRotation(glm::vec3(45, 0, -180));
-		//	ScoreP1->SetScale(glm::vec3 (2.0f, 2.0f, 2.0f));
-		//
-		//
-		//	RenderComponent::Sptr renderer = ScoreP1->Add<RenderComponent>();
-		//	renderer->SetMesh(ScoreBoard);
-		//	renderer->SetMaterial(R2_mat);
-		//
-		//	// We'll add a behaviour that will interact with our trigger volumes
-		//	MaterialSwapBehaviour::Sptr triggerInteraction = ScoreP1->Add<MaterialSwapBehaviour>();
-		//
-		//	triggerInteraction->EnterMaterial = R0_Tex;
-		//	triggerInteraction->ExitMaterial = R1_Tex;
-		//}
 
+		GameObject::Sptr ScoreP1 = scene->CreateGameObject("ScoreP1");
+		{
+			ScoreP1->SetPostion(glm::vec3(1.0f, 1.5f, 1.00f));
+			ScoreP1->SetRotation(glm::vec3(45, 0, -180));
+			ScoreP1->SetScale(glm::vec3 (2.0f, 2.0f, 2.0f));
+		
+		
+			RenderComponent::Sptr renderer = ScoreP1->Add<RenderComponent>();
+			renderer->SetMesh(ScoreBoard);
+			renderer->SetMaterial(R0_mat);
+		
+			// We'll add a behaviour that will interact with our trigger volumes
+		}
+
+		GameObject::Sptr ScoreP2 = scene->CreateGameObject("ScoreP2");
+		{
+			ScoreP2->SetPostion(glm::vec3(2.0f, 1.5f, 1.00f));
+			ScoreP2->SetRotation(glm::vec3(45, 0, -180));
+			ScoreP2->SetScale(glm::vec3(2.0f, 2.0f, 2.0f));
+
+
+			RenderComponent::Sptr renderer = ScoreP2->Add<RenderComponent>();
+			renderer->SetMesh(ScoreBoard);
+			renderer->SetMaterial(R0_mat);
+			// We'll add a behaviour that will interact with our trigger volumes
+		}
 
 		GameObject::Sptr table = scene->CreateGameObject("Table");
 		{
@@ -568,21 +577,8 @@ int main() {
 			ICollider::Sptr Box5 = physics->AddCollider(BoxCollider::Create(glm::vec3(2.0f, 0.7f, 0.5f)));
 			Box5->SetPosition(glm::vec3(0.0f, -0.7f, 0.0f));
 			Box5->SetRotation(glm::vec3(0.0f, 0.0f, 0.0f));
-
-
 		}
-		GameObject::Sptr Ltrigger = scene->CreateGameObject("Ltrigger");
-		{
-			// Set position in the scene
-			Ltrigger->SetPostion(glm::vec3(1.5f, 0.0f, 1.0f));
 
-			// Add a dynamic rigid body to this monkey
-			RigidBody::Sptr physics = Ltrigger->Add<RigidBody>(RigidBodyType::Static);
-			physics->AddCollider(BoxCollider::Create());
-
-
-
-		}
 
 
 		GameObject::Sptr paddle = scene->CreateGameObject("Paddle");
@@ -694,7 +690,7 @@ int main() {
 	while (!glfwWindowShouldClose(window)) {
 		glfwPollEvents();
 		ImGuiHelper::StartFrame();
-
+		
 		// Calculate the time since our last frame (dt)
 		double thisFrame = glfwGetTime();
 		float dt = static_cast<float>(thisFrame - lastFrame);

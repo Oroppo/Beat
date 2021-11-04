@@ -22,15 +22,15 @@ public:
 	static MoveThings::Sptr FromJson(const nlohmann::json& blob);
 
 	float GetCoefficient() {
-		return cumDuggery;
+		return ScalarAdjustment;
 	}
 	void SetCoefficient(float foo) {
-		cumDuggery = foo;
+		ScalarAdjustment = foo;
 	}
 
 protected:
 
-	float cumDuggery;
+	float ScalarAdjustment;
 	int score;
 
 	bool _isPressed = false;
