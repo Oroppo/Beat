@@ -120,9 +120,9 @@ void GlDebugMessage(GLenum source, GLenum type, GLuint id, GLenum severity, GLsi
 // Stores our GLFW window in a global variable for now
 GLFWwindow* window;
 // The current size of our window in pixels
-glm::ivec2 windowSize = glm::ivec2(800, 800);
+glm::ivec2 windowSize = glm::ivec2(1000, 1000);
 // The title of our GLFW window
-std::string windowTitle = "INFR-1350U";
+std::string windowTitle = "Dante sucks";
 
 // using namespace should generally be avoided, and if used, make sure it's ONLY in cpp files
 using namespace Gameplay;
@@ -227,7 +227,33 @@ bool DrawLightImGui(const Scene::Sptr& scene, const char* title, int ix) {
 	return result;
 }
 
-int main() {
+void SpawnObj(MeshResource::Sptr Mesh, Material::Sptr Material, std::string ObjName = "DeezNuts", glm::vec3 pos = glm::vec3(-10.900f, 5.610f, -4.920f),
+			glm::vec3 rot = glm::vec3(180.0f, 0.0f, 180.0f), glm::vec3 scale = glm::vec3(0.220f, 0.220f, 0.220f)) {
+	// Tutorial Stuff
+	GameObject::Sptr Startplatform = scene->CreateGameObject(ObjName);
+	{
+		// Set position in the scene
+		Startplatform->SetPostion(pos);
+		Startplatform->SetRotation(rot);
+		Startplatform->SetScale(scale);
+
+		// Create and attach a renderer for the monkey
+		RenderComponent::Sptr renderer = Startplatform->Add<RenderComponent>();
+		renderer->SetMesh(Mesh);
+		renderer->SetMaterial(Material);
+
+		// Add a dynamic rigid body to this monkey
+		RigidBody::Sptr physics = Startplatform->Add<RigidBody>(RigidBodyType::Static);
+		//physics->AddCollider(BoxCollider::Create(glm::vec3(1.0f, 1.0f, 1.0f)));
+
+		// FIX THIS //
+		ICollider::Sptr Box1 = physics->AddCollider(BoxCollider::Create(glm::vec3(1.0f, 1.0f, 1.0f)));
+		Box1->SetPosition(glm::vec3(-0.930f, 0.140f, 0.0f));
+
+	}
+}
+
+int main() {	
 	Logger::Init(); // We'll borrow the logger from the toolkit, but we need to initialize it
 
 	//Initialize GLFW
@@ -287,29 +313,29 @@ int main() {
 			{ ShaderPartType::Fragment, "shaders/frag_blinn_phong_textured.glsl" }
 		}); 
 
-		MeshResource::Sptr monkeyMesh = ResourceManager::CreateAsset<MeshResource>("Monkey.obj");
-		MeshResource::Sptr tableMesh = ResourceManager::CreateAsset<MeshResource>("table.obj");
-		MeshResource::Sptr puckMesh = ResourceManager::CreateAsset<MeshResource>("puck.obj");
-		MeshResource::Sptr paddleMesh = ResourceManager::CreateAsset<MeshResource>("paddle.obj");
-		MeshResource::Sptr ScoreBoard = ResourceManager::CreateAsset<MeshResource>("ScoreBoard.obj");
+		//MeshResource::Sptr tableMesh = ResourceManager::CreateAsset<MeshResource>("table.obj");
+		//MeshResource::Sptr puckMesh = ResourceManager::CreateAsset<MeshResource>("puck.obj");
+		//MeshResource::Sptr paddleMesh = ResourceManager::CreateAsset<MeshResource>("paddle.obj");
+		//MeshResource::Sptr ScoreBoard = ResourceManager::CreateAsset<MeshResource>("ScoreBoard.obj");
+		
+		//Default Obj
+		MeshResource::Sptr Default = ResourceManager::CreateAsset<MeshResource>("bruh.obj");
 
-		Texture2D::Sptr    boxTexture = ResourceManager::CreateAsset<Texture2D>("textures/box-diffuse.png");
-		Texture2D::Sptr    monkeyTex  = ResourceManager::CreateAsset<Texture2D>("textures/monkey-uvMap.png");
-		Texture2D::Sptr    tableTex = ResourceManager::CreateAsset<Texture2D>("textures/HockeyRink.png");
-		Texture2D::Sptr    puckTex = ResourceManager::CreateAsset<Texture2D>("textures/puck.png");
-		Texture2D::Sptr    paddleRedTex = ResourceManager::CreateAsset<Texture2D>("textures/HockeyStickRed.png");
-		Texture2D::Sptr    paddleBlueTex = ResourceManager::CreateAsset<Texture2D>("textures/HockeyStickBlue.png");
+		MeshResource::Sptr StartPlatform = ResourceManager::CreateAsset<MeshResource>("StartPlatformV3.obj");
+		MeshResource::Sptr SmallPlatform = ResourceManager::CreateAsset<MeshResource>("SmallPlatformV2.obj");
+		MeshResource::Sptr WallJump = ResourceManager::CreateAsset<MeshResource>("WallJumpV3.obj");
+		MeshResource::Sptr BeatGem = ResourceManager::CreateAsset<MeshResource>("Gem.obj");
+		MeshResource::Sptr Vinyl = ResourceManager::CreateAsset<MeshResource>("VinylV2.obj");
+		MeshResource::Sptr TutorialSign = ResourceManager::CreateAsset<MeshResource>("TutorialSign.obj");
 
-		Texture2D::Sptr    R0_Tex = ResourceManager::CreateAsset<Texture2D>("textures/R0.png");
-		Texture2D::Sptr    R1_Tex = ResourceManager::CreateAsset<Texture2D>("textures/R1.png");
-		Texture2D::Sptr    R2_Tex = ResourceManager::CreateAsset<Texture2D>("textures/R2.png");
-		Texture2D::Sptr    R3_Tex = ResourceManager::CreateAsset<Texture2D>("textures/R3.png");
-		Texture2D::Sptr    R4_Tex = ResourceManager::CreateAsset<Texture2D>("textures/R4.png");
-		Texture2D::Sptr    R5_Tex = ResourceManager::CreateAsset<Texture2D>("textures/R5.png");
-		Texture2D::Sptr    R6_Tex = ResourceManager::CreateAsset<Texture2D>("textures/R6.png");
-		Texture2D::Sptr    R7_Tex = ResourceManager::CreateAsset<Texture2D>("textures/R7.png");
-		Texture2D::Sptr    R8_Tex = ResourceManager::CreateAsset<Texture2D>("textures/R8.png");
-		Texture2D::Sptr    R9_Tex = ResourceManager::CreateAsset<Texture2D>("textures/R9.png");
+		Texture2D::Sptr tableTex = ResourceManager::CreateAsset<Texture2D>("textures/HockeyRink.png"); // delete this later 
+		
+		Texture2D::Sptr StartTex = ResourceManager::CreateAsset<Texture2D>("textures/StartPlatformTexture.png"); // Does not exist yet loam
+		Texture2D::Sptr SmallTex = ResourceManager::CreateAsset<Texture2D>("textures/StartPlatformTexture.png"); // Does not exist yet loam
+		Texture2D::Sptr VinylTex = ResourceManager::CreateAsset<Texture2D>("textures/Vinyl.png"); // Does not exist yet loam
+		Texture2D::Sptr GemTex = ResourceManager::CreateAsset<Texture2D>("textures/Gem.png"); // Does exist just reload loam
+		Texture2D::Sptr TutorialSignTex = ResourceManager::CreateAsset<Texture2D>("textures/TutorialSign.png"); // Does not exist yet loam
+
 		// Create an empty scene
 		scene = std::make_shared<Scene>();
 
@@ -317,21 +343,69 @@ int main() {
 		scene->BaseShader = uboShader;
 
 		// Create our materials
-		Material::Sptr boxMaterial = ResourceManager::CreateAsset<Material>();
+		Material::Sptr StartPlatformMaterial = ResourceManager::CreateAsset<Material>();
 		{
-			boxMaterial->Name = "Box";
-			boxMaterial->MatShader = scene->BaseShader;
-			boxMaterial->Texture = boxTexture;
-			boxMaterial->Shininess = 2.0f;
-		}	
-
-		Material::Sptr monkeyMaterial = ResourceManager::CreateAsset<Material>();
-		{
-			monkeyMaterial->Name = "Monkey";
-			monkeyMaterial->MatShader = scene->BaseShader;
-			monkeyMaterial->Texture = monkeyTex;
-			monkeyMaterial->Shininess = 256.0f;
+			StartPlatformMaterial->Name = "StartPlatform";
+			StartPlatformMaterial->MatShader = scene->BaseShader;
+			StartPlatformMaterial->Texture = tableTex;
+			StartPlatformMaterial->Shininess = 2.0f;
 		}
+
+		Material::Sptr SmallPlatformMaterial = ResourceManager::CreateAsset<Material>();
+		{
+			SmallPlatformMaterial->Name = "SmallPlatform";
+			SmallPlatformMaterial->MatShader = scene->BaseShader;
+			SmallPlatformMaterial->Texture = tableTex;
+			SmallPlatformMaterial->Shininess = 2.0f;
+		}
+
+		Material::Sptr WallJumpMaterial = ResourceManager::CreateAsset<Material>();
+		{
+			WallJumpMaterial->Name = "WallJump";
+			WallJumpMaterial->MatShader = scene->BaseShader;
+			WallJumpMaterial->Texture = tableTex;
+			WallJumpMaterial->Shininess = 2.0f;
+		}
+
+		Material::Sptr BeatGemMaterial = ResourceManager::CreateAsset<Material>();
+		{
+			BeatGemMaterial->Name = "BeatGem";
+			BeatGemMaterial->MatShader = scene->BaseShader;
+			BeatGemMaterial->Texture = GemTex;
+			BeatGemMaterial->Shininess = 2.0f;
+		}
+
+		Material::Sptr VinylMaterial = ResourceManager::CreateAsset<Material>();
+		{
+			VinylMaterial->Name = "Vinyl";
+			VinylMaterial->MatShader = scene->BaseShader;
+			VinylMaterial->Texture = VinylTex;
+			VinylMaterial->Shininess = 2.0f;
+		}
+
+		Material::Sptr TutorialSignMaterial = ResourceManager::CreateAsset<Material>();
+		{
+			TutorialSignMaterial->Name = "Tutorial Sign";
+			TutorialSignMaterial->MatShader = scene->BaseShader;
+			TutorialSignMaterial->Texture = TutorialSignTex;
+			TutorialSignMaterial->Shininess = 2.0f;
+		}
+
+		SpawnObj(StartPlatform, StartPlatformMaterial, "StartPlatform");
+		SpawnObj(SmallPlatform, SmallPlatformMaterial, "Small Platform 1", glm::vec3(-7.490f, 5.610f, -4.150f), glm::vec3(180.0f, 0.0f, 180.0f), glm::vec3(0.310f, 0.310f, 0.310f));
+		SpawnObj(SmallPlatform, SmallPlatformMaterial, "Small Platform 2", glm::vec3(-4.710f, 5.610f, -3.580f), glm::vec3(180.0f, 0.0f, 180.0f), glm::vec3(0.310f, 0.310f, 0.310f));
+		SpawnObj(SmallPlatform, SmallPlatformMaterial, "Small Platform 3", glm::vec3(-2.200f, 5.610f, -4.150f), glm::vec3(180.0f, 0.0f, 180.0f), glm::vec3(0.310f, 0.310f, 0.310f));
+		SpawnObj(SmallPlatform, SmallPlatformMaterial, "Small Platform 4", glm::vec3(-0.940f, 5.610f, 4.250f), glm::vec3(180.0f, 0.0f, 180.0f), glm::vec3(0.310f, 0.310f, 0.310f));
+		SpawnObj(WallJump, WallJumpMaterial, "Wall Jump 1", glm::vec3(1.680f, 5.610f, 5.450f), glm::vec3(180.0f, 0.0f, 180.0f), glm::vec3(0.500f, 0.040f, 1.500f));
+		SpawnObj(WallJump, WallJumpMaterial, "Wall Jump 2", glm::vec3(4.350f, 5.610f, 3.930f), glm::vec3(180.0f, 0.0f, 180.0f), glm::vec3(0.500f, 0.040f, 1.500f));
+		SpawnObj(BeatGem, BeatGemMaterial, "BeatGem", glm::vec3(2.410f, 5.610f, -3.160f), glm::vec3(90.0f, 0.0f, 180.0f), glm::vec3(0.500f, 0.500f, 0.500f));
+		SpawnObj(Vinyl, VinylMaterial, "Vinyl", glm::vec3(-0.040f, 5.610f, 5.920f), glm::vec3(90.000f, 0.0f, 90.000f), glm::vec3(1.000f, 1.000f, 1.000f));
+		SpawnObj(TutorialSign, TutorialSignMaterial, "Tutorial Sign 1", glm::vec3(-9.150f, 5.690f, -3.590f), glm::vec3(90.0f, 0.0f, 90.0f), glm::vec3(0.310f, 0.310f, 0.310f));
+		SpawnObj(TutorialSign, TutorialSignMaterial, "Tutorial Sign 2", glm::vec3(-1.270f, 5.690f, -2.910f), glm::vec3(90.0f, 0.0f, 90.0f), glm::vec3(0.310f, 0.310f, 0.310f));
+		SpawnObj(StartPlatform, StartPlatformMaterial, "EndPlatform", glm::vec3(5.950f, 5.610f, -4.920f), glm::vec3(180.0f, 0.0f, 180.0f), glm::vec3(0.220f, 0.220f, 0.220f));
+
+		// (Delete this later)
+		/*
 		Material::Sptr tableMaterial = ResourceManager::CreateAsset<Material>();
 		{
 			tableMaterial->Name = "Table";
@@ -360,77 +434,8 @@ int main() {
 			paddleBlueMaterial->Texture = paddleBlueTex;
 			paddleBlueMaterial->Shininess = 2.0f;
 		}
-		Material::Sptr R0_mat = ResourceManager::CreateAsset<Material>();
-		{
-			R0_mat->Name = "R0";
-			R0_mat->MatShader = scene->BaseShader;
-			R0_mat->Texture = R0_Tex;
-			R0_mat->Shininess = 0.0f;
-		}
-		Material::Sptr R1_mat = ResourceManager::CreateAsset<Material>();
-		{
-			R1_mat->Name = "R1";
-			R1_mat->MatShader = scene->BaseShader;
-			R1_mat->Texture = R1_Tex;
-			R1_mat->Shininess = 0.0f;
-		}
-		Material::Sptr R2_mat = ResourceManager::CreateAsset<Material>();
-		{
-			R2_mat->Name = "R2";
-			R2_mat->MatShader = scene->BaseShader;
-			R2_mat->Texture = R2_Tex;
-			R2_mat->Shininess = 0.0f;
-		}
-		Material::Sptr R3_mat = ResourceManager::CreateAsset<Material>();
-		{
-			R3_mat->Name = "R3";
-			R3_mat->MatShader = scene->BaseShader;
-			R3_mat->Texture = R3_Tex;
-			R3_mat->Shininess = 1.0f;
-		}
-		Material::Sptr R4_mat = ResourceManager::CreateAsset<Material>();
-		{
-			R4_mat->Name = "R4";
-			R4_mat->MatShader = scene->BaseShader;
-			R4_mat->Texture = R4_Tex;
-			R4_mat->Shininess = 1.0f;
-		}
-		Material::Sptr R5_mat = ResourceManager::CreateAsset<Material>();
-		{
-			R5_mat->Name = "R5";
-			R5_mat->MatShader = scene->BaseShader;
-			R5_mat->Texture = R5_Tex;
-			R5_mat->Shininess = 1.0f;
-		}
-		Material::Sptr R6_mat = ResourceManager::CreateAsset<Material>();
-		{
-			R6_mat->Name = "R6";
-			R6_mat->MatShader = scene->BaseShader;
-			R6_mat->Texture = R6_Tex;
-			R6_mat->Shininess = 1.0f;
-		}
-		Material::Sptr R7_mat = ResourceManager::CreateAsset<Material>();
-		{
-			R7_mat->Name = "R7";
-			R7_mat->MatShader = scene->BaseShader;
-			R7_mat->Texture = R0_Tex;
-			R7_mat->Shininess = 1.0f;
-		}
-		Material::Sptr R8_mat = ResourceManager::CreateAsset<Material>();
-		{
-			R8_mat->Name = "R8";
-			R8_mat->MatShader = scene->BaseShader;
-			R8_mat->Texture = R8_Tex;
-			R8_mat->Shininess = 1.0f;
-		}
-		Material::Sptr R9_mat = ResourceManager::CreateAsset<Material>();
-		{
-			R9_mat->Name = "R9";
-			R9_mat->MatShader = scene->BaseShader;
-			R9_mat->Texture = R9_Tex;
-			R9_mat->Shininess = 1.0f;
-		}
-
+		*/
+	
 		// Create some lights for our scene
 		scene->Lights.resize(3);
 		scene->Lights[0].Position = glm::vec3(0.0f, 1.0f, 3.0f);
@@ -453,9 +458,9 @@ int main() {
 		// Set up the scene's camera
 		GameObject::Sptr camera = scene->CreateGameObject("Main Camera");
 		{
-			camera->SetPostion(glm::vec3(1.5, -0.4, 2.45));			
+			camera->SetPostion(glm::vec3(-1.410, -3.500, 2.450));
 			camera->LookAt(glm::vec3(0.0f));
-			camera->SetRotation(glm::vec3(-30, 0, 180));
+			camera->SetRotation(glm::vec3(-103, 0, -180));
 
 			Camera::Sptr cam = camera->Add<Camera>();
 			cam->SetFovRadians(105.f);
@@ -464,6 +469,49 @@ int main() {
 			// Make sure that the camera is set as the scene's main camera!
 			scene->MainCamera = cam;
 		}
+
+		/*
+		// Tutorial Stuff
+		GameObject::Sptr Startplatform = scene->CreateGameObject("Start Platform");
+		{
+			// Set position in the scene
+			Startplatform->SetPostion(glm::vec3(-7.490f, 5.660f, -2.890f));
+			Startplatform->SetRotation(glm::vec3(180.0f, 0.0f, 180.0f));
+			Startplatform->SetScale(glm::vec3(0.180f, 0.070f, 0.180));
+
+			// Create and attach a renderer for the monkey
+			RenderComponent::Sptr renderer = Startplatform->Add<RenderComponent>();
+			renderer->SetMesh(StartPlatform);
+			renderer->SetMaterial(StartPlatformMaterial);
+
+			// Add a dynamic rigid body to this monkey
+			RigidBody::Sptr physics = Startplatform->Add<RigidBody>(RigidBodyType::Static);
+			//physics->AddCollider(BoxCollider::Create(glm::vec3(1.0f, 1.0f, 1.0f)));
+
+			// FIX THIS //
+			ICollider::Sptr Box1 = physics->AddCollider(BoxCollider::Create(glm::vec3(0.05f, 0.2f, 0.5f)));
+			Box1->SetPosition(glm::vec3(-0.930f, 0.140f, 0.0f));
+
+		}
+
+		GameObject::Sptr SmallPlatforms = scene->CreateGameObject("Small Platform");
+		{
+			// Set position in the scene
+			SmallPlatforms->SetPostion(glm::vec3(-5.490f, 6.960f, -2.890f));
+			SmallPlatforms->SetRotation(glm::vec3(180.0f, 0.0f, 180.0f));
+			SmallPlatforms->SetScale(glm::vec3(0.280f, 0.070f, 0.180));
+
+			// Create and attach a renderer for the monkey
+			RenderComponent::Sptr renderer = SmallPlatforms->Add<RenderComponent>();
+			renderer->SetMesh(SmallPlatform);
+			renderer->SetMaterial(SmallPlatformMaterial);
+
+			// Add a dynamic rigid body to this monkey
+			RigidBody::Sptr physics = SmallPlatforms->Add<RigidBody>(RigidBodyType::Static);
+			//physics->AddCollider(BoxCollider::Create(glm::vec3(1.0f, 1.0f, 1.0f)));
+		}
+		*/
+
 
 		// Set up all our sample objects
 		//GameObject::Sptr plane = scene->CreateGameObject("Plane");
@@ -537,6 +585,8 @@ int main() {
 		//	behaviour->RotationSpeed = glm::vec3(0.0f, 0.0f, -90.0f);
 		//}
 
+		// Delete this later (Score stuff)
+		/*
 		GameObject::Sptr ScoreP2 = scene->CreateGameObject("ScoreP2");
 		ScoreComponent::Sptr score2 = ScoreP2->Add<ScoreComponent>();
 		std::string p2 = score2 != nullptr ? score2->GetGUID().str() : "null";
@@ -562,7 +612,7 @@ int main() {
 			triggerInteraction->ExitMaterial = R1_mat;
 		}
 
-
+		
 		GameObject::Sptr ScoreP1 = scene->CreateGameObject("ScoreP1");
 		ScoreComponent::Sptr score1 = ScoreP1->Add<ScoreComponent>();
 		std::string p1 = score1 != nullptr ? score1->GetGUID().str() : "null";
@@ -586,7 +636,10 @@ int main() {
 			triggerInteraction->EnterMaterial = R0_mat;
 			triggerInteraction->ExitMaterial = R1_mat;
 		}
-
+		*/
+		
+		// Delete this later (Table, Paddle, Puck, etc)
+		/*
 		GameObject::Sptr table = scene->CreateGameObject("Table");
 		{
 			// Set position in the scene
@@ -676,6 +729,9 @@ int main() {
 			ICollider::Sptr Box1 = physics->AddCollider(BoxCollider::Create(glm::vec3(0.05f, 0.04f, 0.05f)));
 			Box1->SetPosition(glm::vec3(0.0f, 0.04f, 0.0f));
 		}
+		
+		// Delete this later (Puck stuff)
+		/*
 		GameObject::Sptr puck = scene->CreateGameObject("Puck");
 		{
 			// Set position in the scene
@@ -698,6 +754,7 @@ int main() {
 
 			ICollider::Sptr Box1 = physics->AddCollider(ConvexMeshCollider::Create());
 		}
+		*/
 
 		//Create a trigger volume for testing how we can detect collisions with objects!
 		GameObject::Sptr trigger = scene->CreateGameObject("Trigger");
@@ -745,10 +802,14 @@ int main() {
 		double thisFrame = glfwGetTime();
 		float dt = static_cast<float>(thisFrame - lastFrame);
 
+		int windowWidth;
+		int windowHeight;
+
+		glfwGetWindowSize(scene->Window, &windowWidth, &windowHeight);
+
 		// Showcasing how to use the imGui library!
 		//bool isDebugWindowOpen = ImGui::Begin("Debugging");
-		bool isDebugWindowOpen = false;
-		scene->IsPlaying = true;
+		bool isDebugWindowOpen = true;
 		if (isDebugWindowOpen) {
 			// Draws a button to control whether or not the game is currently playing
 			static char buttonLabel[64];

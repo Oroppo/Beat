@@ -16,10 +16,10 @@ void MouseController::Awake()
         IsEnabled = false;
     }
 
-    if (glfwRawMouseMotionSupported()) {
-        glfwSetInputMode(GetGameObject()->GetScene()->Window, GLFW_RAW_MOUSE_MOTION, GLFW_TRUE);
-        glfwSetInputMode(GetGameObject()->GetScene()->Window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
-    }
+   // if (glfwRawMouseMotionSupported()) {
+     //   glfwSetInputMode(GetGameObject()->GetScene()->Window, GLFW_RAW_MOUSE_MOTION, GLFW_TRUE);
+       // glfwSetInputMode(GetGameObject()->GetScene()->Window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
+    //}
 
     SetLastFrame(glm::vec2(0, 0));
 }

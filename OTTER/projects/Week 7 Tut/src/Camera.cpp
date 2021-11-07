@@ -8,7 +8,7 @@ Camera::Camera() :
 	_fovRadians(glm::degrees(90.0f)),
 	_aspectRatio(1.0f),
 	_orthoVerticalScale(1.0f),
-	_isOrtho(false),
+	_isOrtho(true),
 	_position(glm::vec3(0.0f)),
 	_normal(glm::vec3(0.0f, 0.0f, 1.0f)),
 	_up(glm::vec3(0.0f, 1.0f, 0.0f)), // Using Y-up coordinate system by default
