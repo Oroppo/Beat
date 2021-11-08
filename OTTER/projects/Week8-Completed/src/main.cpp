@@ -122,7 +122,7 @@ GLFWwindow* window;
 // The current size of our window in pixels
 glm::ivec2 windowSize = glm::ivec2(1000, 1000);
 // The title of our GLFW window
-std::string windowTitle = "Dante sucks";
+std::string windowTitle = "Beat!";
 
 // using namespace should generally be avoided, and if used, make sure it's ONLY in cpp files
 using namespace Gameplay;
@@ -322,7 +322,7 @@ int main() {
 		MeshResource::Sptr Default = ResourceManager::CreateAsset<MeshResource>("bruh.obj");
 
 		MeshResource::Sptr StartPlatform = ResourceManager::CreateAsset<MeshResource>("StartPlatformV3.obj");
-		MeshResource::Sptr SmallPlatform = ResourceManager::CreateAsset<MeshResource>("SmallPlatformV2.obj");
+		MeshResource::Sptr SmallPlatform = ResourceManager::CreateAsset<MeshResource>("SmallSpeakerPlatformV4.obj");
 		MeshResource::Sptr WallJump = ResourceManager::CreateAsset<MeshResource>("WallJumpV3.obj");
 		MeshResource::Sptr BeatGem = ResourceManager::CreateAsset<MeshResource>("Gem.obj");
 		MeshResource::Sptr Vinyl = ResourceManager::CreateAsset<MeshResource>("VinylV2.obj");
@@ -330,8 +330,8 @@ int main() {
 
 		Texture2D::Sptr tableTex = ResourceManager::CreateAsset<Texture2D>("textures/HockeyRink.png"); // delete this later 
 		
-		Texture2D::Sptr StartTex = ResourceManager::CreateAsset<Texture2D>("textures/StartPlatformTexture.png"); // Does not exist yet loam
-		Texture2D::Sptr SmallTex = ResourceManager::CreateAsset<Texture2D>("textures/StartPlatformTexture.png"); // Does not exist yet loam
+		Texture2D::Sptr StartTex = ResourceManager::CreateAsset<Texture2D>("textures/DanceFloorTex2.png"); // Does not exist yet loam
+		Texture2D::Sptr SmallTex = ResourceManager::CreateAsset<Texture2D>("textures/DanceFloorTex2.png"); // Does not exist yet loam
 		Texture2D::Sptr VinylTex = ResourceManager::CreateAsset<Texture2D>("textures/Vinyl.png"); // Does not exist yet loam
 		Texture2D::Sptr GemTex = ResourceManager::CreateAsset<Texture2D>("textures/Gem.png"); // Does exist just reload loam
 		Texture2D::Sptr TutorialSignTex = ResourceManager::CreateAsset<Texture2D>("textures/TutorialSign.png"); // Does not exist yet loam
@@ -347,7 +347,7 @@ int main() {
 		{
 			StartPlatformMaterial->Name = "StartPlatform";
 			StartPlatformMaterial->MatShader = scene->BaseShader;
-			StartPlatformMaterial->Texture = tableTex;
+			StartPlatformMaterial->Texture = StartTex;
 			StartPlatformMaterial->Shininess = 2.0f;
 		}
 
@@ -355,7 +355,7 @@ int main() {
 		{
 			SmallPlatformMaterial->Name = "SmallPlatform";
 			SmallPlatformMaterial->MatShader = scene->BaseShader;
-			SmallPlatformMaterial->Texture = tableTex;
+			SmallPlatformMaterial->Texture = SmallTex;
 			SmallPlatformMaterial->Shininess = 2.0f;
 		}
 
@@ -392,16 +392,16 @@ int main() {
 		}
 
 		SpawnObj(StartPlatform, StartPlatformMaterial, "StartPlatform");
-		SpawnObj(SmallPlatform, SmallPlatformMaterial, "Small Platform 1", glm::vec3(-7.490f, 5.610f, -4.150f), glm::vec3(180.0f, 0.0f, 180.0f), glm::vec3(0.310f, 0.310f, 0.310f));
-		SpawnObj(SmallPlatform, SmallPlatformMaterial, "Small Platform 2", glm::vec3(-4.710f, 5.610f, -3.580f), glm::vec3(180.0f, 0.0f, 180.0f), glm::vec3(0.310f, 0.310f, 0.310f));
-		SpawnObj(SmallPlatform, SmallPlatformMaterial, "Small Platform 3", glm::vec3(-2.200f, 5.610f, -4.150f), glm::vec3(180.0f, 0.0f, 180.0f), glm::vec3(0.310f, 0.310f, 0.310f));
-		SpawnObj(SmallPlatform, SmallPlatformMaterial, "Small Platform 4", glm::vec3(-0.940f, 5.610f, 4.250f), glm::vec3(180.0f, 0.0f, 180.0f), glm::vec3(0.310f, 0.310f, 0.310f));
+		SpawnObj(SmallPlatform, SmallPlatformMaterial, "Small Platform 1", glm::vec3(-7.490f, 5.610f, -4.150f), glm::vec3(180.0f, 0.0f, 180.0f), glm::vec3(0.240f, 0.240f, 0.100f));
+		SpawnObj(SmallPlatform, SmallPlatformMaterial, "Small Platform 2", glm::vec3(-4.710f, 5.610f, -3.580f), glm::vec3(180.0f, 0.0f, 180.0f), glm::vec3(0.240f, 0.240f, 0.100f));
+		SpawnObj(SmallPlatform, SmallPlatformMaterial, "Small Platform 3", glm::vec3(-2.200f, 5.610f, -4.150f), glm::vec3(180.0f, 0.0f, 180.0f), glm::vec3(0.240f, 0.240f, 0.100f));
+		SpawnObj(SmallPlatform, SmallPlatformMaterial, "Small Platform 4", glm::vec3(-0.940f, 5.610f, 4.250f), glm::vec3(180.0f, 0.0f, 180.0f), glm::vec3(0.240f, 0.240f, 0.100f));
 		SpawnObj(WallJump, WallJumpMaterial, "Wall Jump 1", glm::vec3(1.680f, 5.610f, 5.450f), glm::vec3(180.0f, 0.0f, 180.0f), glm::vec3(0.500f, 0.040f, 1.500f));
 		SpawnObj(WallJump, WallJumpMaterial, "Wall Jump 2", glm::vec3(4.350f, 5.610f, 3.930f), glm::vec3(180.0f, 0.0f, 180.0f), glm::vec3(0.500f, 0.040f, 1.500f));
 		SpawnObj(BeatGem, BeatGemMaterial, "BeatGem", glm::vec3(2.410f, 5.610f, -3.160f), glm::vec3(90.0f, 0.0f, 180.0f), glm::vec3(0.500f, 0.500f, 0.500f));
 		SpawnObj(Vinyl, VinylMaterial, "Vinyl", glm::vec3(-0.040f, 5.610f, 5.920f), glm::vec3(90.000f, 0.0f, 90.000f), glm::vec3(1.000f, 1.000f, 1.000f));
 		SpawnObj(TutorialSign, TutorialSignMaterial, "Tutorial Sign 1", glm::vec3(-9.150f, 5.690f, -3.590f), glm::vec3(90.0f, 0.0f, 90.0f), glm::vec3(0.310f, 0.310f, 0.310f));
-		SpawnObj(TutorialSign, TutorialSignMaterial, "Tutorial Sign 2", glm::vec3(-1.270f, 5.690f, -2.910f), glm::vec3(90.0f, 0.0f, 90.0f), glm::vec3(0.310f, 0.310f, 0.310f));
+		SpawnObj(TutorialSign, TutorialSignMaterial, "Tutorial Sign 2", glm::vec3(-1.210f, 5.690f, -3.270f), glm::vec3(90.0f, 0.0f, 90.0f), glm::vec3(0.310f, 0.310f, 0.310f));
 		SpawnObj(StartPlatform, StartPlatformMaterial, "EndPlatform", glm::vec3(5.950f, 5.610f, -4.920f), glm::vec3(180.0f, 0.0f, 180.0f), glm::vec3(0.220f, 0.220f, 0.220f));
 
 		// (Delete this later)
@@ -438,9 +438,9 @@ int main() {
 	
 		// Create some lights for our scene
 		scene->Lights.resize(3);
-		scene->Lights[0].Position = glm::vec3(0.0f, 1.0f, 3.0f);
+		scene->Lights[0].Position = glm::vec3(-2.8f, 1.0f, 3.0f);
 		scene->Lights[0].Color = glm::vec3(1.0f, 1.0f, 1.0f);
-		scene->Lights[0].Range = 0.1f;
+		scene->Lights[0].Range = 1000.0f;
 
 		scene->Lights[1].Position = glm::vec3(1.0f, 0.0f, 3.0f);
 		scene->Lights[1].Color = glm::vec3(0.2f, 0.8f, 1.0f);
