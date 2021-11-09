@@ -117,6 +117,7 @@ void GlDebugMessage(GLenum source, GLenum type, GLuint id, GLenum severity, GLsi
 	}
 }
 
+MeshResource::Sptr StartPlatform = ResourceManager::CreateAsset<MeshResource>("StartPlatformV3.obj");
 // Stores our GLFW window in a global variable for now
 GLFWwindow* window;
 // The current size of our window in pixels
@@ -247,9 +248,9 @@ void SpawnObj(MeshResource::Sptr Mesh, Material::Sptr Material, std::string ObjN
 		//physics->AddCollider(BoxCollider::Create(glm::vec3(1.0f, 1.0f, 1.0f)));
 
 		// FIX THIS //
-		ICollider::Sptr Box1 = physics->AddCollider(BoxCollider::Create(glm::vec3(1.0f, 1.0f, 1.0f)));
-		Box1->SetPosition(glm::vec3(-0.930f, 0.140f, 0.0f));
-
+		ICollider::Sptr Box1 = physics->AddCollider(BoxCollider::Create(glm::vec3(1.2f, 1.0f, 0.5f)));
+		Box1->SetPosition(glm::vec3(0.f, 0.f, 0.f));
+		Box1->SetScale(glm::vec3(1,1,1));
 	}
 }
 
@@ -318,7 +319,7 @@ int main() {
 		//MeshResource::Sptr paddleMesh = ResourceManager::CreateAsset<MeshResource>("paddle.obj");
 		//MeshResource::Sptr ScoreBoard = ResourceManager::CreateAsset<MeshResource>("ScoreBoard.obj");
 		
-		MeshResource::Sptr StartPlatform = ResourceManager::CreateAsset<MeshResource>("StartPlatformV3.obj");
+		
 		MeshResource::Sptr SmallPlatform = ResourceManager::CreateAsset<MeshResource>("SmallSpeakerPlatformV4.obj");
 		MeshResource::Sptr WallJump = ResourceManager::CreateAsset<MeshResource>("WallJumpV3.obj");
 		MeshResource::Sptr BeatGem = ResourceManager::CreateAsset<MeshResource>("Gem.obj");

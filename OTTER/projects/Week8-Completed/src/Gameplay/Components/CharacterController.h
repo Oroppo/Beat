@@ -27,7 +27,10 @@ public:
 
 protected:
 	double xPos=0, yPos=0;
-	float _impulse;
+	float _impulse2;
+	bool _canJump;
 
+	glm::vec3 _impulse = glm::vec3(0,0,0.3);
 	Gameplay::Physics::RigidBody::Sptr _body;
+
 };
