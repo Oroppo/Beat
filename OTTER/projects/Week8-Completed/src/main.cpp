@@ -328,7 +328,7 @@ int main() {
 
 		Texture2D::Sptr tableTex = ResourceManager::CreateAsset<Texture2D>("textures/HockeyRink.png"); // delete this later 
 		
-		Texture2D::Sptr StartTex = ResourceManager::CreateAsset<Texture2D>("textures/DanceFloorTex2.png"); // Does not exist yet loam
+		Texture2D::Sptr StartTex = ResourceManager::CreateAsset<Texture2D>("textures/DiscoBuildingTex.png"); // Does not exist yet loam
 		Texture2D::Sptr SmallTex = ResourceManager::CreateAsset<Texture2D>("textures/DanceFloorTex2.png"); // Does not exist yet loam
 		Texture2D::Sptr VinylTex = ResourceManager::CreateAsset<Texture2D>("textures/Vinyl.png"); // Does not exist yet loam
 		Texture2D::Sptr GemTex = ResourceManager::CreateAsset<Texture2D>("textures/Gem.png"); // Does exist just reload loam
@@ -399,7 +399,7 @@ int main() {
 		}
 
 		// Format: Mesh, Material, IMGUI TEXT, position, rotation, scale
-		SpawnObj(StartPlatform, StartPlatformMaterial, "StartPlatform", glm::vec3(-9.820f, 5.350, -4.450));
+		SpawnObj(StartPlatform, StartPlatformMaterial, "StartPlatform", glm::vec3(-9.820f, 5.350, -4.450), glm::vec3(90.0f, 0.0f, 0.0f));
 		SpawnObj(SmallPlatform, SmallPlatformMaterial, "Small Platform 1", glm::vec3(-6.070f, 5.610f, -4.150f), glm::vec3(180.0f, 0.0f, 180.0f), glm::vec3(0.500f, 0.500f, 0.500f));
 		SpawnObj(SmallPlatform, SmallPlatformMaterial, "Small Platform 2", glm::vec3(-3.320f, 5.610f, -2.200f), glm::vec3(180.0f, 0.0f, 180.0f), glm::vec3(0.500f, 0.500f, 0.500f));
 		SpawnObj(SmallPlatform, SmallPlatformMaterial, "Small Platform 3", glm::vec3(-0.400f, 5.610f, -4.040f), glm::vec3(180.0f, 0.0f, 180.0f), glm::vec3(0.500f, 0.500f, 0.500f));
@@ -410,7 +410,7 @@ int main() {
 		SpawnObj(Vinyl, VinylMaterial, "Vinyl", glm::vec3(-0.040f, 5.610f, 5.920f), glm::vec3(90.000f, 0.0f, 90.000f), glm::vec3(1.000f, 1.000f, 1.000f));
 		SpawnObj(TutorialSign, TutorialSignMaterial, "Tutorial Sign 1", glm::vec3(-9.770f, 5.690f, -3.890f), glm::vec3(90.0f, 0.0f, 90.0f), glm::vec3(0.310f, 0.310f, 0.310f));
 		SpawnObj(TutorialSign, TutorialSignMaterial, "Tutorial Sign 2", glm::vec3(-0.390f, 5.690f, -3.440f), glm::vec3(90.0f, 0.0f, 90.0f), glm::vec3(0.310f, 0.310f, 0.310f));
-		SpawnObj(StartPlatform, StartPlatformMaterial, "EndPlatform", glm::vec3(5.950f, 5.610f, -4.920f), glm::vec3(180.0f, 0.0f, 180.0f), glm::vec3(0.350f, 0.350f, 0.350f));
+		SpawnObj(StartPlatform, StartPlatformMaterial, "EndPlatform", glm::vec3(5.950f, 5.610f, -4.920f), glm::vec3(90.0f, 0.0f, 0.0f), glm::vec3(0.350f, 0.350f, 0.350f));
 
 		// Player:
 		GameObject::Sptr character = scene->CreateGameObject("Character/Player");
