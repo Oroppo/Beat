@@ -686,7 +686,7 @@ int main() {
 			});
 		Guid monkeyMesh = ResourceManager::CreateMesh("Monkey.obj");
 		Guid characterMesh = ResourceManager::CreateMesh("basemodel.obj");
-		Guid smallPlatformMesh = ResourceManager::CreateMesh("SmallSpeakerPlatform.obj");
+		Guid smallPlatformMesh = ResourceManager::CreateMesh("SmallPlatformV2.obj");
 		Guid startPlatformMesh = ResourceManager::CreateMesh("StartPlatform.obj");
 		Guid wallJumpMesh = ResourceManager::CreateMesh("WallJump.obj");
 
@@ -885,6 +885,13 @@ int main() {
 			monkey1->Rotation += glm::vec3(0.0f, 0.0f, dt * 90.0f);
 			monkey2->Rotation -= glm::vec3(0.0f, 0.0f, dt * 90.0f);
 		}
+		// transform 0 will translate an object for some reason the axis are kinda weird but it goes
+		// forward backwards, left and right, up/down in relation to the monkey heads
+		// 0, 2 ,0
+		//transform0 = glm::translate(glm::mat4(1.0f), glm::vec3(0.0f, 2.0f, 0.0f));
+
+	//	transform2 = glm::rotate(glm::mat4(1.0f), -static_cast<float>(thisFrame), glm::vec3(0, 0, 1)) * glm::translate(glm::mat4(1.0f), glm::vec3(0, 0.0f, glm::sin(static_cast<float>(thisFrame))));
+	//	transform3 = glm::rotate(glm::mat4(1.0f), -static_cast<float>(thisFrame), glm::vec3(1, 0, 0)) * glm::translate(glm::mat4(1.0f), glm::vec3(0, glm::sin(static_cast<float>(thisFrame)), 0.0f));
 
 		// Clear the color and depth buffers
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);

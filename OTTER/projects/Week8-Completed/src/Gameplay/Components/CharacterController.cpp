@@ -57,18 +57,8 @@ void CharacterController::Update(float deltaTime) {
         GetGameObject()->SetPostion(GetGameObject()->GetPosition() + glm::vec3(0.0f, -0.02f, 0.0f));
     }
 
-    if (GetGameObject()->GetPosition().x < 0.775) {
-        GetGameObject()->SetPostion(glm::vec3(0.780f, CurrentPosition.y, CurrentPosition.z));
-    }
-    if (GetGameObject()->GetPosition().x > 1.40) {
-        GetGameObject()->SetPostion(glm::vec3(1.395f, CurrentPosition.y, CurrentPosition.z));
-    }
-    if (GetGameObject()->GetPosition().y > 0.4) {
-        GetGameObject()->SetPostion(glm::vec3(CurrentPosition.x, 0.395f, CurrentPosition.z));
-    }
-    if (GetGameObject()->GetPosition().y < -0.4) {
-        GetGameObject()->SetPostion(glm::vec3(CurrentPosition.x, -0.395f, CurrentPosition.z));
-    }
+   // GetGameObject()->LockRotations();
+   
 
     GetGameObject()->GetScene()->Lights[1].Position = GetGameObject()->GetPosition();
 }

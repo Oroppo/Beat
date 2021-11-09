@@ -77,6 +77,11 @@ namespace Gameplay {
 		_rotation = glm::quat(glm::radians(eulerAngles));
 		_isTransformDirty = true;
 	}
+	void GameObject::LockRotations()
+	{ _rotation.y = 0;
+	_rotation.z = 90;
+	_isTransformDirty = true; 
+	}
 
 	const glm::vec3& GameObject::GetRotationEuler() const {
 		return glm::degrees(glm::eulerAngles(_rotation));

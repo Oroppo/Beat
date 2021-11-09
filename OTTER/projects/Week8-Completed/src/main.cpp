@@ -324,6 +324,7 @@ int main() {
 		MeshResource::Sptr BeatGem = ResourceManager::CreateAsset<MeshResource>("Gem.obj");
 		MeshResource::Sptr Vinyl = ResourceManager::CreateAsset<MeshResource>("VinylV2.obj");
 		MeshResource::Sptr TutorialSign = ResourceManager::CreateAsset<MeshResource>("TutorialSign.obj");
+		MeshResource::Sptr CharacterMesh = ResourceManager::CreateAsset<MeshResource>("dudeCharacter.obj");
 
 		Texture2D::Sptr tableTex = ResourceManager::CreateAsset<Texture2D>("textures/HockeyRink.png"); // delete this later 
 		
@@ -332,6 +333,7 @@ int main() {
 		Texture2D::Sptr VinylTex = ResourceManager::CreateAsset<Texture2D>("textures/Vinyl.png"); // Does not exist yet loam
 		Texture2D::Sptr GemTex = ResourceManager::CreateAsset<Texture2D>("textures/Gem.png"); // Does exist just reload loam
 		Texture2D::Sptr TutorialSignTex = ResourceManager::CreateAsset<Texture2D>("textures/TutorialSign.png"); // Does not exist yet loam
+		Texture2D::Sptr CharacterTex = ResourceManager::CreateAsset<Texture2D>("textures/shirt.png");
 
 		// Create an empty scene
 		scene = std::make_shared<Scene>();
@@ -388,6 +390,15 @@ int main() {
 			TutorialSignMaterial->Shininess = 2.0f;
 		}
 
+		Material::Sptr CharacterMaterial = ResourceManager::CreateAsset<Material>();
+		{
+			CharacterMaterial->Name = "Character";
+			CharacterMaterial->MatShader = scene->BaseShader;
+			CharacterMaterial->Texture = CharacterTex;
+			CharacterMaterial->Shininess = 2.0f;
+		}
+
+		// Format: Mesh, Material, IMGUI TEXT, position, rotation, scale
 		SpawnObj(StartPlatform, StartPlatformMaterial, "StartPlatform");
 		SpawnObj(SmallPlatform, SmallPlatformMaterial, "Small Platform 1", glm::vec3(-7.490f, 5.610f, -4.150f), glm::vec3(180.0f, 0.0f, 180.0f), glm::vec3(0.240f, 0.240f, 0.100f));
 		SpawnObj(SmallPlatform, SmallPlatformMaterial, "Small Platform 2", glm::vec3(-4.710f, 5.610f, -3.580f), glm::vec3(180.0f, 0.0f, 180.0f), glm::vec3(0.240f, 0.240f, 0.100f));
@@ -400,6 +411,29 @@ int main() {
 		SpawnObj(TutorialSign, TutorialSignMaterial, "Tutorial Sign 1", glm::vec3(-9.770f, 5.690f, -3.890f), glm::vec3(90.0f, 0.0f, 90.0f), glm::vec3(0.310f, 0.310f, 0.310f));
 		SpawnObj(TutorialSign, TutorialSignMaterial, "Tutorial Sign 2", glm::vec3(-1.210f, 5.690f, -3.440f), glm::vec3(90.0f, 0.0f, 90.0f), glm::vec3(0.310f, 0.310f, 0.310f));
 		SpawnObj(StartPlatform, StartPlatformMaterial, "EndPlatform", glm::vec3(5.950f, 5.610f, -4.920f), glm::vec3(180.0f, 0.0f, 180.0f), glm::vec3(0.220f, 0.220f, 0.220f));
+
+		// Player:
+		GameObject::Sptr character = scene->CreateGameObject("Character/Player");
+		{
+			// Set position in the scene
+			character->SetPostion(glm::vec3(-8.970f, 5.710f, -3.800f));
+			character->SetRotation(glm::vec3(90.0f, 0.0f, 90.0f));
+			character->SetScale(glm::vec3(1.0f, 1.0f, 1.0f));
+
+			// Add some behaviour that relies on the physics body
+			//character->Add<JumpBehaviour>();
+			character->Add<CharacterController>();
+
+			// Create and attach a renderer for the paddle
+			RenderComponent::Sptr renderer = character->Add<RenderComponent>();
+			renderer->SetMesh(CharacterMesh);
+			renderer->SetMaterial(CharacterMaterial);
+
+			// Add a kinematic rigid body to the paddle
+			RigidBody::Sptr physics = character->Add<RigidBody>(RigidBodyType::Dynamic);
+			physics->AddCollider(ConvexMeshCollider::Create());
+			// world grav changed in scene.cpp
+		}
 
 		// (Delete this later)
 		/*

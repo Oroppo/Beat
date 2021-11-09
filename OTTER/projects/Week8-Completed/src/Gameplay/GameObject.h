@@ -84,6 +84,8 @@ namespace Gameplay {
 		/// </summary>
 		const glm::quat& GetRotation() const;
 
+		void LockRotations();
+
 		/// <summary>
 		/// Sets the rotation of the object in euler degrees (yaw, pitch, roll)
 		/// </summary>
