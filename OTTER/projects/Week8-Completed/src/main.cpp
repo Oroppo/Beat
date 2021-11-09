@@ -318,9 +318,6 @@ int main() {
 		//MeshResource::Sptr paddleMesh = ResourceManager::CreateAsset<MeshResource>("paddle.obj");
 		//MeshResource::Sptr ScoreBoard = ResourceManager::CreateAsset<MeshResource>("ScoreBoard.obj");
 		
-		//Default Obj
-		MeshResource::Sptr Default = ResourceManager::CreateAsset<MeshResource>("bruh.obj");
-
 		MeshResource::Sptr StartPlatform = ResourceManager::CreateAsset<MeshResource>("StartPlatformV3.obj");
 		MeshResource::Sptr SmallPlatform = ResourceManager::CreateAsset<MeshResource>("SmallSpeakerPlatformV4.obj");
 		MeshResource::Sptr WallJump = ResourceManager::CreateAsset<MeshResource>("WallJumpV3.obj");
@@ -400,8 +397,8 @@ int main() {
 		SpawnObj(WallJump, WallJumpMaterial, "Wall Jump 2", glm::vec3(4.350f, 5.610f, 3.930f), glm::vec3(180.0f, 0.0f, 180.0f), glm::vec3(0.500f, 0.040f, 1.500f));
 		SpawnObj(BeatGem, BeatGemMaterial, "BeatGem", glm::vec3(2.410f, 5.610f, -3.160f), glm::vec3(90.0f, 0.0f, 180.0f), glm::vec3(0.500f, 0.500f, 0.500f));
 		SpawnObj(Vinyl, VinylMaterial, "Vinyl", glm::vec3(-0.040f, 5.610f, 5.920f), glm::vec3(90.000f, 0.0f, 90.000f), glm::vec3(1.000f, 1.000f, 1.000f));
-		SpawnObj(TutorialSign, TutorialSignMaterial, "Tutorial Sign 1", glm::vec3(-9.150f, 5.690f, -3.590f), glm::vec3(90.0f, 0.0f, 90.0f), glm::vec3(0.310f, 0.310f, 0.310f));
-		SpawnObj(TutorialSign, TutorialSignMaterial, "Tutorial Sign 2", glm::vec3(-1.210f, 5.690f, -3.270f), glm::vec3(90.0f, 0.0f, 90.0f), glm::vec3(0.310f, 0.310f, 0.310f));
+		SpawnObj(TutorialSign, TutorialSignMaterial, "Tutorial Sign 1", glm::vec3(-9.770f, 5.690f, -3.890f), glm::vec3(90.0f, 0.0f, 90.0f), glm::vec3(0.310f, 0.310f, 0.310f));
+		SpawnObj(TutorialSign, TutorialSignMaterial, "Tutorial Sign 2", glm::vec3(-1.210f, 5.690f, -3.440f), glm::vec3(90.0f, 0.0f, 90.0f), glm::vec3(0.310f, 0.310f, 0.310f));
 		SpawnObj(StartPlatform, StartPlatformMaterial, "EndPlatform", glm::vec3(5.950f, 5.610f, -4.920f), glm::vec3(180.0f, 0.0f, 180.0f), glm::vec3(0.220f, 0.220f, 0.220f));
 
 		// (Delete this later)
@@ -460,9 +457,11 @@ int main() {
 		{
 			camera->SetPostion(glm::vec3(-1.410, -3.500, 2.450));
 			camera->LookAt(glm::vec3(0.0f));
-			camera->SetRotation(glm::vec3(-103, 0, -180));
+			camera->SetRotation(glm::vec3(-103, 180, -180));
 
 			Camera::Sptr cam = camera->Add<Camera>();
+			cam->SetOrthoEnabled(true);
+			cam->SetOrthoVerticalScale(19.0f);
 			cam->SetFovRadians(105.f);
 			cam->SetNearPlane(0.3);
 
