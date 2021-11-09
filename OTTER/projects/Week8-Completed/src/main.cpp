@@ -116,8 +116,6 @@ void GlDebugMessage(GLenum source, GLenum type, GLuint id, GLenum severity, GLsi
 		default: break;
 	}
 }
-
-MeshResource::Sptr StartPlatform = ResourceManager::CreateAsset<MeshResource>("StartPlatformV3.obj");
 // Stores our GLFW window in a global variable for now
 GLFWwindow* window;
 // The current size of our window in pixels
@@ -229,7 +227,7 @@ bool DrawLightImGui(const Scene::Sptr& scene, const char* title, int ix) {
 }
 
 void SpawnObj(MeshResource::Sptr Mesh, Material::Sptr Material, std::string ObjName = "DeezNuts", glm::vec3 pos = glm::vec3(-10.900f, 5.610f, -4.920f),
-			glm::vec3 rot = glm::vec3(180.0f, 0.0f, 180.0f), glm::vec3 scale = glm::vec3(0.220f, 0.220f, 0.220f)) {
+			glm::vec3 rot = glm::vec3(180.0f, 0.0f, 180.0f), glm::vec3 scale = glm::vec3(0.350f, 0.350f, 0.350f)) {
 	// Tutorial Stuff
 	GameObject::Sptr Startplatform = scene->CreateGameObject(ObjName);
 	{
@@ -320,12 +318,13 @@ int main() {
 		//MeshResource::Sptr ScoreBoard = ResourceManager::CreateAsset<MeshResource>("ScoreBoard.obj");
 		
 		
-		MeshResource::Sptr SmallPlatform = ResourceManager::CreateAsset<MeshResource>("SmallSpeakerPlatformV4.obj");
-		MeshResource::Sptr WallJump = ResourceManager::CreateAsset<MeshResource>("WallJumpV3.obj");
+		MeshResource::Sptr SmallPlatform = ResourceManager::CreateAsset<MeshResource>("SmallSpeakerPlatformV5.obj");
+		MeshResource::Sptr WallJump = ResourceManager::CreateAsset<MeshResource>("WallJumpV5.obj");
 		MeshResource::Sptr BeatGem = ResourceManager::CreateAsset<MeshResource>("Gem.obj");
 		MeshResource::Sptr Vinyl = ResourceManager::CreateAsset<MeshResource>("VinylV2.obj");
 		MeshResource::Sptr TutorialSign = ResourceManager::CreateAsset<MeshResource>("TutorialSign.obj");
 		MeshResource::Sptr CharacterMesh = ResourceManager::CreateAsset<MeshResource>("dudeCharacter.obj");
+		MeshResource::Sptr StartPlatform = ResourceManager::CreateAsset<MeshResource>("StartPlatformV6.obj");
 
 		Texture2D::Sptr tableTex = ResourceManager::CreateAsset<Texture2D>("textures/HockeyRink.png"); // delete this later 
 		
@@ -400,18 +399,18 @@ int main() {
 		}
 
 		// Format: Mesh, Material, IMGUI TEXT, position, rotation, scale
-		SpawnObj(StartPlatform, StartPlatformMaterial, "StartPlatform");
-		SpawnObj(SmallPlatform, SmallPlatformMaterial, "Small Platform 1", glm::vec3(-7.490f, 5.610f, -4.150f), glm::vec3(180.0f, 0.0f, 180.0f), glm::vec3(0.240f, 0.240f, 0.100f));
-		SpawnObj(SmallPlatform, SmallPlatformMaterial, "Small Platform 2", glm::vec3(-4.710f, 5.610f, -3.580f), glm::vec3(180.0f, 0.0f, 180.0f), glm::vec3(0.240f, 0.240f, 0.100f));
-		SpawnObj(SmallPlatform, SmallPlatformMaterial, "Small Platform 3", glm::vec3(-2.200f, 5.610f, -4.150f), glm::vec3(180.0f, 0.0f, 180.0f), glm::vec3(0.240f, 0.240f, 0.100f));
-		SpawnObj(SmallPlatform, SmallPlatformMaterial, "Small Platform 4", glm::vec3(-0.940f, 5.610f, 4.250f), glm::vec3(180.0f, 0.0f, 180.0f), glm::vec3(0.240f, 0.240f, 0.100f));
+		SpawnObj(StartPlatform, StartPlatformMaterial, "StartPlatform", glm::vec3(-9.820f, 5.350, -4.450));
+		SpawnObj(SmallPlatform, SmallPlatformMaterial, "Small Platform 1", glm::vec3(-6.070f, 5.610f, -4.150f), glm::vec3(180.0f, 0.0f, 180.0f), glm::vec3(0.500f, 0.500f, 0.500f));
+		SpawnObj(SmallPlatform, SmallPlatformMaterial, "Small Platform 2", glm::vec3(-3.320f, 5.610f, -2.200f), glm::vec3(180.0f, 0.0f, 180.0f), glm::vec3(0.500f, 0.500f, 0.500f));
+		SpawnObj(SmallPlatform, SmallPlatformMaterial, "Small Platform 3", glm::vec3(-0.400f, 5.610f, -4.040f), glm::vec3(180.0f, 0.0f, 180.0f), glm::vec3(0.500f, 0.500f, 0.500f));
+		SpawnObj(SmallPlatform, SmallPlatformMaterial, "Small Platform 4", glm::vec3(-0.060f, 5.610f, 4.450f), glm::vec3(180.0f, 0.0f, 180.0f), glm::vec3(0.500f, 0.500f, 0.500f));
 		SpawnObj(WallJump, WallJumpMaterial, "Wall Jump 1", glm::vec3(1.680f, 5.610f, 5.450f), glm::vec3(180.0f, 0.0f, 180.0f), glm::vec3(0.500f, 0.040f, 1.500f));
 		SpawnObj(WallJump, WallJumpMaterial, "Wall Jump 2", glm::vec3(4.350f, 5.610f, 3.930f), glm::vec3(180.0f, 0.0f, 180.0f), glm::vec3(0.500f, 0.040f, 1.500f));
 		SpawnObj(BeatGem, BeatGemMaterial, "BeatGem", glm::vec3(2.410f, 5.610f, -3.160f), glm::vec3(90.0f, 0.0f, 180.0f), glm::vec3(0.500f, 0.500f, 0.500f));
 		SpawnObj(Vinyl, VinylMaterial, "Vinyl", glm::vec3(-0.040f, 5.610f, 5.920f), glm::vec3(90.000f, 0.0f, 90.000f), glm::vec3(1.000f, 1.000f, 1.000f));
 		SpawnObj(TutorialSign, TutorialSignMaterial, "Tutorial Sign 1", glm::vec3(-9.770f, 5.690f, -3.890f), glm::vec3(90.0f, 0.0f, 90.0f), glm::vec3(0.310f, 0.310f, 0.310f));
-		SpawnObj(TutorialSign, TutorialSignMaterial, "Tutorial Sign 2", glm::vec3(-1.210f, 5.690f, -3.440f), glm::vec3(90.0f, 0.0f, 90.0f), glm::vec3(0.310f, 0.310f, 0.310f));
-		SpawnObj(StartPlatform, StartPlatformMaterial, "EndPlatform", glm::vec3(5.950f, 5.610f, -4.920f), glm::vec3(180.0f, 0.0f, 180.0f), glm::vec3(0.220f, 0.220f, 0.220f));
+		SpawnObj(TutorialSign, TutorialSignMaterial, "Tutorial Sign 2", glm::vec3(-0.390f, 5.690f, -3.440f), glm::vec3(90.0f, 0.0f, 90.0f), glm::vec3(0.310f, 0.310f, 0.310f));
+		SpawnObj(StartPlatform, StartPlatformMaterial, "EndPlatform", glm::vec3(5.950f, 5.610f, -4.920f), glm::vec3(180.0f, 0.0f, 180.0f), glm::vec3(0.350f, 0.350f, 0.350f));
 
 		// Player:
 		GameObject::Sptr character = scene->CreateGameObject("Character/Player");
