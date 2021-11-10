@@ -394,11 +394,13 @@ int main() {
 		{
 			CharacterMaterial->Name = "Character";
 			CharacterMaterial->MatShader = scene->BaseShader;
-			CharacterMaterial->Texture = CharacterTex;
+			CharacterMaterial->Texture = CharacterTex; 
 			CharacterMaterial->Shininess = 2.0f;
 		}
 
 		// Format: Mesh, Material, IMGUI TEXT, position, rotation, scale
+		// Position Axis Work as follows: X = Left and Right Y = Towards and away from camera Z = Up and Down
+		// always keep objects at 5.610f to keep the y axis consisent since we are 2.5D
 
 		// Tutorial Block
 		/*
@@ -423,9 +425,9 @@ int main() {
 		SpawnObj(SmallPlatform, SmallPlatformMaterial, "Small Platform Block1 2", glm::vec3(-2.840f, 5.610f, -4.150f), glm::vec3(180.0f, 0.0f, 180.0f), glm::vec3(0.500f, 0.500f, 0.500f));
 		SpawnObj(SmallPlatform, SmallPlatformMaterial, "Small Platform Block1 3", glm::vec3(2.760f, 10.990f, -4.150f), glm::vec3(180.0f, 0.0f, 180.0f), glm::vec3(0.500f, 0.500f, 0.500f));
 		SpawnObj(BeatGem, BeatGemMaterial, "BeatGem Block1", glm::vec3(0.120f, 5.610f, -3.160f), glm::vec3(90.0f, 0.0f, 180.0f), glm::vec3(0.500f, 0.500f, 0.500f));
-		//SpawnObj(Vinyl, VinylMaterial, "Vinyl Block1", glm::vec3(-0.120f, -7.700f, 0.290f), glm::vec3(90.000f, 0.0f, 90.000f), glm::vec3(1.000f, 1.000f, 1.000f)); SCUFFED
+		SpawnObj(Vinyl, VinylMaterial, "Vinyl Block1", glm::vec3(-0.120f, 5.610f, 0.290f), glm::vec3(90.000f, 0.0f, 90.000f), glm::vec3(1.000f, 1.000f, 1.000f)); //SCUFFED
 		SpawnObj(StartPlatform, StartPlatformMaterial, "EndPlatform Block1", glm::vec3(6.360f, 5.610f, -4.920f), glm::vec3(90.0f, 0.0f, 0.0f), glm::vec3(0.350f, 0.350f, 0.350f));
-		*/
+		
 
 		// 2nd Block
 		/*
@@ -439,6 +441,7 @@ int main() {
 		*/
 
 		// 3rd Block
+		
 		SpawnObj(StartPlatform, StartPlatformMaterial, "StartPlatform Block3", glm::vec3(-9.820f, 5.350, -4.450), glm::vec3(90.0f, 0.0f, 0.0f));
 		SpawnObj(SmallPlatform, SmallPlatformMaterial, "Small Platform Block2 1", glm::vec3(-4.360f, 19.540, -4.150f), glm::vec3(180.0f, 0.0f, 180.0f), glm::vec3(0.500f, 0.500f, 0.500f));
 		SpawnObj(SmallPlatform, SmallPlatformMaterial, "Small Platform Block3 2", glm::vec3(0.350f, 19.540f, -4.150f), glm::vec3(180.0f, 0.0f, 180.0f), glm::vec3(0.500f, 0.500f, 0.500f));
@@ -449,6 +452,7 @@ int main() {
 		//SpawnObj(Vinyl, VinylMaterial, "Vinyl Block1", glm::vec3(-0.120f, -7.700f, 0.290f), glm::vec3(90.000f, 0.0f, 90.000f), glm::vec3(1.000f, 1.000f, 1.000f)); SCUFFED (Repostion)
 		SpawnObj(StartPlatform, StartPlatformMaterial, "EndPlatform Block3", glm::vec3(6.360f, 5.610f, -4.920f), glm::vec3(90.0f, 0.0f, 0.0f), glm::vec3(0.350f, 0.350f, 0.350f));
 
+		
 		// Player:
 		GameObject::Sptr character = scene->CreateGameObject("Character/Player");
 		{
