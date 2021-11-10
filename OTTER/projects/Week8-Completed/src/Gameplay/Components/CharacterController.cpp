@@ -54,14 +54,22 @@ void CharacterController::Update(float deltaTime) {
     }
     if (_W & _canJump) {
         _body->ApplyImpulse(_impulse);
+
     }
     if (_S) {
         GetGameObject()->SetPostion(GetGameObject()->GetPosition() + glm::vec3(0.0f, -0.02f, 0.0f));
     }
-
-   // GetGameObject()->LockRotations();
    
 
     GetGameObject()->GetScene()->Lights[1].Position = GetGameObject()->GetPosition();
+
+    _body->SetAngularDamping(100.f);
+    _body->SetLinearDamping(0.5f);
+
+    GetGameObject()->LockYPosition(5.71f);
+   //GetGameObject()->LockYRotation(70.f);
+   //GetGameObject()->LockZRotation(0.f);
+   //GetGameObject()->LockXRotation(0.f);
+
 }
 

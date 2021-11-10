@@ -60,6 +60,19 @@ namespace Gameplay {
 		_isTransformDirty = true;
 	}
 
+	void GameObject::LockXPosition(const float& position) {
+		_position.x = position;
+		_isTransformDirty = true;
+	}
+	void GameObject::LockYPosition(const float& position) {
+		_position.y = position;
+		_isTransformDirty = true;
+	}
+	void GameObject::LockZPosition(const float& position) {
+		_position.z = position;
+		_isTransformDirty = true;
+	}
+
 	const glm::vec3& GameObject::GetPosition() const {
 		return _position;
 	}
@@ -75,6 +88,18 @@ namespace Gameplay {
 
 	void GameObject::SetRotation(const glm::vec3& eulerAngles) {
 		_rotation = glm::quat(glm::radians(eulerAngles));
+		_isTransformDirty = true;
+	}
+	void GameObject::LockXRotation(const float rotation) {
+		_rotation.x = rotation;
+		_isTransformDirty = true;
+	}
+	void GameObject::LockYRotation(const float rotation) {
+		_rotation.y = rotation;
+		_isTransformDirty = true;
+	}
+	void GameObject::LockZRotation(const float rotation) {
+		_rotation.z = rotation;
 		_isTransformDirty = true;
 	}
 	void GameObject::LockRotations()

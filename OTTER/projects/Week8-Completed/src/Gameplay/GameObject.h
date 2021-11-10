@@ -74,15 +74,24 @@ namespace Gameplay {
 		/// </summary>
 		const glm::vec3& GetPosition() const;
 
+		void LockXPosition(const float& position);
+		void LockYPosition(const float& position);
+		void LockZPosition(const float& position);
+
 		/// <summary>
 		/// Sets the rotation of this object to a quaternion value
 		/// </summary>
 		/// <param name="value">The rotation quaternion for the object</param>
 		void SetRotation(const glm::quat& value);
+		void LockXRotation(const float rotation);
+		void LockYRotation(const float rotation);
+		void LockZRotation(const float rotation);
 		/// <summary>
 		/// Gets the object's rotation as a quaternion value
 		/// </summary>
 		const glm::quat& GetRotation() const;
+
+
 
 		void LockRotations();
 
