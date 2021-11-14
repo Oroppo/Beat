@@ -72,6 +72,7 @@
 #include "Gameplay/Components/MoveThings.h"
 #include "Gameplay/Components/MouseController.h"
 #include "Gameplay/Components/ScoreComponent.h"
+#include "Gameplay/Components/LevelMover.h"
 
 // Physics
 #include "Gameplay/Physics/RigidBody.h"
@@ -236,6 +237,8 @@ void SpawnObj(MeshResource::Sptr Mesh, Material::Sptr Material, std::string ObjN
 		Startplatform->SetRotation(rot);
 		Startplatform->SetScale(scale);
 
+		Startplatform->Add<LevelMover>();
+
 		// Create and attach a renderer for the monkey
 		RenderComponent::Sptr renderer = Startplatform->Add<RenderComponent>();
 		renderer->SetMesh(Mesh);
@@ -263,6 +266,8 @@ void SpawnStartPlat(MeshResource::Sptr Mesh, Material::Sptr Material, std::strin
 		Startplatform->SetRotation(rot);
 		Startplatform->SetScale(scale);
 
+		Startplatform->Add<LevelMover>();
+
 		// Create and attach a renderer for the Object
 		RenderComponent::Sptr renderer = Startplatform->Add<RenderComponent>();
 		renderer->SetMesh(Mesh);
@@ -289,6 +294,8 @@ void SpawnGem(MeshResource::Sptr Mesh, Material::Sptr Material, std::string ObjN
 		Startplatform->SetRotation(rot);
 		Startplatform->SetScale(scale);
 
+		//Add Components
+		Startplatform->Add<LevelMover>();
 		// Create and attach a renderer for the Object
 		RenderComponent::Sptr renderer = Startplatform->Add<RenderComponent>();
 		renderer->SetMesh(Mesh);
@@ -316,6 +323,9 @@ void SpawnCollectable(MeshResource::Sptr Mesh, Material::Sptr Material, std::str
 		Startplatform->SetRotation(rot);
 		Startplatform->SetScale(scale);
 
+		//Add Components
+		Startplatform->Add<LevelMover>();
+
 		// Create and attach a renderer for the Object
 		RenderComponent::Sptr renderer = Startplatform->Add<RenderComponent>();
 		renderer->SetMesh(Mesh);
@@ -339,6 +349,8 @@ void SpawnWallJump(MeshResource::Sptr Mesh, Material::Sptr Material, std::string
 		Startplatform->SetPostion(pos);
 		Startplatform->SetRotation(rot);
 		Startplatform->SetScale(scale);
+
+		Startplatform->Add<LevelMover>();
 
 		// Create and attach a renderer for the Object
 		RenderComponent::Sptr renderer = Startplatform->Add<RenderComponent>();
@@ -394,6 +406,7 @@ int main() {
 	ComponentManager::RegisterType<JumpBehaviour>();
 	ComponentManager::RegisterType<ScoreComponent>();
 	ComponentManager::RegisterType<MaterialSwapBehaviour>();
+	ComponentManager::RegisterType<LevelMover>();
 
 	// GL states, we'll enable depth testing and backface fulling
 	glEnable(GL_DEPTH_TEST);
