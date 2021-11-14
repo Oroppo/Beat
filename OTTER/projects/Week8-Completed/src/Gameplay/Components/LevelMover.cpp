@@ -43,14 +43,15 @@ LevelMover::Sptr LevelMover::FromJson(const nlohmann::json & blob) {
 void LevelMover::Update(float deltaTime)
 {
     // object with behavior attached X position
-    float ObjPosX = GetGameObject()->GetPosition().x;
+    float FObjPosX = GetGameObject()->GetPosition().x;
+    float BObjPosX = GetGameObject()->GetPosition().x;
     
     // Object with behavior attached Y and Z position
     ObjY = GetGameObject()->GetPosition().y;
     ObjZ = GetGameObject()->GetPosition().z;
 
     // Lerp Currently Works However Objects further away move faster than those closer
-   /* _timer += deltaTime;
+    /*_timer += deltaTime;
 
     while (_timer > _TravelTime)
     {
@@ -72,8 +73,18 @@ void LevelMover::Update(float deltaTime)
 
     // Moves the Objects based on delta time and a fixed value Currently is about 6 seconds for objects
     // to move from Left to Right
-    ObjPosX = ObjPosX - 4.5 * deltaTime;
-    GetGameObject()->SetPostion(glm::vec3(ObjPosX, ObjY, ObjZ));
+   /* if (GetGameObject()->Name != "Car1")
+    {
+        FObjPosX = FObjPosX - 4.5 * deltaTime;
+        GetGameObject()->SetPostion(glm::vec3(FObjPosX, ObjY, ObjZ));
+    }
+    if (GetGameObject()->GetPosition().y >= 10.0f);
+    {
+       BObjPosX = BObjPosX - 15.0 * deltaTime;
+       GetGameObject()->SetPostion(glm::vec3(BObjPosX, ObjY, ObjZ));
+    }*/
+    FObjPosX = FObjPosX - 4.5 * deltaTime;
+    GetGameObject()->SetPostion(glm::vec3(FObjPosX, ObjY, ObjZ));
 }
 
 // Templated LERP function returns positon at current time for LERP

@@ -73,6 +73,7 @@
 #include "Gameplay/Components/MouseController.h"
 #include "Gameplay/Components/ScoreComponent.h"
 #include "Gameplay/Components/LevelMover.h"
+#include "Gameplay/Components/BackgroundMover.h"
 
 // Physics
 #include "Gameplay/Physics/RigidBody.h"
@@ -366,6 +367,30 @@ void SpawnWallJump(MeshResource::Sptr Mesh, Material::Sptr Material, std::string
 	}
 }
 
+void SpawnBackGroundCar(MeshResource::Sptr Mesh, Material::Sptr Material, std::string ObjName = "DeezNuts", glm::vec3 pos = glm::vec3(0.0f, 0.0f, 0.0f),
+	glm::vec3 rot = glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3 scale = glm::vec3(1.0f, 1.0f, 1.0f)) {
+
+	GameObject::Sptr Car1 = scene->CreateGameObject(ObjName);
+	{
+		// Set position in the scene
+		Car1->SetPostion(pos);
+		Car1->SetRotation(rot);
+		Car1->SetScale(scale);
+
+		//Add Components
+		Car1->Add<BackgroundMover>();
+
+		// Create and attach a renderer for the Object
+		RenderComponent::Sptr renderer = Car1->Add<RenderComponent>();
+		renderer->SetMesh(Mesh);
+		renderer->SetMaterial(Material);
+
+		// Is background Object and therefore has no colliders
+		// Add a dynamic rigid body to this object
+		RigidBody::Sptr physics = Car1->Add<RigidBody>(RigidBodyType::Kinematic);
+	}
+}
+
 int main() {	
 	Logger::Init(); // We'll borrow the logger from the toolkit, but we need to initialize it
 
@@ -407,6 +432,8 @@ int main() {
 	ComponentManager::RegisterType<ScoreComponent>();
 	ComponentManager::RegisterType<MaterialSwapBehaviour>();
 	ComponentManager::RegisterType<LevelMover>();
+	ComponentManager::RegisterType<BackgroundMover>();
+
 
 	// GL states, we'll enable depth testing and backface fulling
 	glEnable(GL_DEPTH_TEST);
@@ -440,6 +467,7 @@ int main() {
 		MeshResource::Sptr TutorialSign = ResourceManager::CreateAsset<MeshResource>("TutorialSign.obj");
 		MeshResource::Sptr CharacterMesh = ResourceManager::CreateAsset<MeshResource>("dudeCharacter.obj");
 		MeshResource::Sptr StartPlatform = ResourceManager::CreateAsset<MeshResource>("StartPlatformV6.obj");
+		MeshResource::Sptr Car1Mesh = ResourceManager::CreateAsset<MeshResource>("FutureCar1.obj");
 
 		Texture2D::Sptr tableTex = ResourceManager::CreateAsset<Texture2D>("textures/HockeyRink.png"); // delete this later 
 		
@@ -451,6 +479,9 @@ int main() {
 		Texture2D::Sptr CharacterTex = ResourceManager::CreateAsset<Texture2D>("textures/shirt.png");
 		Texture2D::Sptr LoseScreenTex = ResourceManager::CreateAsset<Texture2D>("textures/Game_Over_Screen.png");
 		Texture2D::Sptr WallJumpTex = ResourceManager::CreateAsset<Texture2D>("textures/WallJumpTex.png");
+		Texture2D::Sptr Car1Tex = ResourceManager::CreateAsset<Texture2D>("textures/FutureCarTex.png");
+
+
 
 
 		// Create an empty scene
@@ -524,6 +555,13 @@ int main() {
 			LoseScreenMaterial->Shininess = 2.0f;
 		}
 
+		Material::Sptr Car1Material = ResourceManager::CreateAsset<Material>();
+		{
+			Car1Material->Name = "Car1";
+			Car1Material->MatShader = scene->BaseShader;
+			Car1Material->Texture = Car1Tex;
+			Car1Material->Shininess = 2.0f;
+		}
 
 
 
@@ -545,6 +583,7 @@ int main() {
 		//SpawnObj(TutorialSign, TutorialSignMaterial, "Tutorial Sign 1", glm::vec3(-9.770f, 5.690f, -3.890f), glm::vec3(90.0f, 0.0f, 90.0f), glm::vec3(0.310f, 0.310f, 0.310f));
 		//SpawnObj(TutorialSign, TutorialSignMaterial, "Tutorial Sign 2", glm::vec3(-0.390f, 5.690f, -3.440f), glm::vec3(90.0f, 0.0f, 90.0f), glm::vec3(0.310f, 0.310f, 0.310f));
 		SpawnStartPlat(StartPlatform, StartPlatformMaterial, "EndPlatform", glm::vec3(6.360f, 5.610f, -4.920f), glm::vec3(90.0f, 0.0f, 0.0f), glm::vec3(0.350f, 0.350f, 0.350f));
+		SpawnBackGroundCar(Car1Mesh, Car1Material, "Car1", glm::vec3(8.60f, 12.940f, 2.7f), glm::vec3(90.0f, 0.0f, -90.0f), glm::vec3(0.250f, 0.250f, 0.250f));
 		
 
 		// 1st Block
