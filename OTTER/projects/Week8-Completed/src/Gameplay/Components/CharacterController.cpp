@@ -60,6 +60,15 @@ void CharacterController::Update(float deltaTime) {
         GetGameObject()->SetPostion(GetGameObject()->GetPosition() + glm::vec3(0.0f, -0.02f, 0.0f));
     }
    
+    // Lose Condition
+    if (CurrentPosition.z < -11.440f)
+    {
+        // Here you display the lose condition UI element
+        // For easier development we are just going to reset player position
+        GetGameObject()->SetPostion(glm::vec3(-8.970f, 5.710f, -3.800f));
+    }
+
+
 
     GetGameObject()->GetScene()->Lights[1].Position = GetGameObject()->GetPosition();
 

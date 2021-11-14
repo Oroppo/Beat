@@ -348,8 +348,8 @@ void SpawnWallJump(MeshResource::Sptr Mesh, Material::Sptr Material, std::string
 		// Add a dynamic rigid body to this object
 		RigidBody::Sptr physics = Startplatform->Add<RigidBody>(RigidBodyType::Kinematic);
 		// For Wall Jump Colliders, X = Left/Right Y = towards/away, z = Up/Down
-		ICollider::Sptr CollectCollider = physics->AddCollider(BoxCollider::Create(glm::vec3(0.5f, 0.5f, 3.0f)));
-		CollectCollider->SetPosition(glm::vec3(-0.120f, 0.0f, 3.0f));
+		ICollider::Sptr CollectCollider = physics->AddCollider(BoxCollider::Create(glm::vec3(0.3f, 0.5f, 3.2f)));
+		CollectCollider->SetPosition(glm::vec3(0.0f, 0.0f, 0.0f));
 
 	}
 }
@@ -421,7 +421,7 @@ int main() {
 		
 		
 		MeshResource::Sptr SmallPlatform = ResourceManager::CreateAsset<MeshResource>("SmallSpeakerPlatformV5.obj");
-		MeshResource::Sptr WallJump = ResourceManager::CreateAsset<MeshResource>("WallJumpV5.obj");
+		MeshResource::Sptr WallJump = ResourceManager::CreateAsset<MeshResource>("WallJumpV6.obj");
 		MeshResource::Sptr BeatGem = ResourceManager::CreateAsset<MeshResource>("Gem.obj");
 		MeshResource::Sptr Vinyl = ResourceManager::CreateAsset<MeshResource>("VinylV2.obj");
 		MeshResource::Sptr TutorialSign = ResourceManager::CreateAsset<MeshResource>("TutorialSign.obj");
@@ -436,6 +436,9 @@ int main() {
 		Texture2D::Sptr GemTex = ResourceManager::CreateAsset<Texture2D>("textures/Gem.png"); // Does exist just reload loam
 		Texture2D::Sptr TutorialSignTex = ResourceManager::CreateAsset<Texture2D>("textures/TutorialSign.png"); // Does not exist yet loam
 		Texture2D::Sptr CharacterTex = ResourceManager::CreateAsset<Texture2D>("textures/shirt.png");
+		Texture2D::Sptr LoseScreenTex = ResourceManager::CreateAsset<Texture2D>("textures/Game_Over_Screen.png");
+		Texture2D::Sptr WallJumpTex = ResourceManager::CreateAsset<Texture2D>("textures/WallJumpTex.png");
+
 
 		// Create an empty scene
 		scene = std::make_shared<Scene>();
@@ -464,7 +467,7 @@ int main() {
 		{
 			WallJumpMaterial->Name = "WallJump";
 			WallJumpMaterial->MatShader = scene->BaseShader;
-			WallJumpMaterial->Texture = tableTex;
+			WallJumpMaterial->Texture = WallJumpTex;
 			WallJumpMaterial->Shininess = 2.0f;
 		}
 
@@ -500,6 +503,17 @@ int main() {
 			CharacterMaterial->Shininess = 2.0f;
 		}
 
+		Material::Sptr LoseScreenMaterial = ResourceManager::CreateAsset<Material>();
+		{
+			LoseScreenMaterial->Name = "Lose Screen";
+			LoseScreenMaterial->MatShader = scene->BaseShader;
+			LoseScreenMaterial->Texture = TutorialSignTex;
+			LoseScreenMaterial->Shininess = 2.0f;
+		}
+
+
+
+
 		// Format: Mesh, Material, IMGUI TEXT, position, rotation, scale
 		// Position Axis Work as follows: X = Left and Right Y = Towards and away from camera Z = Up and Down
 		// always keep objects at 5.610f to keep the y axis consisent since we are 2.5D
@@ -511,8 +525,8 @@ int main() {
 		SpawnObj(SmallPlatform, SmallPlatformMaterial, "Small Platform 2", glm::vec3(-3.320f, 5.610f, -2.200f), glm::vec3(180.0f, 0.0f, 180.0f), glm::vec3(0.500f, 0.500f, 0.500f));
 		SpawnObj(SmallPlatform, SmallPlatformMaterial, "Small Platform 3", glm::vec3(-0.400f, 5.610f, -4.040f), glm::vec3(180.0f, 0.0f, 180.0f), glm::vec3(0.500f, 0.500f, 0.500f));
 		SpawnObj(SmallPlatform, SmallPlatformMaterial, "Small Platform 4", glm::vec3(-0.060f, 5.610f, 4.450f), glm::vec3(180.0f, 0.0f, 180.0f), glm::vec3(0.500f, 0.500f, 0.500f));
-		SpawnWallJump(WallJump, WallJumpMaterial, "Wall Jump 1", glm::vec3(1.680f, 5.610f, 5.450f), glm::vec3(180.0f, 0.0f, 180.0f), glm::vec3(0.500f, 0.040f, 1.500f));
-		SpawnWallJump(WallJump, WallJumpMaterial, "Wall Jump 2", glm::vec3(4.350f, 5.610f, 3.930f), glm::vec3(180.0f, 0.0f, 180.0f), glm::vec3(0.500f, 0.040f, 1.500f));
+		SpawnWallJump(WallJump, WallJumpMaterial, "Wall Jump 1", glm::vec3(1.680f, 5.610f, 2.610f), glm::vec3(180.0f, 0.0f, 180.0f), glm::vec3(0.500f, 0.210f, 1.500f));
+		SpawnWallJump(WallJump, WallJumpMaterial, "Wall Jump 2", glm::vec3(4.350f, 5.610f, 3.930f), glm::vec3(180.0f, 0.0f, 180.0f), glm::vec3(0.500f, 0.210f, 1.500f));
 		SpawnGem(BeatGem, BeatGemMaterial, "BeatGem", glm::vec3(2.410f, 5.610f, -3.160f), glm::vec3(90.0f, 0.0f, 180.0f), glm::vec3(0.500f, 0.500f, 0.500f));
 		SpawnCollectable(Vinyl, VinylMaterial, "Vinyl", glm::vec3(-0.040f, 5.610f, 5.920f), glm::vec3(90.000f, 0.0f, 90.000f), glm::vec3(1.000f, 1.000f, 1.000f));
 		//SpawnObj(TutorialSign, TutorialSignMaterial, "Tutorial Sign 1", glm::vec3(-9.770f, 5.690f, -3.890f), glm::vec3(90.0f, 0.0f, 90.0f), glm::vec3(0.310f, 0.310f, 0.310f));
@@ -577,6 +591,10 @@ int main() {
 			physics->AddCollider(ConvexMeshCollider::Create());
 			// world grav changed in scene.cpp
 		}
+
+
+
+
 
 		// (Delete this later)
 		/*
@@ -933,13 +951,13 @@ int main() {
 		*/
 
 		//Create a trigger volume for testing how we can detect collisions with objects!
-		GameObject::Sptr trigger = scene->CreateGameObject("Trigger");
+	/*	GameObject::Sptr trigger = scene->CreateGameObject("Trigger");
 		{
 			TriggerVolume::Sptr volume = trigger->Add<TriggerVolume>();
 			BoxCollider::Sptr collider = BoxCollider::Create(glm::vec3(0.5f, 0.5f, 0.5f));
 			collider->SetPosition(glm::vec3(0.0f, 0.0f, 0.5f));
 			volume->AddCollider(collider);
-		}
+	}*/
 
 		// Save the asset manifest for all the resources we just loaded
 		ResourceManager::SaveManifest("manifest.json");
