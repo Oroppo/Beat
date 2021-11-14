@@ -603,6 +603,10 @@ int main() {
 			RigidBody::Sptr physics = character->Add<RigidBody>(RigidBodyType::Dynamic);
 			physics->AddCollider(ConvexMeshCollider::Create());
 			// world grav changed in scene.cpp
+			TriggerVolume::Sptr volume = character->Add<TriggerVolume>();
+			BoxCollider::Sptr collider = BoxCollider::Create(glm::vec3(0.5f, 0.5f, 0.5f));
+			collider->SetPosition(glm::vec3(0.f, 0.25f, 0.f));
+			volume->AddCollider(collider);
 		}
 
 

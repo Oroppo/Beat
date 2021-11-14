@@ -3,19 +3,19 @@
 #include "Gameplay/GameObject.h"
 #include "Gameplay/Scene.h"
 #include "Utils/ImGuiHelper.h"
-
+#include <iostream>
 void CharacterController::Awake()
 {
-	_body = GetComponent<Gameplay::Physics::RigidBody>();
-	if (_body == nullptr) {
-		IsEnabled = false;
-	}
+    _body = GetComponent<Gameplay::Physics::RigidBody>();
+    if (_body == nullptr) {
+        IsEnabled = false;
+    }
 
 }
 
 
 void CharacterController::RenderImGui() {
-	
+
 }
 
 nlohmann::json CharacterController::ToJson() const {
@@ -25,16 +25,23 @@ nlohmann::json CharacterController::ToJson() const {
 }
 
 CharacterController::CharacterController() :
-	IComponent()
-{ }
+    IComponent()
+{
+    _canJump = true;
+}
 
 CharacterController::~CharacterController() = default;
 
 CharacterController::Sptr CharacterController::FromJson(const nlohmann::json & blob) {
-	CharacterController::Sptr result = std::make_shared<CharacterController>();
-	return result;
+    CharacterController::Sptr result = std::make_shared<CharacterController>();
+    return result;
 }
-
+void CharacterController::OnTriggerEnter(const Gameplay::Physics::TriggerVolume::Sptr& trigger) {
+    _canJump = true;
+}
+void CharacterController::OnTriggerExit(const Gameplay::Physics::TriggerVolume::Sptr& trigger) {
+    _canJump = false;
+}
 void CharacterController::Update(float deltaTime) {
 
     bool _A = glfwGetKey(GetGameObject()->GetScene()->Window, GLFW_KEY_A);
@@ -42,7 +49,7 @@ void CharacterController::Update(float deltaTime) {
     bool _D = glfwGetKey(GetGameObject()->GetScene()->Window, GLFW_KEY_D);
     bool _W = glfwGetKey(GetGameObject()->GetScene()->Window, GLFW_KEY_SPACE);
 
-    
+
 
     glm::vec3 CurrentPosition = GetGameObject()->GetPosition();
 
@@ -52,22 +59,13 @@ void CharacterController::Update(float deltaTime) {
     if (_D) {
         GetGameObject()->SetPostion(GetGameObject()->GetPosition() + glm::vec3(0.02f, 0.0f, 0.0f));
     }
-    if (_W & _canJump) {
+    if ((_W) && (_canJump == true)) {
         _body->ApplyImpulse(_impulse);
 
     }
     if (_S) {
         GetGameObject()->SetPostion(GetGameObject()->GetPosition() + glm::vec3(0.0f, -0.02f, 0.0f));
     }
-   
-    // Lose Condition
-    if (CurrentPosition.z < -11.440f)
-    {
-        // Here you display the lose condition UI element
-        // For easier development we are just going to reset player position
-        GetGameObject()->SetPostion(glm::vec3(-8.970f, 5.710f, -3.800f));
-    }
-
 
 
     GetGameObject()->GetScene()->Lights[1].Position = GetGameObject()->GetPosition();
@@ -76,9 +74,8 @@ void CharacterController::Update(float deltaTime) {
     _body->SetLinearDamping(0.5f);
 
     GetGameObject()->LockYPosition(5.61f);
-   //GetGameObject()->LockYRotation(70.f);
-   //GetGameObject()->LockZRotation(0.f);
-   //GetGameObject()->LockXRotation(0.f);
+    //GetGameObject()->LockYRotation(70.f);
+    //GetGameObject()->LockZRotation(0.f);
+    //GetGameObject()->LockXRotation(0.f);
 
 }
-
