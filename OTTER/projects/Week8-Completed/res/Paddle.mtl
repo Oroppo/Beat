@@ -1,0 +1,13 @@
+# Blender MTL File: 'Paddle.blend'
+# Material Count: 1
+
+newmtl Material.001
+Ns 685.487607
+Ka 1.000000 1.000000 1.000000
+Kd 0.456404 0.000545 0.000000
+Ks 0.000000 0.000000 0.000000
+Ke 0.000000 0.000000 0.000000
+Ni 1.450000
+d 1.000000
+illum 1
+map_Kd textures\\HockeyStickBlue.png
