@@ -62,9 +62,12 @@ void CharacterController::Update(float deltaTime) {
     }
     if ((_W) && (_canJump == true)) {
         _body->ApplyImpulse(_impulse);
-
     }
 
+    if (GetGameObject()->GetPosition().z <= -14.5f)
+    {
+        GetGameObject()->SetPostion(glm::vec3(-10.270f, 5.710f, -3.800f));
+    }
 
     GetGameObject()->GetScene()->Lights[1].Position = GetGameObject()->GetPosition();
 

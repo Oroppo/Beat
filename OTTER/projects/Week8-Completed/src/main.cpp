@@ -657,7 +657,7 @@ void CreateScene() {
 		GameObject::Sptr character = scene->CreateGameObject("Character/Player");
 		{
 			// Set position in the scene
-			character->SetPostion(glm::vec3(-8.970f, 5.710f, -3.800f));
+			character->SetPostion(glm::vec3(-10.270f, 5.710f, -3.800f));
 			character->SetRotation(glm::vec3(90.0f, 0.0f, 90.0f));
 			character->SetScale(glm::vec3(1.0f, 1.0f, 1.0f));
 

@@ -14,7 +14,7 @@ void LevelMover::Awake()
         IsEnabled = false;
     }
     keypoints.push_back(GetGameObject()->GetPosition().x);
-    keypoints.push_back(GetGameObject()->GetPosition().x-10);
+    keypoints.push_back(GetGameObject()->GetPosition().x - 20);
    // keypoints.push_back(GetGameObject()->GetPosition().x);
 
     _journeyLength = std::abs(keypoints[keyframe] - keypoints[keyframe + 1]);
