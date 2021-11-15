@@ -239,7 +239,7 @@ void SpawnObj(MeshResource::Sptr Mesh, Material::Sptr Material, std::string ObjN
 		Startplatform->SetRotation(rot);
 		Startplatform->SetScale(scale);
 
-		Startplatform->Add<LevelMover>();
+		//Startplatform->Add<LevelMover>();
 
 		// Create and attach a renderer for the monkey
 		RenderComponent::Sptr renderer = Startplatform->Add<RenderComponent>();
@@ -270,7 +270,7 @@ void SpawnStartPlat(MeshResource::Sptr Mesh, Material::Sptr Material, std::strin
 		Startplatform->SetRotation(rot);
 		Startplatform->SetScale(scale);
 
-		Startplatform->Add<LevelMover>();
+		//Startplatform->Add<LevelMover>();
 
 		// Create and attach a renderer for the Object
 		RenderComponent::Sptr renderer = Startplatform->Add<RenderComponent>();
@@ -299,7 +299,9 @@ void SpawnGem(MeshResource::Sptr Mesh, Material::Sptr Material, std::string ObjN
 		Startplatform->SetScale(scale);
 
 		//Add Components
-		Startplatform->Add<LevelMover>();
+		//Startplatform->Add<LevelMover>();
+		Startplatform->Add<RotatingBehaviour>();
+		
 		// Create and attach a renderer for the Object
 		RenderComponent::Sptr renderer = Startplatform->Add<RenderComponent>();
 		renderer->SetMesh(Mesh);
@@ -328,8 +330,9 @@ void SpawnCollectable(MeshResource::Sptr Mesh, Material::Sptr Material, std::str
 		Startplatform->SetScale(scale);
 
 		//Add Components
-		Startplatform->Add<LevelMover>();
+		//Startplatform->Add<LevelMover>();
 		Startplatform->Add<VinylAnim>();
+		Startplatform->Add<RotatingBehaviour>();
 
 		// Create and attach a renderer for the Object
 		RenderComponent::Sptr renderer = Startplatform->Add<RenderComponent>();
@@ -355,7 +358,7 @@ void SpawnWallJump(MeshResource::Sptr Mesh, Material::Sptr Material, std::string
 		Startplatform->SetRotation(rot);
 		Startplatform->SetScale(scale);
 
-		Startplatform->Add<LevelMover>();
+		//Startplatform->Add<LevelMover>();
 
 		// Create and attach a renderer for the Object
 		RenderComponent::Sptr renderer = Startplatform->Add<RenderComponent>();
@@ -586,14 +589,14 @@ void CreateScene() {
 		}
 
 
-		GameObject::Sptr Block1 = scene->CreateGameObject("Block1");
-		{
-			Block1->SetPostion(glm::vec3(0,0,0));
-			Block1->SetRotation(glm::vec3(0, 0, 0));
-			Block1->SetScale(glm::vec3(1, 1, 1));
-
-			Block1->Add<LevelMover>();
-		}
+		//GameObject::Sptr Block1 = scene->CreateGameObject("Block1");
+		//{
+		//	Block1->SetPostion(glm::vec3(0,0,0));
+		//	Block1->SetRotation(glm::vec3(0, 0, 0));
+		//	Block1->SetScale(glm::vec3(1, 1, 1));
+		//
+		//	//Block1->Add<LevelMover>();
+		//}
 
 		GameObject* parent = nullptr;
 

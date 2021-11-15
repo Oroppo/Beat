@@ -48,7 +48,6 @@ void CharacterController::OnTriggerVolumeEntered(const std::shared_ptr<Gameplay:
 void CharacterController::Update(float deltaTime) {
 
     bool _A = glfwGetKey(GetGameObject()->GetScene()->Window, GLFW_KEY_A);
-    bool _S = glfwGetKey(GetGameObject()->GetScene()->Window, GLFW_KEY_S);
     bool _D = glfwGetKey(GetGameObject()->GetScene()->Window, GLFW_KEY_D);
     bool _W = glfwGetKey(GetGameObject()->GetScene()->Window, GLFW_KEY_SPACE);
 
@@ -56,17 +55,14 @@ void CharacterController::Update(float deltaTime) {
     glm::vec3 CurrentPosition = GetGameObject()->GetPosition();
 
     if (_A) {
-        GetGameObject()->SetPostion(GetGameObject()->GetPosition() + glm::vec3(-0.02f, 0.0f, 0.0f));
+        GetGameObject()->SetPostion(GetGameObject()->GetPosition() + glm::vec3(-0.05f, 0.0f, 0.0f));
     }
     if (_D) {
-        GetGameObject()->SetPostion(GetGameObject()->GetPosition() + glm::vec3(0.02f, 0.0f, 0.0f));
+        GetGameObject()->SetPostion(GetGameObject()->GetPosition() + glm::vec3(0.05f, 0.0f, 0.0f));
     }
     if ((_W) && (_canJump == true)) {
         _body->ApplyImpulse(_impulse);
 
-    }
-    if (_S) {
-        GetGameObject()->SetPostion(GetGameObject()->GetPosition() + glm::vec3(0.0f, -0.02f, 0.0f));
     }
 
 
