@@ -90,13 +90,20 @@ void LevelMover::Update(float deltaTime)
         _timeStored = _timer - _startTime;
         keyframe++;
     }
+    /*
+    if (GetGameObject()->GetPosition().y >= 10.0f);
+    {
+       BObjPosX = BObjPosX - 15.0 * deltaTime;
+       GetGameObject()->SetPostion(glm::vec3(BObjPosX, ObjY, ObjZ));
+    }
 
-
-   
+    FObjPosX = FObjPosX - 4.5 * deltaTime;
+    GetGameObject()->SetPostion(glm::vec3(FObjPosX, ObjY, ObjZ));
+    */
 }
 
 // Templated LERP function returns positon at current time for LERP
-template<typename T>
+template <typename T>
 T LevelMover::Lerp(const T& p0, const T& p1, float t)
 {
     return (1.0f - t) * p0 + t * p1;
