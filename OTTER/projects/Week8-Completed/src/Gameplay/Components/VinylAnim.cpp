@@ -1,36 +1,36 @@
-#include "Gameplay/Components/LevelMover.h"
+#include "Gameplay/Components/VinylAnim.h"
 #include <GLFW/glfw3.h>
 #include "Gameplay/GameObject.h"
 #include "Gameplay/Scene.h"
 #include "Utils/ImGuiHelper.h"
 
-void LevelMover::Awake()
+void VinylAnim::Awake()
 {
     _body = GetComponent<Gameplay::Physics::RigidBody>();
-   
+
 
 
     if (_body == nullptr) {
         IsEnabled = false;
     }
-    keypoints.push_back(GetGameObject()->GetPosition().x);
-    keypoints.push_back(GetGameObject()->GetPosition().x-10);
-   // keypoints.push_back(GetGameObject()->GetPosition().x);
+    keypoints.push_back(GetGameObject()->GetPosition().z);
+    keypoints.push_back(GetGameObject()->GetPosition().z + 2);
+    keypoints.push_back(GetGameObject()->GetPosition().z);
 
     _journeyLength = std::abs(keypoints[keyframe] - keypoints[keyframe + 1]);
 
 }
 
-void LevelMover::RenderImGui() {
+void VinylAnim::RenderImGui() {
 
 }
 
-nlohmann::json LevelMover::ToJson() const {
+nlohmann::json VinylAnim::ToJson() const {
     return {
     };
 }
 // Constructor Initializes Values for LERP and Set Position but Only SetPosition is being used atm
-LevelMover::LevelMover() :
+VinylAnim::VinylAnim() :
     IComponent(),
     _segmentIndex(0),
     _TravelTime(5.0f),
@@ -43,28 +43,27 @@ LevelMover::LevelMover() :
     _timer(1.0f),
     ObjY(0.0f),
     ObjZ(0.0f),
-    ObjX(0.0f),
-    _switchIndex(true)
+    ObjX(0.0f)
 
 { }
 
-LevelMover::~LevelMover() = default;
+VinylAnim::~VinylAnim() = default;
 
-LevelMover::Sptr LevelMover::FromJson(const nlohmann::json & blob) {
-    LevelMover::Sptr result = std::make_shared<LevelMover>();
+VinylAnim::Sptr VinylAnim::FromJson(const nlohmann::json & blob) {
+    VinylAnim::Sptr result = std::make_shared<VinylAnim>();
     return result;
 }
 
 
-void LevelMover::Update(float deltaTime)
+void VinylAnim::Update(float deltaTime)
 {
     if (_body->_isChild) {
-       // _body->FollowParent();
+        // _body->FollowParent();
     }
 
     // Object with behavior attached Y and Z position
     ObjY = GetGameObject()->GetPosition().y;
-    ObjZ = GetGameObject()->GetPosition().z;
+    ObjX = GetGameObject()->GetPosition().x;
 
     _timer += deltaTime;
 
@@ -81,30 +80,21 @@ void LevelMover::Update(float deltaTime)
 
     float sqt = (fractionOfJourney) * (fractionOfJourney);
 
-   // float SlowInOut = sqt / (2.0f * (sqt - fractionOfJourney) + 1.0f);
+    float SlowInOut = sqt / (2.0f * (sqt - fractionOfJourney) + 1.0f);
 
-    GetGameObject()->SetPostion(glm::vec3(Lerp(keypoints[keyframe], keypoints[keyframe+1], fractionOfJourney), ObjY, ObjZ));
+    GetGameObject()->SetPostion(glm::vec3(ObjX, ObjY, Lerp(keypoints[keyframe], keypoints[keyframe + 1], SlowInOut)));
 
     if ((fractionOfJourney >= 1.f) && (keyframe != keypoints.size() - 1))
     {
         _timeStored = _timer - _startTime;
         keyframe++;
     }
-    /*
-    if (GetGameObject()->GetPosition().y >= 10.0f);
-    {
-       BObjPosX = BObjPosX - 15.0 * deltaTime;
-       GetGameObject()->SetPostion(glm::vec3(BObjPosX, ObjY, ObjZ));
-    }
 
-    FObjPosX = FObjPosX - 4.5 * deltaTime;
-    GetGameObject()->SetPostion(glm::vec3(FObjPosX, ObjY, ObjZ));
-    */
 }
 
 // Templated LERP function returns positon at current time for LERP
 template <typename T>
-T LevelMover::Lerp(const T& p0, const T& p1, float t)
+T VinylAnim::Lerp(const T & p0, const T & p1, float t)
 {
     return (1.0f - t) * p0 + t * p1;
 }
