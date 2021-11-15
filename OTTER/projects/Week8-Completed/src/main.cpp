@@ -75,6 +75,7 @@
 #include "Gameplay/Components/LevelMover.h"
 #include "Gameplay/Components/BackgroundMover.h"
 #include "Gameplay/Components/VinylAnim.h"
+#include "Gameplay/Components/ForeGroundMover.h"
 
 // Physics
 #include "Gameplay/Physics/RigidBody.h"
@@ -410,6 +411,32 @@ void SpawnBackGroundCar(MeshResource::Sptr Mesh, Material::Sptr Material, std::s
 	}
 }
 
+
+void SpawnForeGroundCar(MeshResource::Sptr Mesh, Material::Sptr Material, std::string ObjName = "DeezNuts", glm::vec3 pos = glm::vec3(0.0f, 0.0f, 0.0f),
+	glm::vec3 rot = glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3 scale = glm::vec3(1.0f, 1.0f, 1.0f)) {
+
+	GameObject::Sptr Car1 = scene->CreateGameObject(ObjName);
+	{
+		// Set position in the scene
+		Car1->SetPostion(pos);
+		Car1->SetRotation(rot);
+		Car1->SetScale(scale);
+
+		//Add Components
+		Car1->Add<ForeGroundMover>();
+
+		// Create and attach a renderer for the Object
+		RenderComponent::Sptr renderer = Car1->Add<RenderComponent>();
+		renderer->SetMesh(Mesh);
+		renderer->SetMaterial(Material);
+
+		// Is background Object and therefore has no colliders
+		// Add a dynamic rigid body to this object
+		RigidBody::Sptr physics = Car1->Add<RigidBody>(RigidBodyType::Kinematic);
+	}
+}
+
+
 void CreateScene() {
 	bool loadScene = false;
 
@@ -616,6 +643,7 @@ void CreateScene() {
 		//SpawnObj(TutorialSign, TutorialSignMaterial, "Tutorial Sign 2", glm::vec3(-0.390f, 5.690f, -3.440f), glm::vec3(90.0f, 0.0f, 90.0f), glm::vec3(0.310f, 0.310f, 0.310f));
 		SpawnStartPlat(StartPlatform, StartPlatformMaterial, "EndPlatform", glm::vec3(6.360f, 5.610f, -4.920f), glm::vec3(90.0f, 0.0f, 0.0f), glm::vec3(0.350f, 0.350f, 0.350f));
 		SpawnBackGroundCar(Car1Mesh, Car1Material, "Car1", glm::vec3(14.870f, 9.80f, 2.7f), glm::vec3(90.0f, 0.0f, -90.0f), glm::vec3(0.250f, 0.250f, 0.250f));
+		SpawnForeGroundCar(Car1Mesh, Car1Material, "Car2", glm::vec3(-9.970f, 0.470f, -4.0f), glm::vec3(90.0f, 0.0f, 90.0f), glm::vec3(0.250f, 0.250f, 0.250f));
 		
 
 		// 1st Block
@@ -740,6 +768,7 @@ int main() {
 	ComponentManager::RegisterType<LevelMover>();
 	ComponentManager::RegisterType<BackgroundMover>();
 	ComponentManager::RegisterType<VinylAnim>();
+	ComponentManager::RegisterType<ForeGroundMover>();
 
 
 
