@@ -71,7 +71,7 @@ namespace Gameplay {
 		/// <summary>
 		/// Gets the view matrix for this camera
 		/// </summary>
-		const glm::mat4& GetView() const { return _view; }
+		const glm::mat4& GetView() const;
 		/// <summary>
 		/// Gets the projection matrix for this camera
 		/// </summary>
@@ -80,13 +80,6 @@ namespace Gameplay {
 		/// Gets the combined view-projection matrix for this camera, calculating if needed
 		/// </summary>
 		const glm::mat4& GetViewProjection() const;
-
-		float GetNearPlane() {
-			return _nearPlane;
-		}
-		void SetNearPlane(float foo) {
-			_nearPlane = foo;
-		}
 
 	protected:
 		float _nearPlane;

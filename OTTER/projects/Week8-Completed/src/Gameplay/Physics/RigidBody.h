@@ -53,10 +53,17 @@ namespace Gameplay::Physics {
 		/// </summary>
 		/// <param name="value">he new value for linear drag, default 0</param>
 		void SetLinearDamping(float value);
+
+		btRigidBody* GetBody() {
+			return _body;
+		}
+
 		/// <summary>
 		/// Gets the linear damping (ie drag) for this object
 		/// </summary>
 		float GetLinearDamping() const;
+
+
 
 		/// <summary>
 		/// Sets the angular damping for this object
@@ -70,6 +77,44 @@ namespace Gameplay::Physics {
 		/// Gets the angular damping (ie drag) for this object
 		/// </summary>
 		float GetAngularDamping() const;
+
+		/// <summary>
+		/// Sets the linear velocity for this body. If called before Awake,
+		/// will set the body's initial velocity
+		/// </summary>
+		/// <param name="value">The velocity per axis in m/s</param>
+		void SetLinearVelocity(const glm::vec3& value);
+		/// <summary>
+		/// Gets the bodies linear velocity, in m/s
+		/// </summary>
+		const glm::vec3& GetLinearVelocity() const;
+
+		//Sets Local Origin to parents origin
+		void FollowParent(GameObject* parent);
+
+		/// <summary>
+		/// Sets the angular velocity for this body. If called before Awake,
+		/// will set the body's angular velocity
+		/// </summary>
+		/// <param name="value">The velocity per axis in degrees/s</param>
+		void SetAngularVelocity(const glm::vec3& value);
+		/// <summary>
+		/// Gets the bodies angular velocity, in degrees/s
+		/// </summary>
+		const glm::vec3& GetAngularVelocity() const;
+
+		/// <summary>
+		/// Sets the angular factor for this body. The velocity along each
+		/// axis will be scaled by this amount. For instance, to prevent a
+		/// body from rotating along the Z axis, you could set the angular
+		/// factor to (1, 1, 0)
+		/// </summary>
+		/// <param name="value">The angular factor per axis</param>
+		void SetAngularFactor(const glm::vec3& value);
+		/// <summary>
+		/// Gets the bodies angular factor
+		/// </summary>
+		const glm::vec3& GetAngularFactor() const;
 
 		/// <summary>
 		/// Applies a force in world space to this object, this would be used
@@ -88,7 +133,7 @@ namespace Gameplay::Physics {
 		/// Applies a direct change in velocity on the object
 		/// </summary>
 		/// <param name="worldForce">The force in world space and m/s</param>
-		void ApplyImpulse(const glm::vec3& worldForce);;
+		void ApplyImpulse(const glm::vec3& worldForce);
 		/// <summary>
 		/// Applies a direct change in velocity on the object, relative to a given
 		/// offset to the object
@@ -106,15 +151,6 @@ namespace Gameplay::Physics {
 		/// </summary>
 		/// <param name="worldTorque">The torque, in radians per second and world space</param>
 		void ApplyTorqueImpulse(const glm::vec3& worldTorque);
-
-		btRigidBody* GetBody() {
-			return _body;
-		}
-
-		void SetBody(btRigidBody* foo) {
-			_body = foo;
-		}
-
 
 		/// <summary>
 		/// Sets the type of rigid body (static, dynamic, kinematic)
@@ -145,9 +181,7 @@ namespace Gameplay::Physics {
 		virtual nlohmann::json ToJson() const override;
 		static RigidBody::Sptr FromJson(const nlohmann::json& data);
 		MAKE_TYPENAME(RigidBody)
-
-			private:
-			
+			bool _isChild;
 
 	protected:
 		// The physics update mode for the body (static, dynamic, kinematic)
@@ -163,16 +197,23 @@ namespace Gameplay::Physics {
 		float _linearDamping;
 		mutable bool _isDampingDirty;
 
-		// Our bullet state stuff
 
-		btRigidBody*	_body;
+
+		// Our bullet state stuff
+		btRigidBody*     _body;
 		btMotionState*   _motionState;
 		btVector3        _inertia;
-
-		glm::vec3 _velocity;
+		btVector3        _linearVelocity;
+		bool             _linearVelocityDirty;
+		btVector3        _angularVelocity;
+		bool             _angularVelocityDirty;
+		btVector3        _angularFactor;
+		bool             _angularFactorDirty;
 
 		// Handles resolving any dirty state stuff for our object
 		void _HandleStateDirty();
+
+
 
 		virtual btBroadphaseProxy* _GetBroadphaseHandle() override;
 	};

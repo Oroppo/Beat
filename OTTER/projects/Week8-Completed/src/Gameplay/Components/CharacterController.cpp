@@ -36,11 +36,14 @@ CharacterController::Sptr CharacterController::FromJson(const nlohmann::json & b
     CharacterController::Sptr result = std::make_shared<CharacterController>();
     return result;
 }
-void CharacterController::OnTriggerEnter(const Gameplay::Physics::TriggerVolume::Sptr& trigger) {
-    _canJump = true;
+
+void CharacterController::OnTriggerVolumeEntered(const std::shared_ptr<Gameplay::Physics::RigidBody>& body) {
+        LOG_INFO("Body has entered our trigger volume: {}", body->GetGameObject()->Name);
+        _canJump = true;
 }
-void CharacterController::OnTriggerExit(const Gameplay::Physics::TriggerVolume::Sptr& trigger) {
-    _canJump = false;
+ void CharacterController::OnTriggerVolumeLeaving(const std::shared_ptr<Gameplay::Physics::RigidBody>& body) {
+    LOG_INFO("Body has left our trigger volume: {}", body->GetGameObject()->Name);
+    _canJump =false;
 }
 void CharacterController::Update(float deltaTime) {
 
@@ -48,7 +51,6 @@ void CharacterController::Update(float deltaTime) {
     bool _S = glfwGetKey(GetGameObject()->GetScene()->Window, GLFW_KEY_S);
     bool _D = glfwGetKey(GetGameObject()->GetScene()->Window, GLFW_KEY_D);
     bool _W = glfwGetKey(GetGameObject()->GetScene()->Window, GLFW_KEY_SPACE);
-
 
 
     glm::vec3 CurrentPosition = GetGameObject()->GetPosition();
@@ -73,7 +75,7 @@ void CharacterController::Update(float deltaTime) {
     _body->SetAngularDamping(100.f);
     _body->SetLinearDamping(0.5f);
 
-    GetGameObject()->LockYPosition(5.61f);
+    GetGameObject()->SetPositionY(5.61f);
     //GetGameObject()->LockYRotation(70.f);
     //GetGameObject()->LockZRotation(0.f);
     //GetGameObject()->LockXRotation(0.f);

@@ -2,7 +2,7 @@
 #include "IComponent.h"
 #include "Gameplay/Physics/RigidBody.h"
 #include "GLFW/glfw3.h"
-#include "Gameplay/Components/JumpReset.h"
+
 /// <summary>
 /// A simple behaviour that applies an impulse along the Z axis to the 
 /// rigidbody of the parent when the space key is pressed
@@ -22,9 +22,10 @@ public:
 	MAKE_TYPENAME(CharacterController);
 	virtual nlohmann::json ToJson() const override;
 	static CharacterController::Sptr FromJson(const nlohmann::json& blob);
-	void OnTriggerEnter(const Gameplay::Physics::TriggerVolume::Sptr& trigger);
-	void OnTriggerExit(const Gameplay::Physics::TriggerVolume::Sptr& trigger);
-
+	//void OnTriggerEnter(const Gameplay::Physics::TriggerVolume::Sptr& trigger);
+	//void OnTriggerExit(const Gameplay::Physics::TriggerVolume::Sptr& trigger);
+	virtual void OnTriggerVolumeEntered(const std::shared_ptr<Gameplay::Physics::RigidBody>& body) ;
+	virtual void OnTriggerVolumeLeaving(const std::shared_ptr<Gameplay::Physics::RigidBody>& body) ;
 	
 
 protected:

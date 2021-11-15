@@ -24,7 +24,7 @@ nlohmann::json JumpBehaviour::ToJson() const {
 
 JumpBehaviour::JumpBehaviour() :
 	IComponent(),
-	_impulse(1.2f)
+	_impulse(10.0f)
 { }
 
 JumpBehaviour::~JumpBehaviour() = default;
@@ -36,10 +36,8 @@ JumpBehaviour::Sptr JumpBehaviour::FromJson(const nlohmann::json& blob) {
 }
 
 void JumpBehaviour::Update(float deltaTime) {
-
 	bool pressed = glfwGetKey(GetGameObject()->GetScene()->Window, GLFW_KEY_SPACE);
 	if (pressed) {
-	if (pressed) 
 		if (_isPressed == false) {
 			_body->ApplyImpulse(glm::vec3(0.0f, 0.0f, _impulse));
 		}
@@ -47,23 +45,5 @@ void JumpBehaviour::Update(float deltaTime) {
 	} else {
 		_isPressed = false;
 	}
-
-	bool APressed = glfwGetKey(GetGameObject()->GetScene()->Window, GLFW_KEY_A);
-	bool SPressed = glfwGetKey(GetGameObject()->GetScene()->Window, GLFW_KEY_S);
-	bool DPressed = glfwGetKey(GetGameObject()->GetScene()->Window, GLFW_KEY_D);
-	bool WPressed = glfwGetKey(GetGameObject()->GetScene()->Window, GLFW_KEY_W);
-	if (APressed) {
-		GetGameObject()->SetPostion(GetGameObject()->GetPosition() + glm::vec3(-0.005f, 0.0f, 0.0f));
-	}
-	if (DPressed) {
-		GetGameObject()->SetPostion(GetGameObject()->GetPosition() + glm::vec3(0.005f, 0.0f, 0.0f));
-	}
-	if (WPressed) {
-		GetGameObject()->SetPostion(GetGameObject()->GetPosition() + glm::vec3(0.0f, 0.005f, 0.0f));
-	}
-	if (SPressed) {
-		GetGameObject()->SetPostion(GetGameObject()->GetPosition() + glm::vec3(0.0f, -0.005f, 0.0f));
-	}
-
 }
 

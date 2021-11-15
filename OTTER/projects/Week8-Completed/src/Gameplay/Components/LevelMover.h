@@ -33,11 +33,22 @@ protected:
 	size_t _segmentIndex;
 	float _timer;
 	float _TravelTime;
-	int keypoints;
+	float _startTime;
+	float _timeStored;
+	float _speed;
+	std::vector<float> keypoints;
+	float _journeyLength;
+
+
+	int keyframe;
+
+	bool _switchIndex;
+
 	float ObjY;
 	float ObjZ;
 	float ObjX;
 
 	Gameplay::Physics::RigidBody::Sptr _body;
+	Gameplay::Physics::RigidBody::Sptr parent;
 
 };

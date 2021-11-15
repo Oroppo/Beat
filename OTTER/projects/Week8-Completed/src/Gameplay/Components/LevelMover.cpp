@@ -7,9 +7,17 @@
 void LevelMover::Awake()
 {
     _body = GetComponent<Gameplay::Physics::RigidBody>();
+   
+
+
     if (_body == nullptr) {
         IsEnabled = false;
     }
+    keypoints.push_back(GetGameObject()->GetPosition().x);
+    keypoints.push_back(GetGameObject()->GetPosition().x-10);
+    keypoints.push_back(GetGameObject()->GetPosition().x);
+
+    _journeyLength = std::abs(keypoints[keyframe] - keypoints[keyframe + 1]);
 
 }
 
@@ -24,13 +32,20 @@ nlohmann::json LevelMover::ToJson() const {
 // Constructor Initializes Values for LERP and Set Position but Only SetPosition is being used atm
 LevelMover::LevelMover() :
     IComponent(),
-    keypoints(2),
     _segmentIndex(0),
-    _TravelTime(500.0f),
+    _TravelTime(5.0f),
+    _startTime(0.f),
+    _timeStored(0.f),
+    keyframe(0.f),
+    _speed(1.f),
+    _journeyLength(0.f),
+
     _timer(1.0f),
     ObjY(0.0f),
     ObjZ(0.0f),
-    ObjX(0.0f)
+    ObjX(0.0f),
+    _switchIndex(true)
+
 { }
 
 LevelMover::~LevelMover() = default;
@@ -40,51 +55,44 @@ LevelMover::Sptr LevelMover::FromJson(const nlohmann::json & blob) {
     return result;
 }
 
+
 void LevelMover::Update(float deltaTime)
 {
-    // object with behavior attached X position
-    float FObjPosX = GetGameObject()->GetPosition().x;
-    float BObjPosX = GetGameObject()->GetPosition().x;
-    
+    if (_body->_isChild) {
+       // _body->FollowParent();
+    }
+
     // Object with behavior attached Y and Z position
     ObjY = GetGameObject()->GetPosition().y;
     ObjZ = GetGameObject()->GetPosition().z;
 
-    // Lerp Currently Works However Objects further away move faster than those closer
-    /*_timer += deltaTime;
+    _timer += deltaTime;
 
-    while (_timer > _TravelTime)
+    // Distance moved equals elapsed time times speed..
+    float distCovered = (_timer - _startTime - _timeStored) * _speed;
+
+    // Fraction of journey completed equals current distance divided by total distance.
+    float fractionOfJourney = distCovered / _journeyLength;
+
+    if (keyframe == keypoints.size() - 1)
     {
-        _timer -= _TravelTime;
-
-      //  _segmentIndex += 1;
-
-      //  if (_segmentIndex >= keypoints)
-        //    _segmentIndex = 0;
+        keyframe = 0;
     }
-    float t = _timer / _TravelTime;
 
-    float p0, p1;
-    p0 = GetGameObject()->GetPosition().x;
-    p1 = -20.1f;
-    ObjX = Lerp(p0, p1, t);
+    float sqt = (fractionOfJourney) * (fractionOfJourney);
 
-    GetGameObject()->SetPostion(glm::vec3(ObjX, ObjY, ObjZ));*/
+    float SlowInOut = sqt / (2.0f * (sqt - fractionOfJourney) + 1.0f);
 
-    // Moves the Objects based on delta time and a fixed value Currently is about 6 seconds for objects
-    // to move from Left to Right
-   /* if (GetGameObject()->Name != "Car1")
+    GetGameObject()->SetPostion(glm::vec3(Lerp(keypoints[keyframe], keypoints[keyframe+1], SlowInOut), ObjY, ObjZ));
+
+    if ((fractionOfJourney >= 1.f) && (keyframe != keypoints.size() - 1))
     {
-        FObjPosX = FObjPosX - 4.5 * deltaTime;
-        GetGameObject()->SetPostion(glm::vec3(FObjPosX, ObjY, ObjZ));
+        _timeStored = _timer - _startTime;
+        keyframe++;
     }
-    if (GetGameObject()->GetPosition().y >= 10.0f);
-    {
-       BObjPosX = BObjPosX - 15.0 * deltaTime;
-       GetGameObject()->SetPostion(glm::vec3(BObjPosX, ObjY, ObjZ));
-    }*/
-    FObjPosX = FObjPosX - 4.5 * deltaTime;
-    GetGameObject()->SetPostion(glm::vec3(FObjPosX, ObjY, ObjZ));
+
+
+   
 }
 
 // Templated LERP function returns positon at current time for LERP

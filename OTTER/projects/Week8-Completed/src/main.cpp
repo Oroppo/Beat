@@ -44,6 +44,7 @@
 #include "Graphics/Shader.h"
 #include "Graphics/Texture2D.h"
 #include "Graphics/VertexTypes.h"
+#include "Graphics/TextureCube.h"
 
 // Utilities
 #include "Utils/MeshBuilder.h"
@@ -70,7 +71,6 @@
 #include "Gameplay/Components/RenderComponent.h"
 #include "Gameplay/Components/MaterialSwapBehaviour.h"
 #include "Gameplay/Components/MoveThings.h"
-#include "Gameplay/Components/MouseController.h"
 #include "Gameplay/Components/ScoreComponent.h"
 #include "Gameplay/Components/LevelMover.h"
 #include "Gameplay/Components/BackgroundMover.h"
@@ -228,8 +228,8 @@ bool DrawLightImGui(const Scene::Sptr& scene, const char* title, int ix) {
 	return result;
 }
 // For spawning small platforms
-void SpawnObj(MeshResource::Sptr Mesh, Material::Sptr Material, std::string ObjName = "DeezNuts", glm::vec3 pos = glm::vec3(-10.900f, 5.610f, -4.920f),
-			glm::vec3 rot = glm::vec3(180.0f, 0.0f, 180.0f), glm::vec3 scale = glm::vec3(0.350f, 0.350f, 0.350f)) {
+void SpawnObj(MeshResource::Sptr Mesh, Material::Sptr Material, std::string ObjName = "DeezNuts", glm::vec3 pos = glm::vec3(-10.900f, 5.610f, -4.920f), 
+	GameObject* parent =nullptr, glm::vec3 rot = glm::vec3(180.0f, 0.0f, 180.0f), glm::vec3 scale = glm::vec3(0.350f, 0.350f, 0.350f)) {
 	// Tutorial Stuff
 	GameObject::Sptr Startplatform = scene->CreateGameObject(ObjName);
 	{
@@ -248,6 +248,8 @@ void SpawnObj(MeshResource::Sptr Mesh, Material::Sptr Material, std::string ObjN
 		// Add a dynamic rigid body to this monkey
 		RigidBody::Sptr physics = Startplatform->Add<RigidBody>(RigidBodyType::Kinematic);
 		//physics->AddCollider(BoxCollider::Create(glm::vec3(1.0f, 1.0f, 1.0f)));
+		physics->_isChild = true;
+
 
 		// FIX THIS //
 		ICollider::Sptr Box1 = physics->AddCollider(BoxCollider::Create(glm::vec3(1.2f, 1.0f, 0.5f)));
@@ -367,6 +369,18 @@ void SpawnWallJump(MeshResource::Sptr Mesh, Material::Sptr Material, std::string
 	}
 }
 
+/// <summary>
+/// Draws a simple window for displaying materials and their editors
+/// </summary>
+void DrawMaterialsWindow() {
+	if (ImGui::Begin("Materials")) {
+		ResourceManager::Each<Material>([](Material::Sptr material) {
+			material->RenderImGui();
+			});
+	}
+	ImGui::End();
+}
+
 void SpawnBackGroundCar(MeshResource::Sptr Mesh, Material::Sptr Material, std::string ObjName = "DeezNuts", glm::vec3 pos = glm::vec3(0.0f, 0.0f, 0.0f),
 	glm::vec3 rot = glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3 scale = glm::vec3(1.0f, 1.0f, 1.0f)) {
 
@@ -388,6 +402,290 @@ void SpawnBackGroundCar(MeshResource::Sptr Mesh, Material::Sptr Material, std::s
 		// Is background Object and therefore has no colliders
 		// Add a dynamic rigid body to this object
 		RigidBody::Sptr physics = Car1->Add<RigidBody>(RigidBodyType::Kinematic);
+	}
+}
+
+void CreateScene() {
+	bool loadScene = false;
+
+	// For now we can use a toggle to generate our scene vs load from file
+	if (loadScene) {
+		ResourceManager::LoadManifest("manifest.json");
+		scene = Scene::Load("scene.json");
+
+		// Call scene awake to start up all of our components
+		scene->Window = window;
+		scene->Awake();
+	}
+	else {
+		// This time we'll have 2 different shaders, and share data between both of them using the UBO
+		// This shader will handle reflective materials 
+		Shader::Sptr reflectiveShader = ResourceManager::CreateAsset<Shader>(std::unordered_map<ShaderPartType, std::string>{
+			{ ShaderPartType::Vertex, "shaders/vertex_shaders/basic.glsl" },
+			{ ShaderPartType::Fragment, "shaders/fragment_shaders/frag_environment_reflective.glsl" }
+		});
+
+		// This shader handles our basic materials without reflections (cause they expensive)
+		Shader::Sptr basicShader = ResourceManager::CreateAsset<Shader>(std::unordered_map<ShaderPartType, std::string>{
+			{ ShaderPartType::Vertex, "shaders/vertex_shaders/basic.glsl" },
+			{ ShaderPartType::Fragment, "shaders/fragment_shaders/frag_blinn_phong_textured.glsl" }
+		});
+
+		// This shader handles our basic materials without reflections (cause they expensive)
+		Shader::Sptr specShader = ResourceManager::CreateAsset<Shader>(std::unordered_map<ShaderPartType, std::string>{
+			{ ShaderPartType::Vertex, "shaders/vertex_shaders/basic.glsl" },
+			{ ShaderPartType::Fragment, "shaders/fragment_shaders/textured_specular.glsl" }
+		});
+
+
+		///////////////////// NEW SHADERS ////////////////////////////////////////////
+
+		// This shader handles our foliage vertex shader example
+		Shader::Sptr foliageShader = ResourceManager::CreateAsset<Shader>(std::unordered_map<ShaderPartType, std::string>{
+			{ ShaderPartType::Vertex, "shaders/vertex_shaders/foliage.glsl" },
+			{ ShaderPartType::Fragment, "shaders/fragment_shaders/screendoor_transparency.glsl" }
+		});
+
+		// This shader handles our cel shading example
+		Shader::Sptr toonShader = ResourceManager::CreateAsset<Shader>(std::unordered_map<ShaderPartType, std::string>{
+			{ ShaderPartType::Vertex, "shaders/vertex_shaders/basic.glsl" },
+			{ ShaderPartType::Fragment, "shaders/fragment_shaders/toon_shading.glsl" }
+		});
+
+		//Meshes
+		MeshResource::Sptr SmallPlatform = ResourceManager::CreateAsset<MeshResource>("SmallSpeakerPlatformV5.obj");
+		MeshResource::Sptr WallJump = ResourceManager::CreateAsset<MeshResource>("WallJumpV6.obj");
+		MeshResource::Sptr BeatGem = ResourceManager::CreateAsset<MeshResource>("Gem.obj");
+		MeshResource::Sptr Vinyl = ResourceManager::CreateAsset<MeshResource>("VinylV2.obj");
+		MeshResource::Sptr TutorialSign = ResourceManager::CreateAsset<MeshResource>("TutorialSign.obj");
+		MeshResource::Sptr CharacterMesh = ResourceManager::CreateAsset<MeshResource>("dudeCharacter.obj");
+		MeshResource::Sptr StartPlatform = ResourceManager::CreateAsset<MeshResource>("StartPlatformV6.obj");
+		MeshResource::Sptr Car1Mesh = ResourceManager::CreateAsset<MeshResource>("FutureCar1.obj");
+
+		//Textures
+		Texture2D::Sptr StartTex = ResourceManager::CreateAsset<Texture2D>("textures/DiscoBuildingTex.png"); // Does not exist yet loam
+		Texture2D::Sptr SmallTex = ResourceManager::CreateAsset<Texture2D>("textures/DanceFloorTex2.png"); // Does not exist yet loam
+		Texture2D::Sptr VinylTex = ResourceManager::CreateAsset<Texture2D>("textures/VinylTex.png"); // Does not exist yet loam
+		Texture2D::Sptr GemTex = ResourceManager::CreateAsset<Texture2D>("textures/Gem.png"); // Does exist just reload loam
+		Texture2D::Sptr TutorialSignTex = ResourceManager::CreateAsset<Texture2D>("textures/TutorialSign.png"); // Does not exist yet loam
+		Texture2D::Sptr CharacterTex = ResourceManager::CreateAsset<Texture2D>("textures/shirt.png");
+		Texture2D::Sptr LoseScreenTex = ResourceManager::CreateAsset<Texture2D>("textures/Game_Over_Screen.png");
+		Texture2D::Sptr WallJumpTex = ResourceManager::CreateAsset<Texture2D>("textures/WallJumpTex.png");
+		Texture2D::Sptr Car1Tex = ResourceManager::CreateAsset<Texture2D>("textures/FutureCarTex.png");
+		
+
+		//Minification and Magnification
+		//leafTex->SetMinFilter(MinFilter::Nearest);
+		//leafTex->SetMagFilter(MagFilter::Nearest);
+
+		// Here we'll load in the cubemap, as well as a special shader to handle drawing the skybox
+		TextureCube::Sptr testCubemap = ResourceManager::CreateAsset<TextureCube>("cubemaps/ocean/ocean.jpg");
+		Shader::Sptr      skyboxShader = ResourceManager::CreateAsset<Shader>(std::unordered_map<ShaderPartType, std::string>{
+			{ ShaderPartType::Vertex, "shaders/vertex_shaders/skybox_vert.glsl" },
+			{ ShaderPartType::Fragment, "shaders/fragment_shaders/skybox_frag.glsl" }
+		});
+
+		// Create an empty scene
+		scene = std::make_shared<Scene>();
+
+		// Setting up our enviroment map
+		scene->SetSkyboxTexture(testCubemap);
+		scene->SetSkyboxShader(skyboxShader);
+		// Since the skybox I used was for Y-up, we need to rotate it 90 deg around the X-axis to convert it to z-up
+		scene->SetSkyboxRotation(glm::rotate(MAT4_IDENTITY, glm::half_pi<float>(), glm::vec3(1.0f, 0.0f, 0.0f)));
+
+		// Create our materials
+		Material::Sptr StartPlatformMaterial = ResourceManager::CreateAsset<Material>(basicShader);
+		{
+			StartPlatformMaterial->Name = "StartPlatform";
+			StartPlatformMaterial->Set("u_Material.Diffuse", StartTex);
+			StartPlatformMaterial->Set("u_Material.Shininess", 0.1f);
+		}
+
+		Material::Sptr SmallPlatformMaterial = ResourceManager::CreateAsset<Material>(basicShader);
+		{
+			SmallPlatformMaterial->Name = "SmallPlatform";
+			SmallPlatformMaterial->Set("u_Material.Diffuse", SmallTex);
+			SmallPlatformMaterial->Set("u_Material.Shininess", 0.1f);
+		}
+
+		Material::Sptr WallJumpMaterial = ResourceManager::CreateAsset<Material>(basicShader);
+		{
+			WallJumpMaterial->Name = "WallJump";
+			WallJumpMaterial->Set("u_Material.Diffuse", WallJumpTex);
+			WallJumpMaterial->Set("u_Material.Shininess", 0.1f);
+		}
+
+		Material::Sptr BeatGemMaterial = ResourceManager::CreateAsset<Material>(basicShader);
+		{
+			BeatGemMaterial->Name = "BeatGem";
+			BeatGemMaterial->Set("u_Material.Diffuse", GemTex);
+			BeatGemMaterial->Set("u_Material.Shininess", 0.1f);
+		}
+
+		Material::Sptr VinylMaterial = ResourceManager::CreateAsset<Material>(basicShader);
+		{
+			VinylMaterial->Name = "Vinyl";
+			VinylMaterial->Set("u_Material.Diffuse", VinylTex);
+			VinylMaterial->Set("u_Material.Shininess", 0.1f);
+		}
+
+		Material::Sptr TutorialSignMaterial = ResourceManager::CreateAsset<Material>(basicShader);
+		{
+			TutorialSignMaterial->Name = "Tutorial Sign";
+			TutorialSignMaterial->Set("u_Material.Diffuse", TutorialSignTex);
+			TutorialSignMaterial->Set("u_Material.Shininess", 0.1f);
+		}
+
+		Material::Sptr CharacterMaterial = ResourceManager::CreateAsset<Material>(basicShader);
+		{
+			CharacterMaterial->Name = "Character";
+			CharacterMaterial->Set("u_Material.Diffuse", CharacterTex);
+			CharacterMaterial->Set("u_Material.Shininess", 0.1f);
+		}
+
+		Material::Sptr LoseScreenMaterial = ResourceManager::CreateAsset<Material>(basicShader);
+		{
+			LoseScreenMaterial->Name = "Lose Screen";
+			LoseScreenMaterial->Set("u_Material.Diffuse", LoseScreenTex);
+			LoseScreenMaterial->Set("u_Material.Shininess", 0.1f);
+		}
+
+		Material::Sptr Car1Material = ResourceManager::CreateAsset<Material>(basicShader);
+		{
+			Car1Material->Name = "Car1";
+			Car1Material->Set("u_Material.Diffuse", Car1Tex);
+			Car1Material->Set("u_Material.Shininess", 0.1f);
+		}
+
+		// Create some lights for our scene
+		scene->Lights.resize(3);
+		scene->Lights[0].Position = glm::vec3(0.0f, 1.0f, 3.0f);
+		scene->Lights[0].Color = glm::vec3(1.0f, 1.0f, 1.0f);
+		scene->Lights[0].Range = 100.0f;
+
+
+
+		// Set up the scene's camera
+		GameObject::Sptr camera = scene->CreateGameObject("Main Camera");
+		{
+			camera->SetPostion(glm::vec3(-1.410, -3.500, 2.450));
+			camera->LookAt(glm::vec3(0.0f));
+			camera->SetRotation(glm::vec3(-103, 180, -180));
+
+			Camera::Sptr cam = camera->Add<Camera>();
+			//cam->SetOrthoEnabled(true);
+			//cam->SetOrthoVerticalScale(19.0f);
+			//cam->SetFovRadians(105.f);
+			//cam->SetNearPlane(0.3);
+
+			// Make sure that the camera is set as the scene's main camera!
+			scene->MainCamera = cam;
+		}
+
+
+		GameObject::Sptr Block1 = scene->CreateGameObject("Block1");
+		{
+			Block1->SetPostion(glm::vec3(0,0,0));
+			Block1->SetRotation(glm::vec3(0, 0, 0));
+			Block1->SetScale(glm::vec3(1, 1, 1));
+
+			Block1->Add<LevelMover>();
+		}
+
+		GameObject* parent = nullptr;
+
+		//Game Objects
+		SpawnStartPlat(StartPlatform, StartPlatformMaterial, "StartPlatform", glm::vec3(-9.820f, 5.350, -4.450), glm::vec3(90.0f, 0.0f, 0.0f), glm::vec3(0.350f, 0.350f, 0.350f));
+		SpawnObj(SmallPlatform, SmallPlatformMaterial, "Small Platform 1", glm::vec3(-6.070f, 5.610f, -4.150f), parent, glm::vec3(180.0f, 0.0f, 180.0f), glm::vec3(0.500f, 0.500f, 0.500f));
+		SpawnObj(SmallPlatform, SmallPlatformMaterial, "Small Platform 2", glm::vec3(-3.320f, 5.610f, -2.200f), parent, glm::vec3(180.0f, 0.0f, 180.0f), glm::vec3(0.500f, 0.500f, 0.500f));
+		SpawnObj(SmallPlatform, SmallPlatformMaterial, "Small Platform 3", glm::vec3(-0.400f, 5.610f, -4.040f), parent, glm::vec3(180.0f, 0.0f, 180.0f), glm::vec3(0.500f, 0.500f, 0.500f));
+		SpawnObj(SmallPlatform, SmallPlatformMaterial, "Small Platform 4", glm::vec3(-0.060f, 5.610f, 4.450f), parent,  glm::vec3(180.0f, 0.0f, 180.0f), glm::vec3(0.500f, 0.500f, 0.500f));
+		SpawnWallJump(WallJump, WallJumpMaterial, "Wall Jump 1", glm::vec3(1.680f, 5.610f, 2.610f), glm::vec3(180.0f, 0.0f, 180.0f), glm::vec3(0.500f, 0.210f, 1.500f));
+		SpawnWallJump(WallJump, WallJumpMaterial, "Wall Jump 2", glm::vec3(4.350f, 5.610f, 3.930f), glm::vec3(180.0f, 0.0f, 180.0f), glm::vec3(0.500f, 0.210f, 1.500f));
+		SpawnGem(BeatGem, BeatGemMaterial, "BeatGem", glm::vec3(2.410f, 5.610f, -3.160f), glm::vec3(90.0f, 0.0f, 180.0f), glm::vec3(0.500f, 0.500f, 0.500f));
+		SpawnCollectable(Vinyl, VinylMaterial, "Vinyl", glm::vec3(-0.040f, 5.610f, 5.920f), glm::vec3(90.000f, 0.0f, 90.000f), glm::vec3(1.000f, 1.000f, 1.000f));
+		//SpawnObj(TutorialSign, TutorialSignMaterial, "Tutorial Sign 1", glm::vec3(-9.770f, 5.690f, -3.890f), glm::vec3(90.0f, 0.0f, 90.0f), glm::vec3(0.310f, 0.310f, 0.310f));
+		//SpawnObj(TutorialSign, TutorialSignMaterial, "Tutorial Sign 2", glm::vec3(-0.390f, 5.690f, -3.440f), glm::vec3(90.0f, 0.0f, 90.0f), glm::vec3(0.310f, 0.310f, 0.310f));
+		SpawnStartPlat(StartPlatform, StartPlatformMaterial, "EndPlatform", glm::vec3(6.360f, 5.610f, -4.920f), glm::vec3(90.0f, 0.0f, 0.0f), glm::vec3(0.350f, 0.350f, 0.350f));
+		SpawnBackGroundCar(Car1Mesh, Car1Material, "Car1", glm::vec3(8.60f, 12.940f, 2.7f), glm::vec3(90.0f, 0.0f, -90.0f), glm::vec3(0.250f, 0.250f, 0.250f));
+
+		// 1st Block
+		/*
+		SpawnStartPlat(StartPlatform, StartPlatformMaterial, "StartPlatform Block1", glm::vec3(-9.820f, 5.350, -4.450), glm::vec3(90.0f, 0.0f, 0.0f));
+		SpawnObj(SmallPlatform, SmallPlatformMaterial, "Small Platform Block1 1", glm::vec3(-6.070f, 5.610f, -4.150f), glm::vec3(180.0f, 0.0f, 180.0f), glm::vec3(0.500f, 0.500f, 0.500f));
+		SpawnObj(SmallPlatform, SmallPlatformMaterial, "Small Platform Block1 2", glm::vec3(-2.840f, 5.610f, -4.150f), glm::vec3(180.0f, 0.0f, 180.0f), glm::vec3(0.500f, 0.500f, 0.500f));
+		SpawnObj(SmallPlatform, SmallPlatformMaterial, "Small Platform Block1 3", glm::vec3(2.760f, 10.990f, -4.150f), glm::vec3(180.0f, 0.0f, 180.0f), glm::vec3(0.500f, 0.500f, 0.500f));
+		SpawnGem(BeatGem, BeatGemMaterial, "BeatGem Block1", glm::vec3(0.120f, 5.610f, -3.160f), glm::vec3(90.0f, 0.0f, 180.0f), glm::vec3(0.500f, 0.500f, 0.500f));
+		SpawnCollectable(Vinyl, VinylMaterial, "Vinyl Block1", glm::vec3(-0.120f, 5.610f, 0.290f), glm::vec3(90.000f, 0.0f, 90.000f), glm::vec3(1.000f, 1.000f, 1.000f)); //SCUFFED
+		SpawnStartPlat(StartPlatform, StartPlatformMaterial, "EndPlatform Block1", glm::vec3(6.360f, 5.610f, -4.920f), glm::vec3(90.0f, 0.0f, 0.0f), glm::vec3(0.350f, 0.350f, 0.350f));
+		*/
+
+		// 2nd Block
+		/*
+		SpawnStartPlat(StartPlatform, StartPlatformMaterial, "StartPlatform Block2", glm::vec3(-9.820f, 5.350, -4.450), glm::vec3(90.0f, 0.0f, 0.0f));
+		SpawnWallJump(WallJump, WallJumpMaterial, "Wall Jump Block2 1", glm::vec3(-10.340f, 4.830f, 5.450f), glm::vec3(180.0f, 0.0f, 180.0f), glm::vec3(0.500f, 0.040f, 1.500f));
+		SpawnWallJump(WallJump, WallJumpMaterial, "Wall Jump Block2 2", glm::vec3(-8.430f, 5.610f, 3.930f), glm::vec3(180.0f, 0.0f, 180.0f), glm::vec3(0.500f, 0.040f, 1.500f));
+		SpawnObj(SmallPlatform, SmallPlatformMaterial, "Small Platform Block2 1", glm::vec3(-6.370f, 40.000f, -4.150f), glm::vec3(180.0f, 0.0f, 180.0f), glm::vec3(0.500f, 0.500f, 0.500f));
+		SpawnObj(SmallPlatform, SmallPlatformMaterial, "Small Platform Block2 2", glm::vec3(1.940f, 5.610f, -4.150f), glm::vec3(180.0f, 0.0f, 180.0f), glm::vec3(0.500f, 0.500f, 0.500f));
+		SpawnGem(BeatGem, BeatGemMaterial, "BeatGem Block2", glm::vec3(-1.570f, 20.000f, -3.160f), glm::vec3(90.0f, 0.0f, 180.0f), glm::vec3(0.500f, 0.500f, 0.500f));
+		SpawnStartPlat(StartPlatform, StartPlatformMaterial, "EndPlatform Block2", glm::vec3(6.360f, 5.610f, -4.920f), glm::vec3(90.0f, 0.0f, 0.0f), glm::vec3(0.350f, 0.350f, 0.350f));
+		*/
+
+		// 3rd Block
+		/*
+		SpawnStartPlat(StartPlatform, StartPlatformMaterial, "StartPlatform Block3", glm::vec3(-9.820f, 5.350, -4.450), glm::vec3(90.0f, 0.0f, 0.0f));
+		SpawnObj(SmallPlatform, SmallPlatformMaterial, "Small Platform Block2 1", glm::vec3(-4.360f, 5.6110, -4.150f), glm::vec3(180.0f, 0.0f, 180.0f), glm::vec3(0.500f, 0.500f, 0.500f));
+		SpawnObj(SmallPlatform, SmallPlatformMaterial, "Small Platform Block3 2", glm::vec3(0.350f, 5.6110, -4.150f), glm::vec3(180.0f, 0.0f, 180.0f), glm::vec3(0.500f, 0.500f, 0.500f));
+		SpawnObj(SmallPlatform, SmallPlatformMaterial, "Small Platform Block3 3", glm::vec3(0.390f, 5.6110, -4.150f), glm::vec3(180.0f, 0.0f, 180.0f), glm::vec3(0.500f, 0.500f, 0.500f));
+		SpawnObj(SmallPlatform, SmallPlatformMaterial, "Small Platform Block3 4", glm::vec3(3.220f, 5.6110f, -4.150f), glm::vec3(180.0f, 0.0f, 180.0f), glm::vec3(0.500f, 0.500f, 0.500f));
+		SpawnGem(BeatGem, BeatGemMaterial, "BeatGem Block3 1", glm::vec3(-6.870f, 5.6110f, -3.160f), glm::vec3(90.0f, 0.0f, 180.0f), glm::vec3(0.500f, 0.500f, 0.500f));
+		SpawnGem(BeatGem, BeatGemMaterial, "BeatGem Block3 2", glm::vec3(-1.870f, 5.6110f, -3.160f), glm::vec3(90.0f, 0.0f, 180.0f), glm::vec3(0.500f, 0.500f, 0.500f));
+		//SpawnCollectable(Vinyl, VinylMaterial, "Vinyl Block1", glm::vec3(-0.120f, -7.700f, 0.290f), glm::vec3(90.000f, 0.0f, 90.000f), glm::vec3(1.000f, 1.000f, 1.000f)); SCUFFED (Repostion)
+		SpawnStartPlat(StartPlatform, StartPlatformMaterial, "EndPlatform Block3", glm::vec3(6.360f, 5.610f, -4.920f), glm::vec3(90.0f, 0.0f, 0.0f), glm::vec3(0.350f, 0.350f, 0.350f));
+		*/
+
+		// Player:
+		GameObject::Sptr character = scene->CreateGameObject("Character/Player");
+		{
+			// Set position in the scene
+			character->SetPostion(glm::vec3(-8.970f, 5.710f, -3.800f));
+			character->SetRotation(glm::vec3(90.0f, 0.0f, 90.0f));
+			character->SetScale(glm::vec3(1.0f, 1.0f, 1.0f));
+
+			// Add some behaviour that relies on the physics body
+			//character->Add<JumpBehaviour>();
+			character->Add<CharacterController>();
+
+			// Create and attach a renderer for the paddle
+			RenderComponent::Sptr renderer = character->Add<RenderComponent>();
+			renderer->SetMesh(CharacterMesh);
+			renderer->SetMaterial(CharacterMaterial);
+
+			// Add a kinematic rigid body to the paddle
+			RigidBody::Sptr physics = character->Add<RigidBody>(RigidBodyType::Dynamic);
+			physics->AddCollider(ConvexMeshCollider::Create());
+			// world grav changed in scene.cpp
+
+			
+			TriggerVolume::Sptr volume = character->Add<TriggerVolume>();
+			volume->SetFlags(TriggerTypeFlags::Statics | TriggerTypeFlags::Kinematics);
+
+			BoxCollider::Sptr collider = BoxCollider::Create(glm::vec3(0.5f, 0.5f, 0.5f));
+			collider->SetPosition(glm::vec3(0.f, 0.25f, 0.f));
+			volume->AddCollider(collider);
+		}
+
+
+		// Call scene awake to start up all of our components
+		scene->Window = window;
+		scene->Awake();
+
+		// Save the asset manifest for all the resources we just loaded
+		ResourceManager::SaveManifest("manifest.json");
+		// Save the scene to a JSON file
+		scene->Save("scene.json");
+
 	}
 }
 
@@ -425,7 +723,7 @@ int main() {
 	ComponentManager::RegisterType<RigidBody>();
 	ComponentManager::RegisterType<TriggerVolume>();
 	ComponentManager::RegisterType<MoveThings>();
-	ComponentManager::RegisterType<MouseController>();
+	//ComponentManager::RegisterType<MouseController>();
 	ComponentManager::RegisterType<RotatingBehaviour>();
 	ComponentManager::RegisterType<CharacterController>();
 	ComponentManager::RegisterType<JumpBehaviour>();
@@ -436,607 +734,63 @@ int main() {
 
 
 	// GL states, we'll enable depth testing and backface fulling
+	// GL states, we'll enable depth testing and backface fulling
 	glEnable(GL_DEPTH_TEST);
 	glEnable(GL_CULL_FACE);
 	glCullFace(GL_BACK);
 	glClearColor(0.2f, 0.2f, 0.2f, 1.0f);
 
-	bool loadScene = false;
-	// For now we can use a toggle to generate our scene vs load from file
-	if (loadScene) {
-		ResourceManager::LoadManifest("manifest.json");
-		scene = Scene::Load("scene.json");
-	} 
-	else {
-		// Create our OpenGL resources
-		Shader::Sptr uboShader = ResourceManager::CreateAsset<Shader>(std::unordered_map<ShaderPartType, std::string>{
-			{ ShaderPartType::Vertex, "shaders/vertex_shader.glsl" }, 
-			{ ShaderPartType::Fragment, "shaders/frag_blinn_phong_textured.glsl" }
-		}); 
-
-		//MeshResource::Sptr tableMesh = ResourceManager::CreateAsset<MeshResource>("table.obj");
-		//MeshResource::Sptr puckMesh = ResourceManager::CreateAsset<MeshResource>("puck.obj");
-		//MeshResource::Sptr paddleMesh = ResourceManager::CreateAsset<MeshResource>("paddle.obj");
-		//MeshResource::Sptr ScoreBoard = ResourceManager::CreateAsset<MeshResource>("ScoreBoard.obj");
-		
-		
-		MeshResource::Sptr SmallPlatform = ResourceManager::CreateAsset<MeshResource>("SmallSpeakerPlatformV5.obj");
-		MeshResource::Sptr WallJump = ResourceManager::CreateAsset<MeshResource>("WallJumpV6.obj");
-		MeshResource::Sptr BeatGem = ResourceManager::CreateAsset<MeshResource>("Gem.obj");
-		MeshResource::Sptr Vinyl = ResourceManager::CreateAsset<MeshResource>("VinylV2.obj");
-		MeshResource::Sptr TutorialSign = ResourceManager::CreateAsset<MeshResource>("TutorialSign.obj");
-		MeshResource::Sptr CharacterMesh = ResourceManager::CreateAsset<MeshResource>("dudeCharacter.obj");
-		MeshResource::Sptr StartPlatform = ResourceManager::CreateAsset<MeshResource>("StartPlatformV6.obj");
-		MeshResource::Sptr Car1Mesh = ResourceManager::CreateAsset<MeshResource>("FutureCar1.obj");
-
-		Texture2D::Sptr tableTex = ResourceManager::CreateAsset<Texture2D>("textures/HockeyRink.png"); // delete this later 
-		
-		Texture2D::Sptr StartTex = ResourceManager::CreateAsset<Texture2D>("textures/DiscoBuildingTex.png"); // Does not exist yet loam
-		Texture2D::Sptr SmallTex = ResourceManager::CreateAsset<Texture2D>("textures/DanceFloorTex2.png"); // Does not exist yet loam
-		Texture2D::Sptr VinylTex = ResourceManager::CreateAsset<Texture2D>("textures/VinylTex.png"); // Does not exist yet loam
-		Texture2D::Sptr GemTex = ResourceManager::CreateAsset<Texture2D>("textures/Gem.png"); // Does exist just reload loam
-		Texture2D::Sptr TutorialSignTex = ResourceManager::CreateAsset<Texture2D>("textures/TutorialSign.png"); // Does not exist yet loam
-		Texture2D::Sptr CharacterTex = ResourceManager::CreateAsset<Texture2D>("textures/shirt.png");
-		Texture2D::Sptr LoseScreenTex = ResourceManager::CreateAsset<Texture2D>("textures/Game_Over_Screen.png");
-		Texture2D::Sptr WallJumpTex = ResourceManager::CreateAsset<Texture2D>("textures/WallJumpTex.png");
-		Texture2D::Sptr Car1Tex = ResourceManager::CreateAsset<Texture2D>("textures/FutureCarTex.png");
-
-
-
-
-		// Create an empty scene
-		scene = std::make_shared<Scene>();
-
-		// I hate this
-		scene->BaseShader = uboShader;
-
-		// Create our materials
-		Material::Sptr StartPlatformMaterial = ResourceManager::CreateAsset<Material>();
-		{
-			StartPlatformMaterial->Name = "StartPlatform";
-			StartPlatformMaterial->MatShader = scene->BaseShader;
-			StartPlatformMaterial->Texture = StartTex;
-			StartPlatformMaterial->Shininess = 2.0f;
-		}
-
-		Material::Sptr SmallPlatformMaterial = ResourceManager::CreateAsset<Material>();
-		{
-			SmallPlatformMaterial->Name = "SmallPlatform";
-			SmallPlatformMaterial->MatShader = scene->BaseShader;
-			SmallPlatformMaterial->Texture = SmallTex;
-			SmallPlatformMaterial->Shininess = 2.0f;
-		}
-
-		Material::Sptr WallJumpMaterial = ResourceManager::CreateAsset<Material>();
-		{
-			WallJumpMaterial->Name = "WallJump";
-			WallJumpMaterial->MatShader = scene->BaseShader;
-			WallJumpMaterial->Texture = WallJumpTex;
-			WallJumpMaterial->Shininess = 2.0f;
-		}
-
-		Material::Sptr BeatGemMaterial = ResourceManager::CreateAsset<Material>();
-		{
-			BeatGemMaterial->Name = "BeatGem";
-			BeatGemMaterial->MatShader = scene->BaseShader;
-			BeatGemMaterial->Texture = GemTex;
-			BeatGemMaterial->Shininess = 2.0f;
-		}
-
-		Material::Sptr VinylMaterial = ResourceManager::CreateAsset<Material>();
-		{
-			VinylMaterial->Name = "Vinyl";
-			VinylMaterial->MatShader = scene->BaseShader;
-			VinylMaterial->Texture = VinylTex;
-			VinylMaterial->Shininess = 2.0f;
-		}
-
-		Material::Sptr TutorialSignMaterial = ResourceManager::CreateAsset<Material>();
-		{
-			TutorialSignMaterial->Name = "Tutorial Sign";
-			TutorialSignMaterial->MatShader = scene->BaseShader;
-			TutorialSignMaterial->Texture = TutorialSignTex;
-			TutorialSignMaterial->Shininess = 2.0f;
-		}
-
-		Material::Sptr CharacterMaterial = ResourceManager::CreateAsset<Material>();
-		{
-			CharacterMaterial->Name = "Character";
-			CharacterMaterial->MatShader = scene->BaseShader;
-			CharacterMaterial->Texture = CharacterTex; 
-			CharacterMaterial->Shininess = 2.0f;
-		}
-
-		Material::Sptr LoseScreenMaterial = ResourceManager::CreateAsset<Material>();
-		{
-			LoseScreenMaterial->Name = "Lose Screen";
-			LoseScreenMaterial->MatShader = scene->BaseShader;
-			LoseScreenMaterial->Texture = TutorialSignTex;
-			LoseScreenMaterial->Shininess = 2.0f;
-		}
-
-		Material::Sptr Car1Material = ResourceManager::CreateAsset<Material>();
-		{
-			Car1Material->Name = "Car1";
-			Car1Material->MatShader = scene->BaseShader;
-			Car1Material->Texture = Car1Tex;
-			Car1Material->Shininess = 2.0f;
-		}
-
-
-
-		// Format: Mesh, Material, IMGUI TEXT, position, rotation, scale
-		// Position Axis Work as follows: X = Left and Right Y = Towards and away from camera Z = Up and Down
-		// always keep objects at 5.610f to keep the y axis consisent since we are 2.5D
-
-		// Tutorial Block
-		
-		SpawnStartPlat(StartPlatform, StartPlatformMaterial, "StartPlatform", glm::vec3(-9.820f, 5.350, -4.450), glm::vec3(90.0f, 0.0f, 0.0f), glm::vec3(0.350f, 0.350f, 0.350f));
-		SpawnObj(SmallPlatform, SmallPlatformMaterial, "Small Platform 1", glm::vec3(-6.070f, 5.610f, -4.150f), glm::vec3(180.0f, 0.0f, 180.0f), glm::vec3(0.500f, 0.500f, 0.500f));
-		SpawnObj(SmallPlatform, SmallPlatformMaterial, "Small Platform 2", glm::vec3(-3.320f, 5.610f, -2.200f), glm::vec3(180.0f, 0.0f, 180.0f), glm::vec3(0.500f, 0.500f, 0.500f));
-		SpawnObj(SmallPlatform, SmallPlatformMaterial, "Small Platform 3", glm::vec3(-0.400f, 5.610f, -4.040f), glm::vec3(180.0f, 0.0f, 180.0f), glm::vec3(0.500f, 0.500f, 0.500f));
-		SpawnObj(SmallPlatform, SmallPlatformMaterial, "Small Platform 4", glm::vec3(-0.060f, 5.610f, 4.450f), glm::vec3(180.0f, 0.0f, 180.0f), glm::vec3(0.500f, 0.500f, 0.500f));
-		SpawnWallJump(WallJump, WallJumpMaterial, "Wall Jump 1", glm::vec3(1.680f, 5.610f, 2.610f), glm::vec3(180.0f, 0.0f, 180.0f), glm::vec3(0.500f, 0.210f, 1.500f));
-		SpawnWallJump(WallJump, WallJumpMaterial, "Wall Jump 2", glm::vec3(4.350f, 5.610f, 3.930f), glm::vec3(180.0f, 0.0f, 180.0f), glm::vec3(0.500f, 0.210f, 1.500f));
-		SpawnGem(BeatGem, BeatGemMaterial, "BeatGem", glm::vec3(2.410f, 5.610f, -3.160f), glm::vec3(90.0f, 0.0f, 180.0f), glm::vec3(0.500f, 0.500f, 0.500f));
-		SpawnCollectable(Vinyl, VinylMaterial, "Vinyl", glm::vec3(-0.040f, 5.610f, 5.920f), glm::vec3(90.000f, 0.0f, 90.000f), glm::vec3(1.000f, 1.000f, 1.000f));
-		//SpawnObj(TutorialSign, TutorialSignMaterial, "Tutorial Sign 1", glm::vec3(-9.770f, 5.690f, -3.890f), glm::vec3(90.0f, 0.0f, 90.0f), glm::vec3(0.310f, 0.310f, 0.310f));
-		//SpawnObj(TutorialSign, TutorialSignMaterial, "Tutorial Sign 2", glm::vec3(-0.390f, 5.690f, -3.440f), glm::vec3(90.0f, 0.0f, 90.0f), glm::vec3(0.310f, 0.310f, 0.310f));
-		SpawnStartPlat(StartPlatform, StartPlatformMaterial, "EndPlatform", glm::vec3(6.360f, 5.610f, -4.920f), glm::vec3(90.0f, 0.0f, 0.0f), glm::vec3(0.350f, 0.350f, 0.350f));
-		SpawnBackGroundCar(Car1Mesh, Car1Material, "Car1", glm::vec3(8.60f, 12.940f, 2.7f), glm::vec3(90.0f, 0.0f, -90.0f), glm::vec3(0.250f, 0.250f, 0.250f));
-		
-
-		// 1st Block
-		/*
-		SpawnStartPlat(StartPlatform, StartPlatformMaterial, "StartPlatform Block1", glm::vec3(-9.820f, 5.350, -4.450), glm::vec3(90.0f, 0.0f, 0.0f));
-		SpawnObj(SmallPlatform, SmallPlatformMaterial, "Small Platform Block1 1", glm::vec3(-6.070f, 5.610f, -4.150f), glm::vec3(180.0f, 0.0f, 180.0f), glm::vec3(0.500f, 0.500f, 0.500f));
-		SpawnObj(SmallPlatform, SmallPlatformMaterial, "Small Platform Block1 2", glm::vec3(-2.840f, 5.610f, -4.150f), glm::vec3(180.0f, 0.0f, 180.0f), glm::vec3(0.500f, 0.500f, 0.500f));
-		SpawnObj(SmallPlatform, SmallPlatformMaterial, "Small Platform Block1 3", glm::vec3(2.760f, 10.990f, -4.150f), glm::vec3(180.0f, 0.0f, 180.0f), glm::vec3(0.500f, 0.500f, 0.500f));
-		SpawnGem(BeatGem, BeatGemMaterial, "BeatGem Block1", glm::vec3(0.120f, 5.610f, -3.160f), glm::vec3(90.0f, 0.0f, 180.0f), glm::vec3(0.500f, 0.500f, 0.500f));
-		SpawnCollectable(Vinyl, VinylMaterial, "Vinyl Block1", glm::vec3(-0.120f, 5.610f, 0.290f), glm::vec3(90.000f, 0.0f, 90.000f), glm::vec3(1.000f, 1.000f, 1.000f)); //SCUFFED
-		SpawnStartPlat(StartPlatform, StartPlatformMaterial, "EndPlatform Block1", glm::vec3(6.360f, 5.610f, -4.920f), glm::vec3(90.0f, 0.0f, 0.0f), glm::vec3(0.350f, 0.350f, 0.350f));
-		*/
-
-		// 2nd Block
-		/*
-		SpawnStartPlat(StartPlatform, StartPlatformMaterial, "StartPlatform Block2", glm::vec3(-9.820f, 5.350, -4.450), glm::vec3(90.0f, 0.0f, 0.0f));
-		SpawnWallJump(WallJump, WallJumpMaterial, "Wall Jump Block2 1", glm::vec3(-10.340f, 4.830f, 5.450f), glm::vec3(180.0f, 0.0f, 180.0f), glm::vec3(0.500f, 0.040f, 1.500f));
-		SpawnWallJump(WallJump, WallJumpMaterial, "Wall Jump Block2 2", glm::vec3(-8.430f, 5.610f, 3.930f), glm::vec3(180.0f, 0.0f, 180.0f), glm::vec3(0.500f, 0.040f, 1.500f));
-		SpawnObj(SmallPlatform, SmallPlatformMaterial, "Small Platform Block2 1", glm::vec3(-6.370f, 40.000f, -4.150f), glm::vec3(180.0f, 0.0f, 180.0f), glm::vec3(0.500f, 0.500f, 0.500f));
-		SpawnObj(SmallPlatform, SmallPlatformMaterial, "Small Platform Block2 2", glm::vec3(1.940f, 5.610f, -4.150f), glm::vec3(180.0f, 0.0f, 180.0f), glm::vec3(0.500f, 0.500f, 0.500f));
-		SpawnGem(BeatGem, BeatGemMaterial, "BeatGem Block2", glm::vec3(-1.570f, 20.000f, -3.160f), glm::vec3(90.0f, 0.0f, 180.0f), glm::vec3(0.500f, 0.500f, 0.500f));
-		SpawnStartPlat(StartPlatform, StartPlatformMaterial, "EndPlatform Block2", glm::vec3(6.360f, 5.610f, -4.920f), glm::vec3(90.0f, 0.0f, 0.0f), glm::vec3(0.350f, 0.350f, 0.350f));
-		*/
-
-		// 3rd Block
-		/*
-		SpawnStartPlat(StartPlatform, StartPlatformMaterial, "StartPlatform Block3", glm::vec3(-9.820f, 5.350, -4.450), glm::vec3(90.0f, 0.0f, 0.0f));
-		SpawnObj(SmallPlatform, SmallPlatformMaterial, "Small Platform Block2 1", glm::vec3(-4.360f, 5.6110, -4.150f), glm::vec3(180.0f, 0.0f, 180.0f), glm::vec3(0.500f, 0.500f, 0.500f));
-		SpawnObj(SmallPlatform, SmallPlatformMaterial, "Small Platform Block3 2", glm::vec3(0.350f, 5.6110, -4.150f), glm::vec3(180.0f, 0.0f, 180.0f), glm::vec3(0.500f, 0.500f, 0.500f));
-		SpawnObj(SmallPlatform, SmallPlatformMaterial, "Small Platform Block3 3", glm::vec3(0.390f, 5.6110, -4.150f), glm::vec3(180.0f, 0.0f, 180.0f), glm::vec3(0.500f, 0.500f, 0.500f));
-		SpawnObj(SmallPlatform, SmallPlatformMaterial, "Small Platform Block3 4", glm::vec3(3.220f, 5.6110f, -4.150f), glm::vec3(180.0f, 0.0f, 180.0f), glm::vec3(0.500f, 0.500f, 0.500f));
-		SpawnGem(BeatGem, BeatGemMaterial, "BeatGem Block3 1", glm::vec3(-6.870f, 5.6110f, -3.160f), glm::vec3(90.0f, 0.0f, 180.0f), glm::vec3(0.500f, 0.500f, 0.500f));
-		SpawnGem(BeatGem, BeatGemMaterial, "BeatGem Block3 2", glm::vec3(-1.870f, 5.6110f, -3.160f), glm::vec3(90.0f, 0.0f, 180.0f), glm::vec3(0.500f, 0.500f, 0.500f));
-		//SpawnCollectable(Vinyl, VinylMaterial, "Vinyl Block1", glm::vec3(-0.120f, -7.700f, 0.290f), glm::vec3(90.000f, 0.0f, 90.000f), glm::vec3(1.000f, 1.000f, 1.000f)); SCUFFED (Repostion)
-		SpawnStartPlat(StartPlatform, StartPlatformMaterial, "EndPlatform Block3", glm::vec3(6.360f, 5.610f, -4.920f), glm::vec3(90.0f, 0.0f, 0.0f), glm::vec3(0.350f, 0.350f, 0.350f));
-		*/
-		
-		// Player:
-		GameObject::Sptr character = scene->CreateGameObject("Character/Player");
-		{
-			// Set position in the scene
-			character->SetPostion(glm::vec3(-8.970f, 5.710f, -3.800f));
-			character->SetRotation(glm::vec3(90.0f, 0.0f, 90.0f));
-			character->SetScale(glm::vec3(1.0f, 1.0f, 1.0f));
-
-			// Add some behaviour that relies on the physics body
-			//character->Add<JumpBehaviour>();
-			character->Add<CharacterController>();
-
-			// Create and attach a renderer for the paddle
-			RenderComponent::Sptr renderer = character->Add<RenderComponent>();
-			renderer->SetMesh(CharacterMesh);
-			renderer->SetMaterial(CharacterMaterial);
-
-			// Add a kinematic rigid body to the paddle
-			RigidBody::Sptr physics = character->Add<RigidBody>(RigidBodyType::Dynamic);
-			physics->AddCollider(ConvexMeshCollider::Create());
-			// world grav changed in scene.cpp
-			TriggerVolume::Sptr volume = character->Add<TriggerVolume>();
-			BoxCollider::Sptr collider = BoxCollider::Create(glm::vec3(0.5f, 0.5f, 0.5f));
-			collider->SetPosition(glm::vec3(0.f, 0.25f, 0.f));
-			volume->AddCollider(collider);
-		}
-
-
-
-
-
-		// (Delete this later)
-		/*
-		Material::Sptr tableMaterial = ResourceManager::CreateAsset<Material>();
-		{
-			tableMaterial->Name = "Table";
-			tableMaterial->MatShader = scene->BaseShader;
-			tableMaterial->Texture = tableTex;
-			tableMaterial->Shininess = 2.0f;
-		}
-		Material::Sptr puckMaterial = ResourceManager::CreateAsset<Material>();
-		{
-			puckMaterial->Name = "puck";
-			puckMaterial->MatShader = scene->BaseShader;
-			puckMaterial->Texture = puckTex;
-			puckMaterial->Shininess = 1.0f;
-		}
-		Material::Sptr paddleRedMaterial = ResourceManager::CreateAsset<Material>();
-		{
-			paddleRedMaterial->Name = "PaddleRed";
-			paddleRedMaterial->MatShader = scene->BaseShader;
-			paddleRedMaterial->Texture = paddleRedTex;
-			paddleRedMaterial->Shininess = 2.0f;
-		}
-		Material::Sptr paddleBlueMaterial = ResourceManager::CreateAsset<Material>();
-		{
-			paddleBlueMaterial->Name = "PaddleBlue";
-			paddleBlueMaterial->MatShader = scene->BaseShader;
-			paddleBlueMaterial->Texture = paddleBlueTex;
-			paddleBlueMaterial->Shininess = 2.0f;
-		}
-		*/
-	
-		// Create some lights for our scene
-		scene->Lights.resize(3);
-		scene->Lights[0].Position = glm::vec3(-2.8f, 1.0f, 3.0f);
-		scene->Lights[0].Color = glm::vec3(1.0f, 1.0f, 1.0f);
-		scene->Lights[0].Range = 1000.0f;
-
-		scene->Lights[1].Position = glm::vec3(1.0f, 0.0f, 3.0f);
-		scene->Lights[1].Color = glm::vec3(0.2f, 0.8f, 1.0f);
-		scene->Lights[1].Range = 0.5f;
-
-		scene->Lights[2].Position = glm::vec3(0.0f, 1.0f, 3.0f);
-		scene->Lights[2].Color = glm::vec3(1.0f, 0.2f, 1.0f);
-		scene->Lights[2].Range = 0.5f;
-
-		// We'll create a mesh that is a simple plane that we can resize later
-	//	MeshResource::Sptr planeMesh = ResourceManager::CreateAsset<MeshResource>();
-	//	planeMesh->AddParam(MeshBuilderParam::CreatePlane(ZERO, UNIT_Z, UNIT_X, glm::vec2(1.0f)));
-	//	planeMesh->GenerateMesh();
-	//
-		// Set up the scene's camera
-		GameObject::Sptr camera = scene->CreateGameObject("Main Camera");
-		{
-			camera->SetPostion(glm::vec3(-1.410, -3.500, 2.450));
-			camera->LookAt(glm::vec3(0.0f));
-			camera->SetRotation(glm::vec3(-103, 180, -180));
-
-			Camera::Sptr cam = camera->Add<Camera>();
-			cam->SetOrthoEnabled(true);
-			cam->SetOrthoVerticalScale(19.0f);
-			cam->SetFovRadians(105.f);
-			cam->SetNearPlane(0.3);
-
-			// Make sure that the camera is set as the scene's main camera!
-			scene->MainCamera = cam;
-		}
-
-		/*
-		// Tutorial Stuff
-		GameObject::Sptr Startplatform = scene->CreateGameObject("Start Platform");
-		{
-			// Set position in the scene
-			Startplatform->SetPostion(glm::vec3(-7.490f, 5.660f, -2.890f));
-			Startplatform->SetRotation(glm::vec3(180.0f, 0.0f, 180.0f));
-			Startplatform->SetScale(glm::vec3(0.180f, 0.070f, 0.180));
-
-			// Create and attach a renderer for the monkey
-			RenderComponent::Sptr renderer = Startplatform->Add<RenderComponent>();
-			renderer->SetMesh(StartPlatform);
-			renderer->SetMaterial(StartPlatformMaterial);
-
-			// Add a dynamic rigid body to this monkey
-			RigidBody::Sptr physics = Startplatform->Add<RigidBody>(RigidBodyType::Static);
-			//physics->AddCollider(BoxCollider::Create(glm::vec3(1.0f, 1.0f, 1.0f)));
-
-			// FIX THIS //
-			ICollider::Sptr Box1 = physics->AddCollider(BoxCollider::Create(glm::vec3(0.05f, 0.2f, 0.5f)));
-			Box1->SetPosition(glm::vec3(-0.930f, 0.140f, 0.0f));
-
-		}
-
-		GameObject::Sptr SmallPlatforms = scene->CreateGameObject("Small Platform");
-		{
-			// Set position in the scene
-			SmallPlatforms->SetPostion(glm::vec3(-5.490f, 6.960f, -2.890f));
-			SmallPlatforms->SetRotation(glm::vec3(180.0f, 0.0f, 180.0f));
-			SmallPlatforms->SetScale(glm::vec3(0.280f, 0.070f, 0.180));
-
-			// Create and attach a renderer for the monkey
-			RenderComponent::Sptr renderer = SmallPlatforms->Add<RenderComponent>();
-			renderer->SetMesh(SmallPlatform);
-			renderer->SetMaterial(SmallPlatformMaterial);
-
-			// Add a dynamic rigid body to this monkey
-			RigidBody::Sptr physics = SmallPlatforms->Add<RigidBody>(RigidBodyType::Static);
-			//physics->AddCollider(BoxCollider::Create(glm::vec3(1.0f, 1.0f, 1.0f)));
-		}
-		*/
-
-
-		// Set up all our sample objects
-		//GameObject::Sptr plane = scene->CreateGameObject("Plane");
-		//{
-		//	// Scale up the plane
-		//	plane->SetScale(glm::vec3(10.0F));
-		//
-		//	// Create and attach a RenderComponent to the object to draw our mesh
-		//	RenderComponent::Sptr renderer = plane->Add<RenderComponent>();
-		//	renderer->SetMesh(planeMesh);
-		//	renderer->SetMaterial(boxMaterial);
-		//
-		//	// Attach a plane collider that extends infinitely along the X/Y axis
-		//	RigidBody::Sptr physics = plane->Add<RigidBody>(/*static by default*/);
-		//	physics->AddCollider(PlaneCollider::Create());
-		//}
-		//
-		//GameObject::Sptr square = scene->CreateGameObject("Square");
-		//{
-		//	// Set position in the scene
-		//	square->SetPostion(glm::vec3(0.0f, 0.0f, 2.0f));
-		//	// Scale down the plane
-		//	square->SetScale(glm::vec3(0.5f));
-		//
-		//	// Create and attach a render component
-		//	RenderComponent::Sptr renderer = square->Add<RenderComponent>();
-		//	renderer->SetMesh(planeMesh);
-		//	renderer->SetMaterial(boxMaterial);
-		//
-		//	// This object is a renderable only, it doesn't have any behaviours or
-		//	// physics bodies attached!
-		//}
-		//
-		//GameObject::Sptr monkey1 = scene->CreateGameObject("Monkey 1");
-		//{
-		//	// Set position in the scene
-		//	monkey1->SetPostion(glm::vec3(1.5f, 0.0f, 1.0f));
-		//
-		//	// Add some behaviour that relies on the physics body
-		//	monkey1->Add<JumpBehaviour>();
-		//
-		//	// Create and attach a renderer for the monkey
-		//	RenderComponent::Sptr renderer = monkey1->Add<RenderComponent>();
-		//	renderer->SetMesh(monkeyMesh);
-		//	renderer->SetMaterial(monkeyMaterial);
-		//
-		//	// Add a dynamic rigid body to this monkey
-		//	RigidBody::Sptr physics = monkey1->Add<RigidBody>(RigidBodyType::Dynamic);
-		//	physics->AddCollider(ConvexMeshCollider::Create());
-		//
-		//
-		//	// We'll add a behaviour that will interact with our trigger volumes
-		//	MaterialSwapBehaviour::Sptr triggerInteraction = monkey1->Add<MaterialSwapBehaviour>();
-		//	triggerInteraction->EnterMaterial = boxMaterial;
-		//	triggerInteraction->ExitMaterial = monkeyMaterial;
-		//}
-		//
-		//GameObject::Sptr monkey2 = scene->CreateGameObject("Complex Object");
-		//{
-		//	// Set and rotation position in the scene
-		//	monkey2->SetPostion(glm::vec3(-1.5f, 0.0f, 1.0f));
-		//	monkey2->SetRotation(glm::vec3(90.0f, 0.0f, 0.0f));
-		//
-		//	// Add a render component
-		//	RenderComponent::Sptr renderer = monkey2->Add<RenderComponent>();
-		//	renderer->SetMesh(monkeyMesh);
-		//	renderer->SetMaterial(boxMaterial);
-		//
-		//	// This is an example of attaching a component and setting some parameters
-		//	RotatingBehaviour::Sptr behaviour = monkey2->Add<RotatingBehaviour>();
-		//	behaviour->RotationSpeed = glm::vec3(0.0f, 0.0f, -90.0f);
-		//}
-
-		// Delete this later (Score stuff)
-		/*
-		GameObject::Sptr ScoreP2 = scene->CreateGameObject("ScoreP2");
-		ScoreComponent::Sptr score2 = ScoreP2->Add<ScoreComponent>();
-		std::string p2 = score2 != nullptr ? score2->GetGUID().str() : "null";
-		{
-			ScoreP2->SetPostion(glm::vec3(2.0f, 1.5f, 1.00f));
-			ScoreP2->SetRotation(glm::vec3(45, 0, -180));
-			ScoreP2->SetScale(glm::vec3(2.0f, 2.0f, 2.0f));
-
-
-
-			RenderComponent::Sptr renderer = ScoreP2->Add<RenderComponent>();
-
-			renderer->SetMesh(ScoreBoard);
-			renderer->SetMaterial(R0_mat);
-			
-			// We'll add a behaviour that will interact with our trigger volumes
-			MaterialSwapBehaviour::Sptr triggerInteraction = ScoreP2->Add<MaterialSwapBehaviour>();
-
-			RigidBody::Sptr physics = ScoreP2->Add<RigidBody>(RigidBodyType::Kinematic);
-			ICollider::Sptr Box1 = physics->AddCollider(BoxCollider::Create(glm::vec3(0.25f)));
-
-			triggerInteraction->EnterMaterial = R0_mat;
-			triggerInteraction->ExitMaterial = R1_mat;
-		}
-
-		
-		GameObject::Sptr ScoreP1 = scene->CreateGameObject("ScoreP1");
-		ScoreComponent::Sptr score1 = ScoreP1->Add<ScoreComponent>();
-		std::string p1 = score1 != nullptr ? score1->GetGUID().str() : "null";
-		{
-			ScoreP1->SetPostion(glm::vec3(1.0f, 1.5f, 1.0f));
-			ScoreP1->SetRotation(glm::vec3(45, 0, -180));
-			ScoreP1->SetScale(glm::vec3(2.0f, 2.0f, 2.0f));
-			
-		
-			RenderComponent::Sptr renderer = ScoreP1->Add<RenderComponent>();
-			renderer->SetMesh(ScoreBoard);
-			renderer->SetMaterial(R0_mat);
-
-			RigidBody::Sptr physics = ScoreP1->Add<RigidBody>(RigidBodyType::Kinematic);
-			ICollider::Sptr Box1 = physics->AddCollider(BoxCollider::Create(glm::vec3(0.25f)));
-
-		
-			// We'll add a behaviour that will interact with our trigger volumes
-			MaterialSwapBehaviour::Sptr triggerInteraction = ScoreP1->Add<MaterialSwapBehaviour>();
-		
-			triggerInteraction->EnterMaterial = R0_mat;
-			triggerInteraction->ExitMaterial = R1_mat;
-		}
-		*/
-		
-		// Delete this later (Table, Paddle, Puck, etc)
-		/*
-		GameObject::Sptr table = scene->CreateGameObject("Table");
-		{
-			// Set position in the scene
-			table->SetPostion(glm::vec3(1.5f, 0.0f, 1.0f));
-			table->SetRotation(glm::vec3(90.0f, 0.0f, 0.0f));
-
-			// Create and attach a renderer for the monkey
-			RenderComponent::Sptr renderer = table->Add<RenderComponent>();
-			renderer->SetMesh(tableMesh);
-			renderer->SetMaterial(tableMaterial);
-
-			// Add a dynamic rigid body to this monkey
-			RigidBody::Sptr physics = table->Add<RigidBody>(RigidBodyType::Static);
-			//physics->AddCollider(BoxCollider::Create(glm::vec3(1.0f, 1.0f, 1.0f)));
-
-			ICollider::Sptr Box1 = physics->AddCollider(BoxCollider::Create(glm::vec3(0.05f, 0.2f, 0.5f)));
-			Box1->SetPosition(glm::vec3( -0.930f, 0.140f, 0.0f));
-
-			ICollider::Sptr Box2 = physics->AddCollider(BoxCollider::Create(glm::vec3(0.05f, 0.2f, 0.5f)));
-			Box2->SetPosition(glm::vec3(0.930f, 0.140f, 0.0f));
-
-			ICollider::Sptr Box3 = physics->AddCollider(BoxCollider::Create(glm::vec3(0.05f, 0.2f, 1.0f)));
-			Box3->SetPosition(glm::vec3(0.0f, 0.140f, 0.5f));
-			Box3->SetRotation(glm::vec3(0.0f, 90.0f, 0.0f));
-
-			ICollider::Sptr Box4 = physics->AddCollider(BoxCollider::Create(glm::vec3(0.05f, 0.2f, 1.0f)));
-			Box4->SetPosition(glm::vec3(-0.0f, 0.140f, -0.5f));
-			Box4->SetRotation(glm::vec3(0.0f, 90.0f, 0.0f));
-
-			ICollider::Sptr Box5 = physics->AddCollider(BoxCollider::Create(glm::vec3(2.0f, 0.7f, 0.5f)));
-			Box5->SetPosition(glm::vec3(0.0f, -0.7f, 0.0f));
-			Box5->SetRotation(glm::vec3(0.0f, 0.0f, 0.0f));
-
-			ICollider::Sptr Box6 = physics->AddCollider(BoxCollider::Create(glm::vec3(0.05f, 0.2f, 0.2f)));
-			Box6->SetPosition(glm::vec3(-0.84f, 0.10f, -0.390f));
-			Box6->SetRotation(glm::vec3(0.0f, 0.0f, 0.0f));
-
-			ICollider::Sptr Box7 = physics->AddCollider(BoxCollider::Create(glm::vec3(0.05f, 0.2f, 0.2f)));
-			Box7->SetPosition(glm::vec3(-0.84f, 0.150f, 0.320f));
-			Box7->SetRotation(glm::vec3(0.0f, 0.0f, 0.0f));
-
-			ICollider::Sptr Box8 = physics->AddCollider(BoxCollider::Create(glm::vec3(0.05f, 0.2f, 0.2f)));
-			Box8->SetPosition(glm::vec3(0.84f, 0.10f, -0.390f));
-			Box8->SetRotation(glm::vec3(0.0f, 0.0f, 0.0f));
-
-			ICollider::Sptr Box9 = physics->AddCollider(BoxCollider::Create(glm::vec3(0.05f, 0.2f, 0.2f)));
-			Box9->SetPosition(glm::vec3(0.84f, 0.150f, 0.320f));
-			Box9->SetRotation(glm::vec3(0.0f, 0.0f, 0.0f));
-		}
-
-		GameObject::Sptr paddle = scene->CreateGameObject("Paddle");
-		{
-			// Set position in the scene
-			paddle->SetPostion(glm::vec3(1.0f, -0.01f, 1.00f));
-			paddle->SetRotation(glm::vec3(90.0f, 0.04f, 0.0f));
-
-			paddle->Add<CharacterController>();
-
-			// Create and attach a renderer for the monkey
-			RenderComponent::Sptr renderer = paddle->Add<RenderComponent>();
-			renderer->SetMesh(paddleMesh);
-			renderer->SetMaterial(paddleBlueMaterial);
-
-			// Add a dynamic rigid body
-			RigidBody::Sptr physics = paddle->Add<RigidBody>(RigidBodyType::Kinematic);
-
-			ICollider::Sptr Box1 = physics->AddCollider(BoxCollider::Create(glm::vec3(0.05f, 0.04f, 0.05f)));
-			Box1->SetPosition(glm::vec3(0.0f, 0.04f, 0.0f));
-
-
-		}
-		GameObject::Sptr paddle2 = scene->CreateGameObject("Paddle2");
-		{
-			// Set position in the scene
-			paddle2->SetPostion(glm::vec3(2.0f, -0.01f, 1.00f));
-			paddle2->SetRotation(glm::vec3(90.0f, 0.0f, 0.0f));
-
-			paddle2->Add<MouseController>();
-
-			// Create and attach a renderer for the monkey
-			RenderComponent::Sptr renderer = paddle2->Add<RenderComponent>();
-			renderer->SetMesh(paddleMesh);
-			renderer->SetMaterial(paddleRedMaterial);
-
-			// Add a dynamic rigid body
-			RigidBody::Sptr physics = paddle2->Add<RigidBody>(RigidBodyType::Kinematic);
-			ICollider::Sptr Box1 = physics->AddCollider(BoxCollider::Create(glm::vec3(0.05f, 0.04f, 0.05f)));
-			Box1->SetPosition(glm::vec3(0.0f, 0.04f, 0.0f));
-		}
-		
-		// Delete this later (Puck stuff)
-		/*
-		GameObject::Sptr puck = scene->CreateGameObject("Puck");
-		{
-			// Set position in the scene
-			puck->SetPostion(glm::vec3(1.5f, 0.01f, 1.255f));
-			puck->SetRotation(glm::vec3(90.0f, 0.0f, 0.0f));
-
-			MoveThings::Sptr movement = puck->Add<MoveThings>();
-			movement->GrabGuid1(p1);
-			movement->GrabGuid2(p2);
-
-			movement->SetCoefficient(0.1);
-
-			// Create and attach a renderer for the monkey
-			RenderComponent::Sptr renderer = puck->Add<RenderComponent>();
-			renderer->SetMesh(puckMesh);
-			renderer->SetMaterial(puckMaterial);
-
-			// Add a dynamic rigid body
-			RigidBody::Sptr physics = puck->Add<RigidBody>(RigidBodyType::Dynamic);
-
-			ICollider::Sptr Box1 = physics->AddCollider(ConvexMeshCollider::Create());
-		}
-		*/
-
-		//Create a trigger volume for testing how we can detect collisions with objects!
-	/*	GameObject::Sptr trigger = scene->CreateGameObject("Trigger");
-		{
-			TriggerVolume::Sptr volume = trigger->Add<TriggerVolume>();
-			BoxCollider::Sptr collider = BoxCollider::Create(glm::vec3(0.5f, 0.5f, 0.5f));
-			collider->SetPosition(glm::vec3(0.0f, 0.0f, 0.5f));
-			volume->AddCollider(collider);
-	}*/
-
-		// Save the asset manifest for all the resources we just loaded
-		ResourceManager::SaveManifest("manifest.json");
-		// Save the scene to a JSON file
-		scene->Save("scene.json");
-	}
-
-	// Call scene awake to start up all of our components
-	scene->Window = window;
-	scene->Awake();
+	// Structure for our frame-level uniforms, matches layout from
+	// fragments/frame_uniforms.glsl
+	// For use with a UBO.
+	struct FrameLevelUniforms {
+		// The camera's view matrix
+		glm::mat4 u_View;
+		// The camera's projection matrix
+		glm::mat4 u_Projection;
+		// The combined viewProject matrix
+		glm::mat4 u_ViewProjection;
+		// The camera's position in world space
+		glm::vec4 u_CameraPos;
+		// The time in seconds since the start of the application
+		float u_Time;
+	};
+	// This uniform buffer will hold all our frame level uniforms, to be shared between shaders
+	UniformBuffer<FrameLevelUniforms>::Sptr frameUniforms = std::make_shared<UniformBuffer<FrameLevelUniforms>>(BufferUsage::DynamicDraw);
+	// The slot that we'll bind our frame level UBO to
+	const int FRAME_UBO_BINDING = 0;
+
+	// Structure for our isntance-level uniforms, matches layout from
+	// fragments/frame_uniforms.glsl
+	// For use with a UBO.
+	struct InstanceLevelUniforms {
+		// Complete MVP
+		glm::mat4 u_ModelViewProjection;
+		// Just the model transform, we'll do worldspace lighting
+		glm::mat4 u_Model;
+		// Normal Matrix for transforming normals
+		glm::mat4 u_NormalMatrix;
+	};
+
+	// This uniform buffer will hold all our instance level uniforms, to be shared between shaders
+	UniformBuffer<InstanceLevelUniforms>::Sptr instanceUniforms = std::make_shared<UniformBuffer<InstanceLevelUniforms>>(BufferUsage::DynamicDraw);
+
+	// The slot that we'll bind our instance level UBO to
+	const int INSTANCE_UBO_BINDING = 1;
+
+	////////////////////////////////
+	///// SCENE CREATION MOVED /////
+	////////////////////////////////
+	CreateScene();
 
 	// We'll use this to allow editing the save/load path
 	// via ImGui, note the reserve to allocate extra space
 	// for input!
-	std::string scenePath = "scene.json"; 
-	scenePath.reserve(256); 
-
-	bool isRotating = true;
-	float rotateSpeed = 90.0f;
+	std::string scenePath = "scene.json";
+	scenePath.reserve(256);
 
 	// Our high-precision timer
 	double lastFrame = glfwGetTime();
-
 
 	BulletDebugMode physicsDebugMode = BulletDebugMode::None;
 	float playbackSpeed = 1.0f;
@@ -1047,19 +801,16 @@ int main() {
 	while (!glfwWindowShouldClose(window)) {
 		glfwPollEvents();
 		ImGuiHelper::StartFrame();
-		
+
 		// Calculate the time since our last frame (dt)
 		double thisFrame = glfwGetTime();
 		float dt = static_cast<float>(thisFrame - lastFrame);
 
-		int windowWidth;
-		int windowHeight;
-
-		glfwGetWindowSize(scene->Window, &windowWidth, &windowHeight);
+		// Draw our material properties window!
+		DrawMaterialsWindow();
 
 		// Showcasing how to use the imGui library!
-		//bool isDebugWindowOpen = ImGui::Begin("Debugging");
-		bool isDebugWindowOpen = true;
+		bool isDebugWindowOpen = ImGui::Begin("Debugging");
 		if (isDebugWindowOpen) {
 			// Draws a button to control whether or not the game is currently playing
 			static char buttonLabel[64];
@@ -1097,7 +848,6 @@ int main() {
 				scene->Awake();
 			}
 			ImGui::Separator();
-
 			// Draw a dropdown to select our physics debug draw mode
 			if (BulletDebugDraw::DrawModeGui("Physics Debug Mode:", physicsDebugMode)) {
 				scene->SetPhysicsDebugDrawMode(physicsDebugMode);
@@ -1108,8 +858,6 @@ int main() {
 
 		// Clear the color and depth buffers
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-
-		// Update our application level uniforms every frame
 
 		// Draw some ImGui stuff for the lights
 		if (isDebugWindowOpen) {
@@ -1156,40 +904,77 @@ int main() {
 		if (isDebugWindowOpen) {
 			scene->DrawAllGameObjectGUIs();
 		}
-		
+
 		// The current material that is bound for rendering
 		Material::Sptr currentMat = nullptr;
 		Shader::Sptr shader = nullptr;
 
+		// Bind the skybox texture to a reserved texture slot
+		// See Material.h and Material.cpp for how we're reserving texture slots
+		TextureCube::Sptr environment = scene->GetSkyboxTexture();
+		if (environment) environment->Bind(0);
+
+		// Here we'll bind all the UBOs to their corresponding slots
+		scene->PreRender();
+		frameUniforms->Bind(FRAME_UBO_BINDING);
+		instanceUniforms->Bind(INSTANCE_UBO_BINDING);
+
+		// Upload frame level uniforms
+		auto& frameData = frameUniforms->GetData();
+		frameData.u_Projection = camera->GetProjection();
+		frameData.u_View = camera->GetView();
+		frameData.u_ViewProjection = camera->GetViewProjection();
+		frameData.u_CameraPos = glm::vec4(camera->GetGameObject()->GetPosition(), 1.0f);
+		frameData.u_Time = static_cast<float>(thisFrame);
+		frameUniforms->Update();
+
 		// Render all our objects
 		ComponentManager::Each<RenderComponent>([&](const RenderComponent::Sptr& renderable) {
+			// Early bail if mesh not set
+			if (renderable->GetMesh() == nullptr) {
+				return;
+			}
+
+			// If we don't have a material, try getting the scene's fallback material
+			// If none exists, do not draw anything
+			if (renderable->GetMaterial() == nullptr) {
+				if (scene->DefaultMaterial != nullptr) {
+					renderable->SetMaterial(scene->DefaultMaterial);
+				}
+				else {
+					return;
+				}
+			}
 
 			// If the material has changed, we need to bind the new shader and set up our material and frame data
 			// Note: This is a good reason why we should be sorting the render components in ComponentManager
 			if (renderable->GetMaterial() != currentMat) {
 				currentMat = renderable->GetMaterial();
-				shader = currentMat->MatShader;
+				shader = currentMat->GetShader();
 
 				shader->Bind();
-				shader->SetUniform("u_CamPos", scene->MainCamera->GetGameObject()->GetPosition());
 				currentMat->Apply();
 			}
 
 			// Grab the game object so we can do some stuff with it
 			GameObject* object = renderable->GetGameObject();
 
-			// Set vertex shader parameters
-			shader->SetUniformMatrix("u_ModelViewProjection", viewProj * object->GetTransform());
-			shader->SetUniformMatrix("u_Model", object->GetTransform());
-			shader->SetUniformMatrix("u_NormalMatrix", glm::mat3(glm::transpose(glm::inverse(object->GetTransform()))));
+			// Use our uniform buffer for our instance level uniforms
+			auto& instanceData = instanceUniforms->GetData();
+			instanceData.u_Model = object->GetTransform();
+			instanceData.u_ModelViewProjection = viewProj * object->GetTransform();
+			instanceData.u_NormalMatrix = glm::mat3(glm::transpose(glm::inverse(object->GetTransform())));
+			instanceUniforms->Update();
 
 			// Draw the object
 			renderable->GetMesh()->Draw();
-		});
+			});
 
+		// Use our cubemap to draw our skybox
+		scene->DrawSkybox();
 
 		// End our ImGui window
-		//ImGui::End();
+		ImGui::End();
 
 		VertexArrayObject::Unbind();
 
