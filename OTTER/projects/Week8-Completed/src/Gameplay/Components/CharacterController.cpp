@@ -50,6 +50,7 @@ void CharacterController::Update(float deltaTime) {
     bool _A = glfwGetKey(GetGameObject()->GetScene()->Window, GLFW_KEY_A);
     bool _D = glfwGetKey(GetGameObject()->GetScene()->Window, GLFW_KEY_D);
     bool _W = glfwGetKey(GetGameObject()->GetScene()->Window, GLFW_KEY_SPACE);
+    
 
 
     glm::vec3 CurrentPosition = GetGameObject()->GetPosition();
@@ -63,6 +64,9 @@ void CharacterController::Update(float deltaTime) {
     if ((_W) && (_canJump == true)) {
         _body->ApplyImpulse(_impulse);
     }
+    
+    
+    
 
     if (GetGameObject()->GetPosition().z <= -14.5f)
     {

@@ -1,19 +1,16 @@
 
 
 //-----------------------------------------------------------------------------
-// Dante Arruda - 100709110
+// Amnesia Interactive
 //-----------------------------------------------------------------------------
-//Ice Hockey Computer Graphics Midterm
-// 
-// Player 1 Controls: W,A,S,D
-//	Player 2 Controls: Mouse Control
-// 
-// To Exit: Press alt+tab and close the window
+//have a nice flight, space cowboy.
+//have a nice flight, space cowboy.
+//have a nice flight, space cowboy.
+//have a nice flight, space cowboy.
+//have a nice flight, space cowboy.
+//have a nice flight, space cowboy.
 // 
 //-----------------------------------------------------------------------------
-// Ryan Fieldhouse - 100784589
-//-----------------------------------------------------------------------------
-
 
 #include <Logging.h>
 #include <iostream>
@@ -85,6 +82,9 @@
 #include "Gameplay/Physics/Colliders/ConvexMeshCollider.h"
 #include "Gameplay/Physics/TriggerVolume.h"
 #include "Graphics/DebugDraw.h"
+
+//Sound
+//#include "Sound/AudioEngine.h"
 
 
 //#define LOG_GL_NOTIFICATIONS
@@ -725,6 +725,14 @@ void CreateScene() {
 	}
 }
 
+void key_callback(GLFWwindow* window, int key, int scancode, int action, int mods)
+{
+	if (key == GLFW_KEY_ESCAPE && action == GLFW_PRESS)
+	{
+		scene->IsPlaying = !scene->IsPlaying;
+	}
+}
+
 int main() {	
 	Logger::Init(); // We'll borrow the logger from the toolkit, but we need to initialize it
 
@@ -835,7 +843,7 @@ int main() {
 	float playbackSpeed = 1.0f;
 
 	nlohmann::json editorSceneState;
-
+	int _Pause;
 	///// Game loop /////
 	while (!glfwWindowShouldClose(window)) {
 		glfwPollEvents();
@@ -847,6 +855,9 @@ int main() {
 
 		// Draw our material properties window!
 		DrawMaterialsWindow();
+
+		//Player Quick Pause Functionality
+		glfwSetKeyCallback(window, key_callback);
 
 		// Showcasing how to use the imGui library!
 		bool isDebugWindowOpen = ImGui::Begin("Debugging");
