@@ -240,7 +240,7 @@ void SpawnObj(MeshResource::Sptr Mesh, Material::Sptr Material, std::string ObjN
 		Startplatform->SetRotation(rot);
 		Startplatform->SetScale(scale);
 
-		//Startplatform->Add<LevelMover>();
+		Startplatform->Add<LevelMover>();
 
 		// Create and attach a renderer for the monkey
 		RenderComponent::Sptr renderer = Startplatform->Add<RenderComponent>();
@@ -271,7 +271,7 @@ void SpawnStartPlat(MeshResource::Sptr Mesh, Material::Sptr Material, std::strin
 		Startplatform->SetRotation(rot);
 		Startplatform->SetScale(scale);
 
-		//Startplatform->Add<LevelMover>();
+		Startplatform->Add<LevelMover>();
 
 		// Create and attach a renderer for the Object
 		RenderComponent::Sptr renderer = Startplatform->Add<RenderComponent>();
@@ -300,7 +300,7 @@ void SpawnGem(MeshResource::Sptr Mesh, Material::Sptr Material, std::string ObjN
 		Startplatform->SetScale(scale);
 
 		//Add Components
-		//Startplatform->Add<LevelMover>();
+		Startplatform->Add<LevelMover>();
 		Startplatform->Add<RotatingBehaviour>();
 		
 		// Create and attach a renderer for the Object
@@ -331,7 +331,7 @@ void SpawnCollectable(MeshResource::Sptr Mesh, Material::Sptr Material, std::str
 		Startplatform->SetScale(scale);
 
 		//Add Components
-		//Startplatform->Add<LevelMover>();
+		Startplatform->Add<LevelMover>();
 		Startplatform->Add<VinylAnim>();
 		Startplatform->Add<RotatingBehaviour>();
 
@@ -359,7 +359,7 @@ void SpawnWallJump(MeshResource::Sptr Mesh, Material::Sptr Material, std::string
 		Startplatform->SetRotation(rot);
 		Startplatform->SetScale(scale);
 
-		//Startplatform->Add<LevelMover>();
+		Startplatform->Add<LevelMover>();
 
 		// Create and attach a renderer for the Object
 		RenderComponent::Sptr renderer = Startplatform->Add<RenderComponent>();
@@ -548,11 +548,11 @@ void CreateScene() {
 			WallJumpMaterial->Set("u_Material.Shininess", 0.1f);
 		}
 
-		Material::Sptr BeatGemMaterial = ResourceManager::CreateAsset<Material>(basicShader);
+		Material::Sptr BeatGemMaterial = ResourceManager::CreateAsset<Material>(reflectiveShader);
 		{
 			BeatGemMaterial->Name = "BeatGem";
 			BeatGemMaterial->Set("u_Material.Diffuse", GemTex);
-			BeatGemMaterial->Set("u_Material.Shininess", 0.1f);
+			BeatGemMaterial->Set("u_Material.Shininess", 1.0f);
 		}
 
 		Material::Sptr VinylMaterial = ResourceManager::CreateAsset<Material>(basicShader);
@@ -591,7 +591,7 @@ void CreateScene() {
 		}
 
 		// Create some lights for our scene
-		scene->Lights.resize(3);
+		scene->Lights.resize(2);
 		scene->Lights[0].Position = glm::vec3(0.0f, 1.0f, 3.0f);
 		scene->Lights[0].Color = glm::vec3(1.0f, 1.0f, 1.0f);
 		scene->Lights[0].Range = 100.0f;
@@ -835,6 +835,7 @@ int main() {
 	// for input!
 	std::string scenePath = "scene.json";
 	scenePath.reserve(256);
+	scene->SetAmbientLight(glm::vec3(0.25f));
 
 	// Our high-precision timer
 	double lastFrame = glfwGetTime();

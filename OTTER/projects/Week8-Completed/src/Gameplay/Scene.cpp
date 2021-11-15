@@ -102,7 +102,7 @@ namespace Gameplay {
 	}
 
 	void Scene::SetAmbientLight(const glm::vec3& value) {
-		_lightingUbo->GetData().AmbientCol = glm::vec3(0.1f);
+		_lightingUbo->GetData().AmbientCol = value;
 		_lightingUbo->Update();
 	}
 

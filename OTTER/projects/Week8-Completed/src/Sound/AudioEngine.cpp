@@ -182,9 +182,9 @@ void AudioEngine::GetEventParameter(const string& strEventName, const string& st
     if (tFoundIt == sgpImplementation->mEvents.end())
         return;
 
-    //FMOD::Studio::ParameterInstance* pParameter = NULL;
-    //AudioEngine::ErrorCheck(tFoundIt->second->getParameter(strParameterName.c_str(), &pParameter));
-    //AudioEngine::ErrorCheck(pParameter->getValue(parameter));
+    FMOD::Studio::ParameterInstance* pParameter = NULL;
+    AudioEngine::ErrorCheck(tFoundIt->second->getParameter(strParameterName.c_str(), &pParameter));
+    AudioEngine::ErrorCheck(pParameter->getValue(parameter));
 }
 
 void AudioEngine::SetEventParameter(const string& strEventName, const string& strParameterName, float fValue) {
@@ -192,7 +192,7 @@ void AudioEngine::SetEventParameter(const string& strEventName, const string& st
     if (tFoundIt == sgpImplementation->mEvents.end())
         return;
 
-   //FMOD::Studio::ParameterInstance* pParameter = NULL;
-   //AudioEngine::ErrorCheck(tFoundIt->second->getParameter(strParameterName.c_str(), &pParameter));
-   //AudioEngine::ErrorCheck(pParameter->setValue(fValue));
+   FMOD::Studio::ParameterInstance* pParameter = NULL;
+   AudioEngine::ErrorCheck(tFoundIt->second->getParameter(strParameterName.c_str(), &pParameter));
+   AudioEngine::ErrorCheck(pParameter->setValue(fValue));
 }
