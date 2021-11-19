@@ -4,6 +4,7 @@
 
 #include "fmod_studio.hpp"
 #include "fmod.hpp"
+#include <fmod_errors.h>
 #include <string>
 #include <map>
 #include <vector>
@@ -51,17 +52,17 @@ public:
     void LoadEvent(const string& strEventName);
     void LoadSound(const string& strSoundName, bool b3d = true, bool bLooping = false, bool bStream = false);
     void UnLoadSound(const string& strSoundName);
-    void Set3dListenerAndOrientation(const glm::vec3& vPos = glm::vec3{ 0, 0, 0 }, float fVolumedB = 0.0f);
+    //void Set3dListenerAndOrientation(const glm::vec3& vPos = glm::vec3{ 0, 0, 0 }, float fVolumedB = 0.0f);
     int PlaySound(const string& strSoundName, const glm::vec3& vPos = glm::vec3( 0, 0, 0 ), float fVolumedB = 0.0f);
     void PlayEvent(const string& strEventName);
-    void StopChannel(int nChannelId);
+    //void StopChannel(int nChannelId);
     void StopEvent(const string& strEventName, bool bImmediate = false);
     void GetEventParameter(const string& strEventName, const string& strEventParameter, float* parameter);
     void SetEventParameter(const string& strEventName, const string& strParameterName, float fValue);
-    void StopAllChannels();
+    //void StopAllChannels();
     void SetChannel3dPosition(int nChannelId, const glm::vec3& vPosition);
     void SetChannelVolume(int nChannelId, float fVolumedB);
-    bool IsPlaying(int nChannelId) const;
+    //bool IsPlaying(int nChannelId) const;
     bool IsEventPlaying(const string& strEventName) const;
     float dbToVolume(float db);
     float VolumeTodb(float volume);

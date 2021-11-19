@@ -182,9 +182,9 @@ void AudioEngine::GetEventParameter(const string& strEventName, const string& st
     if (tFoundIt == sgpImplementation->mEvents.end())
         return;
 
-    FMOD::Studio::ParameterInstance* pParameter = NULL;
-    AudioEngine::ErrorCheck(tFoundIt->second->getParameter(strParameterName.c_str(), &pParameter));
-    AudioEngine::ErrorCheck(pParameter->getValue(parameter));
+    //FMOD::Studio::ParameterInstance* pParameter = NULL;
+    //AudioEngine::ErrorCheck(tFoundIt->second->getParameter(strParameterName.c_str(), &pParameter));
+    //AudioEngine::ErrorCheck(pParameter->getValue(parameter));
 }
 
 void AudioEngine::SetEventParameter(const string& strEventName, const string& strParameterName, float fValue) {
@@ -192,7 +192,38 @@ void AudioEngine::SetEventParameter(const string& strEventName, const string& st
     if (tFoundIt == sgpImplementation->mEvents.end())
         return;
 
-   FMOD::Studio::ParameterInstance* pParameter = NULL;
-   AudioEngine::ErrorCheck(tFoundIt->second->getParameter(strParameterName.c_str(), &pParameter));
-   AudioEngine::ErrorCheck(pParameter->setValue(fValue));
+   //FMOD::Studio::ParameterInstance* pParameter = NULL;
+   //AudioEngine::ErrorCheck(tFoundIt->second->getParameter(strParameterName.c_str(), &pParameter));
+   //AudioEngine::ErrorCheck(pParameter->setValue(fValue));
+}
+
+FMOD_VECTOR AudioEngine::VectorToFmod(const glm::vec3& vPosition) {
+    FMOD_VECTOR fVec;
+    fVec.x = vPosition.x;
+    fVec.y = vPosition.y;
+    fVec.z = vPosition.z;
+    return fVec;
+}
+
+float  AudioEngine::dbToVolume(float dB)
+{
+    return powf(10.0f, 0.05f * dB);
+}
+
+float  AudioEngine::VolumeTodb(float volume)
+{
+    return 20.0f * log10f(volume);
+}
+
+int AudioEngine::ErrorCheck(FMOD_RESULT result) {
+    if (result != FMOD_OK) {
+        cout << "FMOD ERROR " << result << endl;
+        return 1;
+    }
+    // cout << "FMOD all good" << endl;
+    return 0;
+}
+
+void AudioEngine::Shutdown() {
+    delete sgpImplementation;
 }

@@ -84,14 +84,15 @@
 #include "Graphics/DebugDraw.h"
 
 //Sound
-//#include "Sound/AudioEngine.h"
-
+#include "Sound/AudioEngine.h"
+#include "Fmod.h"
+#include "ToneFire.h"
 
 //#define LOG_GL_NOTIFICATIONS
 
 /*
 	Handles debug messages from OpenGL
-	https://www.khronos.org/opengl/wiki/Debug_Output#Message_Components
+	https://www.khronos.org/opengl/wiki/Debug_Output#Message_Compon ents
 	@param source    Which part of OpenGL dispatched the message
 	@param type      The type of message (ex: error, performance issues, deprecated behavior)
 	@param id        The ID of the error or message (to distinguish between different types of errors, like nullref or index out of range)
@@ -260,6 +261,26 @@ void SpawnObj(MeshResource::Sptr Mesh, Material::Sptr Material, std::string ObjN
 	}
 }
 
+
+void SpawnUI(MeshResource::Sptr Mesh, Material::Sptr Material, std::string ObjName = "DeezNuts", glm::vec3 pos = glm::vec3(0.0f, 0.0f, 0.0f),
+	glm::vec3 rot = glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3 scale = glm::vec3(1.0f, 1.0f, 1.0f)) {
+
+	GameObject::Sptr UI = scene->CreateGameObject(ObjName);
+	{
+		// Set position in the scene
+		UI->SetPostion(pos);
+		UI->SetRotation(rot);
+		UI->SetScale(scale);
+
+		UI->Add<MaterialSwapBehaviour>();
+
+		// Create and attach a renderer for the Object
+		RenderComponent::Sptr renderer = UI->Add<RenderComponent>();
+		renderer->SetMesh(Mesh);
+		renderer->SetMaterial(Material);
+	}
+}
+
 // for spawning start/end platforms
 void SpawnStartPlat(MeshResource::Sptr Mesh, Material::Sptr Material, std::string ObjName = "DeezNuts", glm::vec3 pos = glm::vec3(0.0f, 0.0f, 0.0f),
 	glm::vec3 rot = glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3 scale = glm::vec3(1.0f, 1.0f, 1.0f)) {
@@ -282,10 +303,6 @@ void SpawnStartPlat(MeshResource::Sptr Mesh, Material::Sptr Material, std::strin
 		RigidBody::Sptr physics = Startplatform->Add<RigidBody>(RigidBodyType::Kinematic);
 		physics->AddCollider(BoxCollider::Create(glm::vec3(1.8f, 0.7f, 1.0f)));
 
-		// FIX THIS //
-		//ICollider::Sptr Box1 = physics->AddCollider(BoxCollider::Create(glm::vec3(1.0f, 1.0f, 1.0f)));
-		//Box1->SetPosition(glm::vec3(0.f, 0.f, 0.f));
-		//Box1->SetScale(glm::vec3(1, 1, 1));
 	}
 }
 // for spawning Beat Gems
@@ -494,6 +511,8 @@ void CreateScene() {
 		MeshResource::Sptr StartPlatform = ResourceManager::CreateAsset<MeshResource>("StartPlatformV6.obj");
 		MeshResource::Sptr Car1Mesh = ResourceManager::CreateAsset<MeshResource>("FutureCar1.obj");
 
+		MeshResource::Sptr UIPlane = ResourceManager::CreateAsset<MeshResource>("UICanvas.obj");
+
 		//Textures
 		Texture2D::Sptr StartTex = ResourceManager::CreateAsset<Texture2D>("textures/DiscoBuildingTex.png"); // Does not exist yet loam
 		Texture2D::Sptr SmallTex = ResourceManager::CreateAsset<Texture2D>("textures/DanceFloorTex2.png"); // Does not exist yet loam
@@ -504,7 +523,8 @@ void CreateScene() {
 		Texture2D::Sptr LoseScreenTex = ResourceManager::CreateAsset<Texture2D>("textures/Game_Over_Screen.png");
 		Texture2D::Sptr WallJumpTex = ResourceManager::CreateAsset<Texture2D>("textures/WallJumpTex.png");
 		Texture2D::Sptr Car1Tex = ResourceManager::CreateAsset<Texture2D>("textures/FutureCarTex.png");
-		
+
+		Texture2D::Sptr UITex = ResourceManager::CreateAsset<Texture2D>("textures/UI.png");
 
 		//Minification and Magnification
 		//leafTex->SetMinFilter(MinFilter::Nearest);
@@ -532,6 +552,13 @@ void CreateScene() {
 			StartPlatformMaterial->Name = "StartPlatform";
 			StartPlatformMaterial->Set("u_Material.Diffuse", StartTex);
 			StartPlatformMaterial->Set("u_Material.Shininess", 0.1f);
+		}
+
+		Material::Sptr UIMat = ResourceManager::CreateAsset<Material>(basicShader);
+		{
+			UIMat->Name = "UIButton";
+			UIMat->Set("u_Material.Diffuse", StartTex);
+			UIMat->Set("u_Material.Shininess", 0.1f);
 		}
 
 		Material::Sptr SmallPlatformMaterial = ResourceManager::CreateAsset<Material>(basicShader);
@@ -567,6 +594,7 @@ void CreateScene() {
 			TutorialSignMaterial->Name = "Tutorial Sign";
 			TutorialSignMaterial->Set("u_Material.Diffuse", TutorialSignTex);
 			TutorialSignMaterial->Set("u_Material.Shininess", 0.1f);
+			
 		}
 
 		Material::Sptr CharacterMaterial = ResourceManager::CreateAsset<Material>(basicShader);
@@ -626,6 +654,15 @@ void CreateScene() {
 		//}
 
 		GameObject* parent = nullptr;
+
+
+		//UI Elements
+			//SpawnUI();
+			//SpawnUI();
+			//SpawnUI();
+			//SpawnUI();
+			//SpawnUI();
+
 
 		//Game Objects
 		// Tutorial
@@ -845,10 +882,28 @@ int main() {
 
 	nlohmann::json editorSceneState;
 	int _Pause;
+	
+	ToneFire::FMODStudio studio;
+
+	studio.LoadBank("Master.bank");
+	studio.LoadBank("Master.strings.bank");
+	studio.LoadBank("Level1.bank");
+
+
+
+
+	ToneFire::StudioSound test;
+	test.LoadEvent("event:/Music");
+	test.SetEventPosition("event:/Music", FMOD_VECTOR{ -10.270f, 5.710f, -3.800f });
+	test.PlayEvent("event:/Music");
+	test.SetEventParameter("event:/Music", "Volume", 0.5f);
+	
+
 	///// Game loop /////
 	while (!glfwWindowShouldClose(window)) {
 		glfwPollEvents();
 		ImGuiHelper::StartFrame();
+		studio.Update();
 
 		// Calculate the time since our last frame (dt)
 		double thisFrame = glfwGetTime();
