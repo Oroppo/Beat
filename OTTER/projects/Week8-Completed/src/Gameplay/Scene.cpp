@@ -137,10 +137,10 @@ namespace Gameplay {
 	void Scene::DoPhysics(float dt) {
 		ComponentManager::Each<Gameplay::Physics::RigidBody>([=](const std::shared_ptr<Gameplay::Physics::RigidBody>& body) {
 			body->PhysicsPreStep(dt);
-		});
+			});
 		ComponentManager::Each<Gameplay::Physics::TriggerVolume>([=](const std::shared_ptr<Gameplay::Physics::TriggerVolume>& body) {
 			body->PhysicsPreStep(dt);
-		});
+			});
 
 		if (IsPlaying) {
 
@@ -148,16 +148,16 @@ namespace Gameplay {
 
 			ComponentManager::Each<Gameplay::Physics::RigidBody>([=](const std::shared_ptr<Gameplay::Physics::RigidBody>& body) {
 				body->PhysicsPostStep(dt);
-			});
+				});
 			ComponentManager::Each<Gameplay::Physics::TriggerVolume>([=](const std::shared_ptr<Gameplay::Physics::TriggerVolume>& body) {
 				body->PhysicsPostStep(dt);
-			});
+				});
 			if (_bulletDebugDraw->getDebugMode() != btIDebugDraw::DBG_NoDebug) {
 				_physicsWorld->debugDrawWorld();
 				DebugDrawer::Get().FlushAll();
 			}
 		}
-	}
+	};
 
 	void Scene::Update(float dt) {
 		_FlushDeleteQueue();
