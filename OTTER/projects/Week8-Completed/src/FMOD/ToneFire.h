@@ -1,22 +1,17 @@
 #pragma once
 
 //exports the stuff if we're building ToneFire, or imports it if we're using it
-#ifdef TONEFIRE_EXPORT
-#define DLL __declspec(dllexport)
-#else
-#define DLL __declspec(dllimport)
-#endif
 
 #include <string>
 #include <vector>
 #include <unordered_map>
-#include "FMOD/fmod.hpp"
-#include "FMOD/fmod_errors.h"
-#include "FMOD/fmod_studio.hpp"
-#include "FMOD/fmod_studio_common.h"
+#include "fmod.hpp"
+#include "fmod_errors.h"
+#include "fmod_studio.hpp"
+#include "fmod_studio_common.h"
 namespace ToneFire {
-	class DLL FMODStudio;
-	class DLL FMODCore;
+	class FMODStudio;
+	class FMODCore;
 
 
 	/*
@@ -24,9 +19,9 @@ namespace ToneFire {
 	* ToneFire has an internal listener in both Core and Studio implementations. You do not need
 	* to touch this.
 	*/
-	class DLL Listener {
-		friend DLL FMODCore;
-		friend DLL FMODStudio;
+	class Listener {
+		friend FMODCore;
+		friend FMODStudio;
 	public:
 		Listener(
 			FMOD_VECTOR pos = { 0.0f,0.0f,0.0f },
@@ -48,8 +43,8 @@ namespace ToneFire {
 	* This is a data type dedicated to making your life easier when it
 	* comes to creating and playing sounds with FMOD Core.
 	*/
-	class DLL CoreSound {
-		friend DLL FMODCore;
+	class CoreSound {
+		friend FMODCore;
 	public:
 
 		CoreSound(const std::string& fileName, bool isStream = false, bool loop = false, bool is3D = false);
@@ -89,11 +84,11 @@ namespace ToneFire {
 	* there should be FMODCore object, and it should be initialized before
 	* you try to make any CoreSounds.
 	*/
-	class DLL FMODCore {
-		friend DLL CoreSound;
+	class FMODCore {
+		friend CoreSound;
 	public:
 		FMODCore(int maxChannels = 512,
-			const std::string& defaultPath = "../../../projects/Week8-Completed/res/Music/",
+			const std::string& defaultPath = "Music/",
 			const Listener& listener = Listener());
 		~FMODCore();
 
@@ -127,7 +122,7 @@ namespace ToneFire {
 	* when working with FMOD Studio events. It supports events, event parameters,
 	* and even positioning the events in the world.
 	*/
-	class DLL StudioSound {
+	class StudioSound {
 		friend FMODStudio;
 	public:
 		StudioSound();
@@ -159,7 +154,7 @@ namespace ToneFire {
 		FMOD_VECTOR up = { 0.0f,1.0f,0.0f };
 	private:
 
-		FMOD_VECTOR _velocity;// not yet implemented
+		FMOD_VECTOR _velocity; // not yet implemented
 
 		static FMODStudio* _instance;
 
@@ -173,11 +168,11 @@ namespace ToneFire {
 	* It should be initialized before any StudioSounds are created. It must be updated once
 	* per frame. It is also how you will load Bank files into memory.
 	*/
-	class DLL FMODStudio {
+	class FMODStudio {
 		friend StudioSound;
 	public:
 		FMODStudio(int maxChannels = 512,
-			const std::string& defaultPath = "../../../projects/Week8-Completed/res/Music/",
+			const std::string& defaultPath = "Music/",
 			const Listener& listener = Listener());
 		~FMODStudio();
 

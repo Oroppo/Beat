@@ -1,4 +1,4 @@
-#ifdef TONEFIRE_EXPORT
+
 #include "ToneFire.h"
 #include <iostream>
 using namespace ToneFire;
@@ -36,7 +36,7 @@ ToneFire::FMODCore::~FMODCore()
 FMOD::Sound* ToneFire::FMODCore::_CreateSound(std::string fileName, int flags)
 {
 	FMOD::Sound* temp = NULL;
-	
+
 	//determine if this is a local or remote asset, kinda broken tbh
 	std::string path = "http";
 	std::size_t found = fileName.find(path);
@@ -119,7 +119,7 @@ FMOD::Channel* ToneFire::FMODCore::_GetFreeChannel()
 
 FMODCore* CoreSound::_instance = nullptr;
 ToneFire::CoreSound::CoreSound(const std::string& fileName, bool isStream, bool loop, bool is3D)
-	:_name(fileName),_is3D(is3D)
+	:_name(fileName), _is3D(is3D)
 {
 	if (!is3D) {
 		int flags = FMOD_2D;
@@ -146,7 +146,7 @@ ToneFire::CoreSound::CoreSound(const std::string& fileName, bool isStream, bool 
 	}
 }
 
-ToneFire::CoreSound::CoreSound(const std::string& fileName, int fmodFlags) 
+ToneFire::CoreSound::CoreSound(const std::string& fileName, int fmodFlags)
 	: _name(fileName)
 {
 	if ((fmodFlags & FMOD_3D) == FMOD_3D)
@@ -215,9 +215,7 @@ bool ToneFire::CoreSound::_ChannelIsNullptr()
 {
 	bool b = false;
 	if (_channel == nullptr || _channel->isPlaying(&b) == FMOD_ERR_INVALID_HANDLE) {
-#ifdef _DEBUG
 		std::cout << _name + "'s Channel is nullptr or invalid. Be sure to call Play to initialize the channel before you attempt to modify it.\n";
-#endif
 		return true;
 	}
 	return false;
@@ -238,9 +236,9 @@ void ToneFire::Listener::SetPosition(FMOD_VECTOR pos)
 	_position = pos;
 }
 
-ToneFire::FMODStudio::FMODStudio(int maxChannels, const std::string& defaultPath, 
+ToneFire::FMODStudio::FMODStudio(int maxChannels, const std::string& defaultPath,
 	const Listener& listener)
-	:_defaultPath(defaultPath),_listener(listener)
+	:_defaultPath(defaultPath), _listener(listener)
 {
 	FMOD_RESULT result = FMOD::Studio::System::create(&_fmodSystem);
 	_ErrorCheck(result, "Creating FMOD Studio System");
@@ -284,7 +282,7 @@ void ToneFire::FMODStudio::Update()
 	_atr.position = _listener._position;
 	_atr.up = _listener._up;
 	_atr.velocity = _listener._velocity;
-	FMOD_RESULT result = _fmodSystem->setListenerAttributes(0, &_atr,0);
+	FMOD_RESULT result = _fmodSystem->setListenerAttributes(0, &_atr, 0);
 	_ErrorCheck(result, "set listener attributes");
 	_fmodSystem->update();
 }
@@ -298,7 +296,7 @@ void ToneFire::FMODStudio::_ErrorCheck(FMOD_RESULT result, std::string errorAt)
 
 
 
-FMODStudio* StudioSound::_instance= nullptr;
+FMODStudio* StudioSound::_instance = nullptr;
 
 ToneFire::StudioSound::StudioSound()
 {
@@ -337,15 +335,14 @@ void ToneFire::StudioSound::SetEventParameter(const std::string& eventName, cons
 
 }
 
-void ToneFire::StudioSound::SetEventPosition(const std::string& eventName,const FMOD_VECTOR& pos)
+void ToneFire::StudioSound::SetEventPosition(const std::string& eventName, const FMOD_VECTOR& pos)
 {
 	if (_bankEventDescriptions[eventName] == nullptr)
 		LoadEvent(eventName);
 	FMOD_3D_ATTRIBUTES atr;
-	atr.forward =	forward;
-	atr.position =	pos;
-	atr.up =		up;
-	atr.velocity =	_velocity;
+	atr.forward = forward;
+	atr.position = pos;
+	atr.up = up;
+	atr.velocity = _velocity;
 	_bankEventInstances[eventName]->set3DAttributes(&atr);
 }
-#endif

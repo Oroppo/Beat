@@ -86,7 +86,7 @@
 //Sound
 #include "Sound/AudioEngine.h"
 #include "Fmod.h"
-//#include "ToneFire.h"
+#include "FMOD/ToneFire.h"
 
 //#define LOG_GL_NOTIFICATIONS
 
@@ -705,6 +705,7 @@ void CreateScene() {
 		//Game Objects
 		// Tutorial
 		
+		//Make a component that 
 		SpawnStartPlat(StartPlatform, StartPlatformMaterial, "StartPlatform", glm::vec3(-9.820f, 5.610f, -4.450), glm::vec3(90.0f, 0.0f, 0.0f), glm::vec3(0.350f, 0.350f, 0.350f));
 		SpawnObj(SmallPlatform, SmallPlatformMaterial, "Small Platform 1", glm::vec3(-6.070f, 5.610f, -4.150f), parent, glm::vec3(180.0f, 0.0f, 180.0f), glm::vec3(0.500f, 0.500f, 0.500f));
 		SpawnObj(SmallPlatform, SmallPlatformMaterial, "Small Platform 2", glm::vec3(-3.320f, 5.610f, -2.200f), parent, glm::vec3(180.0f, 0.0f, 180.0f), glm::vec3(0.500f, 0.500f, 0.500f));
@@ -956,27 +957,27 @@ int main() {
 	nlohmann::json editorSceneState;
 	int _Pause;
 	
-//ToneFire::FMODStudio studio;
-//
-//studio.LoadBank("Master.bank");
-//studio.LoadBank("Master.strings.bank");
-//studio.LoadBank("Level1.bank");
-//
-//
-//
-//
-//ToneFire::StudioSound test;
-//test.LoadEvent("event:/Music");
-//test.SetEventPosition("event:/Music", FMOD_VECTOR{ -10.270f, 5.710f, -3.800f });
-//test.PlayEvent("event:/Music");
-//test.SetEventParameter("event:/Music", "Volume", 0.5f);
+	ToneFire::FMODStudio studio;
+
+	studio.LoadBank("Master.bank");
+	studio.LoadBank("Master.strings.bank");
+	studio.LoadBank("Level1.bank");
+
+
+
+
+	ToneFire::StudioSound test;
+	test.LoadEvent("event:/Music");
+	test.SetEventPosition("event:/Music", FMOD_VECTOR{ -10.270f, 5.710f, -3.800f });
+	test.PlayEvent("event:/Music");
+	test.SetEventParameter("event:/Music", "Volume", 0.5f);
 	
 
 	///// Game loop /////
 	while (!glfwWindowShouldClose(window)) {
 		glfwPollEvents();
 		ImGuiHelper::StartFrame();
-		//studio.Update();
+		studio.Update();
 
 		// Calculate the time since our last frame (dt)
 		double thisFrame = glfwGetTime();
