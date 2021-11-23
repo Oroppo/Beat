@@ -33,7 +33,7 @@ protected:
 	float _impulse2;
 	bool _canJump;
 
-	glm::vec3 _impulse = glm::vec3(0,0,1);
+	glm::vec3 _impulse = glm::vec3(0,0,2.5);
 	Gameplay::Physics::RigidBody::Sptr _body;
 
 
