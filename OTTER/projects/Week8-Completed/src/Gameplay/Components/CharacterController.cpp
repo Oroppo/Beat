@@ -27,7 +27,9 @@ nlohmann::json CharacterController::ToJson() const {
 CharacterController::CharacterController() :
     IComponent()
 {
+
     _canJump = true;
+    _platform = "";
 }
 
 CharacterController::~CharacterController() = default;
@@ -39,14 +41,21 @@ CharacterController::Sptr CharacterController::FromJson(const nlohmann::json & b
 
 void CharacterController::OnTriggerVolumeEntered(const std::shared_ptr<Gameplay::Physics::RigidBody>& body) {
         LOG_INFO("Body has entered our trigger volume: {}", body->GetGameObject()->Name);
-        _canJump = true;
+        
+        if (_platform != body->GetGameObject()->Name) {
+            _canJump = true;
+            _platform = body->GetGameObject()->Name;
+        }
+
 }
  void CharacterController::OnTriggerVolumeLeaving(const std::shared_ptr<Gameplay::Physics::RigidBody>& body) {
     LOG_INFO("Body has left our trigger volume: {}", body->GetGameObject()->Name);
+    _platform = "";
     _canJump =false;
 }
 void CharacterController::Update(float deltaTime) {
-
+    LOG_INFO( _canJump);
+    LOG_INFO(_platform);
     bool _A = glfwGetKey(GetGameObject()->GetScene()->Window, GLFW_KEY_A);
     bool _D = glfwGetKey(GetGameObject()->GetScene()->Window, GLFW_KEY_D);
     bool _W = glfwGetKey(GetGameObject()->GetScene()->Window, GLFW_KEY_SPACE);
@@ -61,8 +70,12 @@ void CharacterController::Update(float deltaTime) {
     if (_D) {
         GetGameObject()->SetPostion(GetGameObject()->GetPosition() + glm::vec3(0.05f, 0.0f, 0.0f));
     }
+    //_body->GetLinearVelocity().y    - glm::vec3( 0.0f,0.0f,0.0f)
     if ((_W) && (_canJump == true)) {
+        LOG_INFO("force applied");
+        _body->SetLinearVelocity(_body->GetLinearVelocity() );
         _body->ApplyImpulse(_impulse);
+        _canJump = false;
     }
     
     

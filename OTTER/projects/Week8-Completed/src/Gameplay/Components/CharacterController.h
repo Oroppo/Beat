@@ -32,8 +32,8 @@ protected:
 	double xPos=0, yPos=0;
 	float _impulse2;
 	bool _canJump;
-
-	glm::vec3 _impulse = glm::vec3(0,0,2.5);
+	std::string _platform; 
+	glm::vec3 _impulse = glm::vec3(0,0,15.0);
 	Gameplay::Physics::RigidBody::Sptr _body;
 
 

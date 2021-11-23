@@ -241,7 +241,7 @@ void SpawnObj(MeshResource::Sptr Mesh, Material::Sptr Material, std::string ObjN
 		Startplatform->SetRotation(rot);
 		Startplatform->SetScale(scale);
 
-		Startplatform->Add<LevelMover>();
+		//Startplatform->Add<LevelMover>();
 
 		// Create and attach a renderer for the monkey
 		RenderComponent::Sptr renderer = Startplatform->Add<RenderComponent>();
@@ -292,7 +292,7 @@ void SpawnStartPlat(MeshResource::Sptr Mesh, Material::Sptr Material, std::strin
 		Startplatform->SetRotation(rot);
 		Startplatform->SetScale(scale);
 
-		Startplatform->Add<LevelMover>();
+	//	Startplatform->Add<LevelMover>();
 
 		// Create and attach a renderer for the Object
 		RenderComponent::Sptr renderer = Startplatform->Add<RenderComponent>();
@@ -317,7 +317,7 @@ void SpawnGem(MeshResource::Sptr Mesh, Material::Sptr Material, std::string ObjN
 		Startplatform->SetScale(scale);
 
 		//Add Components
-		Startplatform->Add<LevelMover>();
+	//	Startplatform->Add<LevelMover>();
 		Startplatform->Add<RotatingBehaviour>();
 		
 		// Create and attach a renderer for the Object
@@ -348,7 +348,7 @@ void SpawnCollectable(MeshResource::Sptr Mesh, Material::Sptr Material, std::str
 		Startplatform->SetScale(scale);
 
 		//Add Components
-		Startplatform->Add<LevelMover>();
+	//	Startplatform->Add<LevelMover>();
 		Startplatform->Add<VinylAnim>();
 		Startplatform->Add<RotatingBehaviour>();
 
@@ -402,7 +402,7 @@ void SpawnBuilding(MeshResource::Sptr Mesh, Material::Sptr Material, std::string
 		Building->SetRotation(rot);
 		Building->SetScale(scale);
 
-		Building->Add<LevelMover>();
+		//Building->Add<LevelMover>();
 
 		// Create and attach a renderer for the Object
 		RenderComponent::Sptr renderer = Building->Add<RenderComponent>();
@@ -818,7 +818,7 @@ void CreateScene() {
 			TriggerVolume::Sptr volume = character->Add<TriggerVolume>();
 			volume->SetFlags(TriggerTypeFlags::Statics | TriggerTypeFlags::Kinematics);
 
-			BoxCollider::Sptr collider = BoxCollider::Create(glm::vec3(0.5f, 0.5f, 0.5f));
+			BoxCollider::Sptr collider = BoxCollider::Create(glm::vec3(0.3f, 0.3f, 0.3f));
 			collider->SetPosition(glm::vec3(0.f, 0.25f, 0.f));
 			volume->AddCollider(collider);
 		}
