@@ -54,8 +54,6 @@ void CharacterController::OnTriggerVolumeEntered(const std::shared_ptr<Gameplay:
     _canJump =false;
 }
 void CharacterController::Update(float deltaTime) {
-    LOG_INFO( _canJump);
-    LOG_INFO(_platform);
     bool _A = glfwGetKey(GetGameObject()->GetScene()->Window, GLFW_KEY_A);
     bool _D = glfwGetKey(GetGameObject()->GetScene()->Window, GLFW_KEY_D);
     bool _W = glfwGetKey(GetGameObject()->GetScene()->Window, GLFW_KEY_SPACE);
@@ -71,9 +69,6 @@ void CharacterController::Update(float deltaTime) {
         GetGameObject()->SetPostion(GetGameObject()->GetPosition() + glm::vec3(0.05f, 0.0f, 0.0f));
     }
     if ((_W) && (_canJump == true)) {
-        LOG_INFO("force applied");
-       //_body->SetLinearVelocity(_body->GetLinearVelocity() );
-       //_body->ApplyImpulse(_impulse);
         _body->SetLinearVelocity(glm::vec3(_body->GetLinearVelocity().x, _body->GetLinearVelocity().y,_impulse.z));
         _canJump = false;
     }
