@@ -70,15 +70,15 @@ void CharacterController::Update(float deltaTime) {
     if (_D) {
         GetGameObject()->SetPostion(GetGameObject()->GetPosition() + glm::vec3(0.05f, 0.0f, 0.0f));
     }
-    //_body->GetLinearVelocity().y    - glm::vec3( 0.0f,0.0f,0.0f)
     if ((_W) && (_canJump == true)) {
         LOG_INFO("force applied");
-        _body->SetLinearVelocity(_body->GetLinearVelocity() );
-        _body->ApplyImpulse(_impulse);
+       //_body->SetLinearVelocity(_body->GetLinearVelocity() );
+       //_body->ApplyImpulse(_impulse);
+        _body->SetLinearVelocity(glm::vec3(_body->GetLinearVelocity().x, _body->GetLinearVelocity().y,_impulse.z));
         _canJump = false;
     }
     
-    
+    //- glm::vec3( 0.0f,_body->GetLinearVelocity().y,0.0f)
     
 
     if (GetGameObject()->GetPosition().z <= -14.5f)
