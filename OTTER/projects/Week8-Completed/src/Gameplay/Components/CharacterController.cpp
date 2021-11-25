@@ -50,8 +50,10 @@ void CharacterController::OnTriggerVolumeEntered(const std::shared_ptr<Gameplay:
 }
  void CharacterController::OnTriggerVolumeLeaving(const std::shared_ptr<Gameplay::Physics::RigidBody>& body) {
     LOG_INFO("Body has left our trigger volume: {}", body->GetGameObject()->Name);
-    _platform = "";
-    _canJump =false;
+    if (body->GetGameObject()->Name != "BeatGem") {
+        _platform = "";
+        _canJump = false;
+    }
 }
 void CharacterController::Update(float deltaTime) {
     bool _A = glfwGetKey(GetGameObject()->GetScene()->Window, GLFW_KEY_A);
