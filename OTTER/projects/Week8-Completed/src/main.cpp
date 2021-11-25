@@ -325,10 +325,14 @@ void SpawnGem(MeshResource::Sptr Mesh, Material::Sptr Material, std::string ObjN
 		renderer->SetMesh(Mesh);
 		renderer->SetMaterial(Material);
 
+		TriggerVolume::Sptr volume = Startplatform->Add<TriggerVolume>();
+		volume->SetFlags(TriggerTypeFlags::Statics | TriggerTypeFlags::Kinematics);
+
+
 		// Add a dynamic rigid body to this object
-		RigidBody::Sptr physics = Startplatform->Add<RigidBody>(RigidBodyType::Kinematic);
-		// For Gem Colliders X = left/right Y = Up/Down Z = Towards/Away
-		physics->AddCollider(BoxCollider::Create(glm::vec3(0.5f, 0.3f, 0.5f)));
+	//RigidBody::Sptr physics = Startplatform->Add<RigidBody>(RigidBodyType::Kinematic);
+	//// For Gem Colliders X = left/right Y = Up/Down Z = Towards/Away
+	//physics->AddCollider(BoxCollider::Create(glm::vec3(0.5f, 0.3f, 0.5f)));
 
 		// FIX THIS //
 		//ICollider::Sptr Box1 = physics->AddCollider(BoxCollider::Create(glm::vec3(1.0f, 1.0f, 1.0f)));

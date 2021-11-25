@@ -58,7 +58,7 @@ void CharacterController::Update(float deltaTime) {
     bool _D = glfwGetKey(GetGameObject()->GetScene()->Window, GLFW_KEY_D);
     bool _W = glfwGetKey(GetGameObject()->GetScene()->Window, GLFW_KEY_SPACE);
     
-
+    LOG_INFO(_canJump);
 
     glm::vec3 CurrentPosition = GetGameObject()->GetPosition();
 
