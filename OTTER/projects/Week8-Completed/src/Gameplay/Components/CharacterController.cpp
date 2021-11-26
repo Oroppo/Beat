@@ -61,14 +61,19 @@ void CharacterController::Update(float deltaTime) {
     bool _W = glfwGetKey(GetGameObject()->GetScene()->Window, GLFW_KEY_SPACE);
     
     LOG_INFO(_canJump);
-
+    if ((_platform == "Wall Jump 1")|| (_platform == "Wall Jump 2")) {
+        LOG_INFO("wall");
+        if (_body->GetLinearVelocity().z < 0) {
+            _body->ApplyForce(glm::vec3(0.0f, 0.0f, 20.0f));
+        }
+    }
     glm::vec3 CurrentPosition = GetGameObject()->GetPosition();
 
     if (_A) {
-        GetGameObject()->SetPostion(GetGameObject()->GetPosition() + glm::vec3(-0.05f, 0.0f, 0.0f));
+        _body->SetLinearVelocity(glm::vec3(-3.0f, _body->GetLinearVelocity().y, _body->GetLinearVelocity().z));
     }
     if (_D) {
-        GetGameObject()->SetPostion(GetGameObject()->GetPosition() + glm::vec3(0.05f, 0.0f, 0.0f));
+        _body->SetLinearVelocity(glm::vec3(3.0f,_body->GetLinearVelocity().y, _body->GetLinearVelocity().z));
     }
     if ((_W) && (_canJump == true)) {
         _body->SetLinearVelocity(glm::vec3(_body->GetLinearVelocity().x, _body->GetLinearVelocity().y,_impulse.z));
