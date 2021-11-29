@@ -89,6 +89,7 @@
 #include "Fmod.h"
 #include "FMOD/ToneFire.h"
 
+
 //#define LOG_GL_NOTIFICATIONS
 
 /*
@@ -293,7 +294,7 @@ void SpawnStartPlat(MeshResource::Sptr Mesh, Material::Sptr Material, std::strin
 		Startplatform->SetRotation(rot);
 		Startplatform->SetScale(scale);
 
-	//	Startplatform->Add<LevelMover>();
+		//Startplatform->Add<LevelMover>();
 
 		// Create and attach a renderer for the Object
 		RenderComponent::Sptr renderer = Startplatform->Add<RenderComponent>();
@@ -318,7 +319,7 @@ void SpawnGem(MeshResource::Sptr Mesh, Material::Sptr Material, std::string ObjN
 		Startplatform->SetScale(scale);
 
 		//Add Components
-	//	Startplatform->Add<LevelMover>();
+		//Startplatform->Add<LevelMover>();
 		Startplatform->Add<RotatingBehaviour>();
 		
 		// Create and attach a renderer for the Object
@@ -352,10 +353,10 @@ void SpawnCollectable(MeshResource::Sptr Mesh, Material::Sptr Material, std::str
 		Startplatform->SetScale(scale);
 
 		//Add Components
-	//	Startplatform->Add<LevelMover>();
+		Startplatform->Add<LevelMover>();
 		Startplatform->Add<VinylAnim>();
 		Startplatform->Add<RotatingBehaviour>();
-
+		
 		// Create and attach a renderer for the Object
 		RenderComponent::Sptr renderer = Startplatform->Add<RenderComponent>();
 		renderer->SetMesh(Mesh);
@@ -392,10 +393,10 @@ void SpawnCD(MeshResource::Sptr Mesh, Material::Sptr Material, std::string ObjNa
 		renderer->SetMaterial(Material);
 
 		// Add a dynamic rigid body to this object
-		RigidBody::Sptr physics = Startplatform->Add<RigidBody>(RigidBodyType::Kinematic);
+		//RigidBody::Sptr physics = Startplatform->Add<RigidBody>(RigidBodyType::Kinematic);
 		// For Colliders X is towards Cam, Y is up/down , Z is Left and Right
-		ICollider::Sptr CollectCollider = physics->AddCollider(BoxCollider::Create(glm::vec3(0.5f, 0.5f, 0.5f)));
-		CollectCollider->SetPosition(glm::vec3(0.0f, 0.5f, 0.0f));
+		//ICollider::Sptr CollectCollider = physics->AddCollider(BoxCollider::Create(glm::vec3(0.5f, 0.5f, 0.5f)));
+		//CollectCollider->SetPosition(glm::vec3(0.0f, 0.5f, 0.0f));
 
 	}
 }
@@ -599,6 +600,8 @@ void CreateScene() {
 		MeshResource::Sptr DiscoBallMesh = ResourceManager::CreateAsset<MeshResource>("DiscoBallPlaceholder.obj");
 		MeshResource::Sptr StartPlatform = ResourceManager::CreateAsset<MeshResource>("StartPlatformV6.obj");
 		MeshResource::Sptr Car1Mesh = ResourceManager::CreateAsset<MeshResource>("FutureCar1.obj");
+		MeshResource::Sptr SemiTruckMesh = ResourceManager::CreateAsset<MeshResource>("Semitruck.obj");
+		MeshResource::Sptr PickupTruckMesh = ResourceManager::CreateAsset<MeshResource>("FuturePickup.obj");
 		MeshResource::Sptr SmallWallJump = ResourceManager::CreateAsset<MeshResource>("SmallWallJump.obj");
 		MeshResource::Sptr UIPlane = ResourceManager::CreateAsset<MeshResource>("UICanvas.obj");
 
@@ -614,6 +617,8 @@ void CreateScene() {
 		Texture2D::Sptr SmallWallJumpTex = ResourceManager::CreateAsset<Texture2D>("textures/SmallWallJumpTexBlue.png");
 		Texture2D::Sptr WallJumpTex = ResourceManager::CreateAsset<Texture2D>("textures/WallJumpTex.png");
 		Texture2D::Sptr Car1Tex = ResourceManager::CreateAsset<Texture2D>("textures/FutureCarTex.png");
+		Texture2D::Sptr SemiTruckTex = ResourceManager::CreateAsset<Texture2D>("textures/SemiTruckTex.png");
+		Texture2D::Sptr PickupTruckTex = ResourceManager::CreateAsset<Texture2D>("textures/PickupTruckTex.png");
 		Texture2D::Sptr BuildingTex = ResourceManager::CreateAsset<Texture2D>("textures/Building.png");
 
 		Texture2D::Sptr UITex = ResourceManager::CreateAsset<Texture2D>("textures/UI.png");
@@ -717,6 +722,20 @@ void CreateScene() {
 			Car1Material->Set("u_Material.Shininess", 0.1f);
 		}
 
+		Material::Sptr SemiTruckMaterial = ResourceManager::CreateAsset<Material>(basicShader);
+		{
+			SemiTruckMaterial->Name = "Semi1";
+			SemiTruckMaterial->Set("u_Material.Diffuse", SemiTruckTex);
+			SemiTruckMaterial->Set("u_Material.Shininess", 0.1f);
+		}
+
+		Material::Sptr PickupTruckMaterial = ResourceManager::CreateAsset<Material>(basicShader);
+		{
+			PickupTruckMaterial->Name = "Pickup1";
+			PickupTruckMaterial->Set("u_Material.Diffuse", PickupTruckTex);
+			PickupTruckMaterial->Set("u_Material.Shininess", 0.1f);
+		}
+
 		Material::Sptr BuildingMaterial = ResourceManager::CreateAsset<Material>(basicShader);
 		{
 			BuildingMaterial->Name = "Building";
@@ -778,9 +797,15 @@ void CreateScene() {
 			// 
 		//Game Objects
 		// Tutorial
-		/*
+		
+		// Background and forground vehicles
+		SpawnBackGroundCar(Car1Mesh, Car1Material, "Car1", glm::vec3(14.870f, 7.80f, 2.7f), glm::vec3(90.0f, 0.0f, -90.0f), glm::vec3(0.250f, 0.250f, 0.250f));
+		SpawnBackGroundCar(SemiTruckMesh, SemiTruckMaterial, "Semi1", glm::vec3(28.870f, 7.80f, 2.7f), glm::vec3(90.0f, 0.0f, -90.0f), glm::vec3(0.250f, 0.250f, 0.250f));
+		SpawnForeGroundCar(Car1Mesh, Car1Material, "Car2", glm::vec3(-9.970f, 0.470f, -1.90f), glm::vec3(90.0f, 0.0f, 90.0f), glm::vec3(0.250f, 0.250f, 0.250f));
+		SpawnForeGroundCar(PickupTruckMesh, PickupTruckMaterial, "Pickup1", glm::vec3(-18.970f, 0.470f, -1.90f), glm::vec3(90.0f, 0.0f, 90.0f), glm::vec3(0.250f, 0.250f, 0.250f));
+
 		//Make a component that 
-		SpawnStartPlat(StartPlatform, StartPlatformMaterial, "StartPlatform", glm::vec3(-9.820f, 5.610f, -4.450), glm::vec3(90.0f, 0.0f, 0.0f), glm::vec3(0.350f, 0.350f, 0.350f));
+		/*SpawnStartPlat(StartPlatform, StartPlatformMaterial, "StartPlatform", glm::vec3(-9.820f, 5.610f, -4.450), glm::vec3(90.0f, 0.0f, 0.0f), glm::vec3(0.350f, 0.350f, 0.350f));
 		SpawnObj(SmallPlatform, SmallPlatformMaterial, "Small Platform 1", glm::vec3(-6.070f, 5.610f, -4.150f), parent, glm::vec3(180.0f, 0.0f, 180.0f), glm::vec3(0.350f, 0.350f, 0.350f));
 		SpawnObj(SmallPlatform, SmallPlatformMaterial, "Small Platform 2", glm::vec3(-3.320f, 5.610f, -2.200f), parent, glm::vec3(180.0f, 0.0f, 180.0f), glm::vec3(0.350f, 0.350f, 0.350f));
 		SpawnObj(SmallPlatform, SmallPlatformMaterial, "Small Platform 3", glm::vec3(-0.400f, 5.610f, -4.040f), parent, glm::vec3(180.0f, 0.0f, 180.0f), glm::vec3(0.350f, 0.350f, 0.350f));
@@ -793,11 +818,12 @@ void CreateScene() {
 		//SpawnObj(TutorialSign, TutorialSignMaterial, "Tutorial Sign 2", glm::vec3(-0.390f, 5.690f, -3.440f), glm::vec3(90.0f, 0.0f, 90.0f), glm::vec3(0.310f, 0.310f, 0.310f));
 		SpawnStartPlat(StartPlatform, StartPlatformMaterial, "EndPlatform", glm::vec3(6.360f, 5.610f, -4.920f), glm::vec3(90.0f, 0.0f, 0.0f), glm::vec3(0.350f, 0.350f, 0.350f));
 		SpawnBackGroundCar(Car1Mesh, Car1Material, "Car1", glm::vec3(14.870f, 9.80f, 2.7f), glm::vec3(90.0f, 0.0f, -90.0f), glm::vec3(0.250f, 0.250f, 0.250f));
-		SpawnForeGroundCar(Car1Mesh, Car1Material, "Car2", glm::vec3(-9.970f, 0.470f, -4.0f), glm::vec3(90.0f, 0.0f, 90.0f), glm::vec3(0.250f, 0.250f, 0.250f));
+		SpawnBackGroundCar(SemiTruckMesh, SemiTruckMaterial, "Semi1", glm::vec3(28.870f, 9.80f, 2.7f), glm::vec3(90.0f, 0.0f, -90.0f), glm::vec3(0.250f, 0.250f, 0.250f));
+		SpawnForeGroundCar(Car1Mesh, Car1Material, "Car2", glm::vec3(-9.970f, 0.470f, -1.90f), glm::vec3(90.0f, 0.0f, 90.0f), glm::vec3(0.250f, 0.250f, 0.250f));
+		SpawnForeGroundCar(PickupTruckMesh, PickupTruckMaterial, "Pickup1", glm::vec3(-18.970f, 0.470f, -1.90f), glm::vec3(90.0f, 0.0f, 90.0f), glm::vec3(0.250f, 0.250f, 0.250f));
 		*/
 
 		// 1st Block
-		
 		SpawnStartPlat(StartPlatform, StartPlatformMaterial, "StartPlatform Block1", glm::vec3(-9.820f, 5.610f, -4.450), glm::vec3(90.0f, 0.0f, 0.0f), glm::vec3(0.350f, 0.350f, 0.350f));
 		SpawnObj(SmallPlatform, SmallPlatformMaterial, "Small Platform Block1 1", glm::vec3(-6.070f, 5.610f, -4.150f), parent, glm::vec3(180.0f, 0.0f, 180.0f), glm::vec3(0.350f, 0.350f, 0.350f));
 		SpawnObj(SmallPlatform, SmallPlatformMaterial, "Small Platform Block1 2", glm::vec3(-2.840f, 5.610f, -4.150f), parent, glm::vec3(180.0f, 0.0f, 180.0f), glm::vec3(0.350f, 0.350f, 0.350f));
@@ -811,7 +837,7 @@ void CreateScene() {
 		SpawnCD(CD, CDMaterial, "CD Block1 2", glm::vec3(-2.710f, 5.610f, -3.190f), glm::vec3(90.000f, 0.0f, 90.000f), glm::vec3(1.000f, 1.000f, 1.000f));
 		SpawnCD(CD, CDMaterial, "CD Block1 3", glm::vec3(0.170f, 5.610f, -2.380f), glm::vec3(90.000f, 0.0f, 90.000f), glm::vec3(1.000f, 1.000f, 1.000f));
 		SpawnCD(CD, CDMaterial, "CD Block1 4", glm::vec3(2.640f, 5.610f, -0.770f), glm::vec3(90.000f, 0.0f, 90.000f), glm::vec3(1.000f, 1.000f, 1.000f));
-
+		
 		
 		// 2nd Block
 		/*
@@ -1102,7 +1128,6 @@ int main() {
 	test.PlayEvent("event:/Music");
 	test.SetEventParameter("event:/Music", "Volume", 0.5f);
 	
-
 	///// Game loop /////
 	while (!glfwWindowShouldClose(window)) {
 		glfwPollEvents();
