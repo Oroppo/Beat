@@ -73,6 +73,7 @@
 #include "Gameplay/Components/BackgroundMover.h"
 #include "Gameplay/Components/VinylAnim.h"
 #include "Gameplay/Components/ForeGroundMover.h"
+#include "Gameplay/Components/SeekBehaviour.h"
 
 // Physics
 #include "Gameplay/Physics/RigidBody.h"
@@ -595,6 +596,7 @@ void CreateScene() {
 		MeshResource::Sptr TutorialSign = ResourceManager::CreateAsset<MeshResource>("TutorialSign.obj");
 		MeshResource::Sptr Building = ResourceManager::CreateAsset<MeshResource>("Building.obj");
 		MeshResource::Sptr CharacterMesh = ResourceManager::CreateAsset<MeshResource>("dudeCharacter.obj");
+		MeshResource::Sptr DiscoBallMesh = ResourceManager::CreateAsset<MeshResource>("DiscoBallPlaceholder.obj");
 		MeshResource::Sptr StartPlatform = ResourceManager::CreateAsset<MeshResource>("StartPlatformV6.obj");
 		MeshResource::Sptr Car1Mesh = ResourceManager::CreateAsset<MeshResource>("FutureCar1.obj");
 		MeshResource::Sptr SmallWallJump = ResourceManager::CreateAsset<MeshResource>("SmallWallJump.obj");
@@ -928,7 +930,6 @@ void CreateScene() {
 			physics->AddCollider(ConvexMeshCollider::Create());
 			// world grav changed in scene.cpp
 
-			
 			TriggerVolume::Sptr volume = character->Add<TriggerVolume>();
 			volume->SetFlags(TriggerTypeFlags::Statics | TriggerTypeFlags::Kinematics);
 
@@ -937,7 +938,20 @@ void CreateScene() {
 			volume->AddCollider(collider);
 		}
 
+		GameObject::Sptr DiscoBall = scene->CreateGameObject("DiscoBall"); 
+		{
+			DiscoBall->SetPostion(glm::vec3(-10.270f, 5.710f, -1.0f));
+			DiscoBall->SetRotation(glm::vec3(90.0f, 0.0f, 90.0f));
 
+			RenderComponent::Sptr renderer = DiscoBall->Add<RenderComponent>();
+			renderer->SetMesh(DiscoBallMesh);
+			renderer->SetMaterial(CharacterMaterial);
+
+		SeekBehaviour::Sptr seeking = DiscoBall->Add<SeekBehaviour>();
+		seeking->seekTo(character);
+
+		RigidBody::Sptr ballphysics = DiscoBall->Add<RigidBody>(RigidBodyType::Kinematic);
+		}
 		// Call scene awake to start up all of our components
 		scene->Window = window;
 		scene->Awake();
@@ -993,6 +1007,7 @@ int main() {
 	ComponentManager::RegisterType<TriggerVolume>();
 	ComponentManager::RegisterType<MoveThings>();
 	//ComponentManager::RegisterType<MouseController>();
+	ComponentManager::RegisterType<SeekBehaviour>();
 	ComponentManager::RegisterType<RotatingBehaviour>();
 	ComponentManager::RegisterType<RotatingBehaviourCD>();
 	ComponentManager::RegisterType<CharacterController>();

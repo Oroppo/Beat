@@ -62,7 +62,6 @@ void CharacterController::Update(float deltaTime) {
     
     LOG_INFO(_canJump);
     if ((_platform == "Wall Jump 1")|| (_platform == "Wall Jump 2")) {
-        LOG_INFO("wall");
         if (_body->GetLinearVelocity().z < 0) {
             _body->ApplyForce(glm::vec3(0.0f, 0.0f, 20.0f));
         }
@@ -79,7 +78,10 @@ void CharacterController::Update(float deltaTime) {
         _body->SetLinearVelocity(glm::vec3(_body->GetLinearVelocity().x, _body->GetLinearVelocity().y,_impulse.z));
         _canJump = false;
     }
-    
+    if ((!_A) && (!_D) && (!_W) && (_platform != "") && (_platform != "BeatGem")) {
+        _body->SetLinearVelocity(glm::vec3(0.0f, 0.0f, 0.0f));
+    }
+ 
     //- glm::vec3( 0.0f,_body->GetLinearVelocity().y,0.0f)
     
 
