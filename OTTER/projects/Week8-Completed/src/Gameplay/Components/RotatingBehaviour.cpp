@@ -24,3 +24,26 @@ RotatingBehaviour::Sptr RotatingBehaviour::FromJson(const nlohmann::json& data) 
 	result->RotationSpeed = ParseJsonVec3(data["speed"]);
 	return result;
 }
+
+// ROTATION BEHAVIOURS FOR THE CDs
+
+void RotatingBehaviourCD::Update(float deltaTime) {
+	GetGameObject()->SetRotation(GetGameObject()->GetRotationEuler() + RotationCDSpeed * deltaTime);
+}
+
+void RotatingBehaviourCD::RenderImGui() {
+	LABEL_LEFT2(ImGui::DragFloat3, "Speed", &RotationCDSpeed.x);
+}
+
+nlohmann::json RotatingBehaviourCD::ToJson() const {
+	return {
+		{ "speed", GlmToJson(RotationCDSpeed) }
+	};
+}
+
+RotatingBehaviourCD::Sptr RotatingBehaviourCD::FromJson(const nlohmann::json& data) {
+	RotatingBehaviourCD::Sptr result = std::make_shared<RotatingBehaviourCD>();
+	result->RotationCDSpeed = ParseJsonVec3(data["speed"]);
+	return result;
+}
+

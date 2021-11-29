@@ -48,3 +48,4 @@ protected:
 // Allows for an ImGui command to have a left aligned label instead of right aligned
 // EX: LABEL_LEFT(ImGui::DragFloat3, "Label", &value);
 #define LABEL_LEFT(func, label, ...) (ImGui::TextUnformatted(label), ImGui::SameLine(), func("##" label, __VA_ARGS__))
+#define LABEL_LEFT2(func, label, ...) (ImGui::TextUnformatted(label), ImGui::SameLine(), func("##" label, __VA_ARGS__))
