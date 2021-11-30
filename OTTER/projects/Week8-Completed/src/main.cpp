@@ -540,6 +540,31 @@ void SpawnForeGroundCar(MeshResource::Sptr Mesh, Material::Sptr Material, std::s
 	}
 }
 
+void SpawnBackGroundBuilding(MeshResource::Sptr Mesh, Material::Sptr Material, std::string ObjName = "DeezNuts", glm::vec3 pos = glm::vec3(0.0f, 0.0f, 0.0f),
+	glm::vec3 rot = glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3 scale = glm::vec3(1.0f, 1.0f, 1.0f)) {
+
+	GameObject::Sptr KBuilding = scene->CreateGameObject(ObjName);
+	{
+		// Set position in the scene
+		KBuilding->SetPostion(pos);
+		KBuilding->SetRotation(rot);
+		KBuilding->SetScale(scale);
+
+		//Add Components
+		// Background mover ment for cars
+		KBuilding->Add<BackgroundBuildingMover>();
+
+		// Create and attach a renderer for the Object
+		RenderComponent::Sptr renderer = KBuilding->Add<RenderComponent>();
+		renderer->SetMesh(Mesh);
+		renderer->SetMaterial(Material);
+
+		// Is background Object and therefore has no colliders
+		// Add a dynamic rigid body to this object
+		RigidBody::Sptr physics = KBuilding->Add<RigidBody>(RigidBodyType::Kinematic);
+	}
+}
+
 
 void CreateScene() {
 	bool loadScene = false;
@@ -596,6 +621,7 @@ void CreateScene() {
 		MeshResource::Sptr CD = ResourceManager::CreateAsset<MeshResource>("CDwithUnwrap.obj");
 		MeshResource::Sptr TutorialSign = ResourceManager::CreateAsset<MeshResource>("TutorialSign.obj");
 		MeshResource::Sptr Building = ResourceManager::CreateAsset<MeshResource>("Building.obj");
+		MeshResource::Sptr KBuilding1Mesh = ResourceManager::CreateAsset<MeshResource>("KBuilding.obj");
 		MeshResource::Sptr CharacterMesh = ResourceManager::CreateAsset<MeshResource>("dudeCharacter.obj");
 		MeshResource::Sptr DiscoBallMesh = ResourceManager::CreateAsset<MeshResource>("DiscoBall2.obj");
 		MeshResource::Sptr StartPlatform = ResourceManager::CreateAsset<MeshResource>("StartPlatformV6.obj");
@@ -620,6 +646,7 @@ void CreateScene() {
 		Texture2D::Sptr SemiTruckTex = ResourceManager::CreateAsset<Texture2D>("textures/SemiTruckTex.png");
 		Texture2D::Sptr PickupTruckTex = ResourceManager::CreateAsset<Texture2D>("textures/PickupTruckTex.png");
 		Texture2D::Sptr BuildingTex = ResourceManager::CreateAsset<Texture2D>("textures/Building.png");
+		Texture2D::Sptr KBuilding1Tex = ResourceManager::CreateAsset<Texture2D>("textures/KBuildingTex.png");
 		Texture2D::Sptr DiscoBallTex = ResourceManager::CreateAsset<Texture2D>("textures/DiscoBallTexV2.png");
 
 		Texture2D::Sptr UITex = ResourceManager::CreateAsset<Texture2D>("textures/UI.png");
@@ -751,6 +778,13 @@ void CreateScene() {
 			BuildingMaterial->Set("u_Material.Shininess", 0.1f);
 		}
 
+		Material::Sptr KBuildingMaterial = ResourceManager::CreateAsset<Material>(basicShader);
+		{
+			KBuildingMaterial->Name = "KBuilding";
+			KBuildingMaterial->Set("u_Material.Diffuse", KBuilding1Tex);
+			KBuildingMaterial->Set("u_Material.Shininess", 0.1f);
+		}
+
 		Material::Sptr SmallWallJumpMaterial = ResourceManager::CreateAsset<Material>(basicShader);
 		{
 			SmallWallJumpMaterial->Name = "Small Wall Jump";
@@ -811,6 +845,7 @@ void CreateScene() {
 		SpawnBackGroundCar(SemiTruckMesh, SemiTruckMaterial, "Semi1", glm::vec3(28.870f, 7.80f, 2.7f), glm::vec3(90.0f, 0.0f, -90.0f), glm::vec3(0.250f, 0.250f, 0.250f));
 		SpawnForeGroundCar(Car1Mesh, Car1Material, "Car2", glm::vec3(-9.970f, 0.470f, -1.90f), glm::vec3(90.0f, 0.0f, 90.0f), glm::vec3(0.250f, 0.250f, 0.250f));
 		SpawnForeGroundCar(PickupTruckMesh, PickupTruckMaterial, "Pickup1", glm::vec3(-18.970f, 0.470f, -1.90f), glm::vec3(90.0f, 0.0f, 90.0f), glm::vec3(0.250f, 0.250f, 0.250f));
+		SpawnBackGroundBuilding(KBuilding1Mesh, KBuildingMaterial, "KBuilding1", glm::vec3(0.0f, 21.880f, -36.040f), glm::vec3(90.0f, 0.0f, 0.0f), glm::vec3(0.780f, 1.470f, 1.0f));
 
 		//Make a component that 
 		/*SpawnStartPlat(StartPlatform, StartPlatformMaterial, "StartPlatform", glm::vec3(-9.820f, 5.610f, -4.450), glm::vec3(90.0f, 0.0f, 0.0f), glm::vec3(0.350f, 0.350f, 0.350f));
@@ -1063,6 +1098,7 @@ int main() {
 	ComponentManager::RegisterType<MaterialSwapBehaviour>();
 	ComponentManager::RegisterType<LevelMover>();
 	ComponentManager::RegisterType<BackgroundMover>();
+	ComponentManager::RegisterType<BackgroundBuildingMover>();
 	ComponentManager::RegisterType<VinylAnim>();
 	ComponentManager::RegisterType<ForeGroundMover>();
 

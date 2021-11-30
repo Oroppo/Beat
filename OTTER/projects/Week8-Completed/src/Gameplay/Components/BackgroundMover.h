@@ -34,3 +34,31 @@ protected:
 	Gameplay::Physics::RigidBody::Sptr _body;
 
 };
+
+class BackgroundBuildingMover : public Gameplay::IComponent {
+public:
+	typedef std::shared_ptr<BackgroundBuildingMover> Sptr;
+
+	BackgroundBuildingMover();
+	virtual ~BackgroundBuildingMover();
+
+	virtual void Awake() override;
+	virtual void Update(float deltaTime) override;
+
+
+public:
+	virtual void RenderImGui() override;
+	MAKE_TYPENAME(BackgroundBuildingMover);
+	virtual nlohmann::json ToJson() const override;
+	static BackgroundBuildingMover::Sptr FromJson(const nlohmann::json& blob);
+
+
+
+protected:
+	float BuildObjY;
+	float BuildObjZ;
+	float BuildObjX;
+
+	Gameplay::Physics::RigidBody::Sptr _body;
+
+};

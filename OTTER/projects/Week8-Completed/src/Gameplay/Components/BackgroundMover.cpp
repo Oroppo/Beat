@@ -44,17 +44,6 @@ void BackgroundMover::Update(float deltaTime)
     // Object with behavior attached Y and Z position
     ObjY = GetGameObject()->GetPosition().y;
     ObjZ = GetGameObject()->GetPosition().z;
-    // to move from Left to Right
-   /* if (GetGameObject()->Name != "Car1")
-    {
-        FObjPosX = FObjPosX - 4.5 * deltaTime;
-        GetGameObject()->SetPostion(glm::vec3(FObjPosX, ObjY, ObjZ));
-    }*/
-  /*  if (GetGameObject()->GetPosition().y >= 10.0f);
-    {
-       BObjPosX = BObjPosX - 15.0 * deltaTime;
-       GetGameObject()->SetPostion(glm::vec3(BObjPosX, ObjY, ObjZ));
-    }*/
 
     BObjPosX = BObjPosX - 15.0 * deltaTime;
     GetGameObject()->SetPostion(glm::vec3(BObjPosX, ObjY, ObjZ));
@@ -62,5 +51,58 @@ void BackgroundMover::Update(float deltaTime)
     if (GetGameObject()->GetPosition().x <= -20.0f)
     {
         GetGameObject()->SetPostion(glm::vec3(glm::vec3(14.870f, 7.80f, 2.7f)));
+    }
+}
+
+
+// Only for Moving Buildings
+
+void BackgroundBuildingMover::Awake()
+{
+    _body = GetComponent<Gameplay::Physics::RigidBody>();
+    if (_body == nullptr) {
+        IsEnabled = false;
+    }
+
+}
+
+void BackgroundBuildingMover::RenderImGui() {
+
+}
+
+nlohmann::json BackgroundBuildingMover::ToJson() const {
+    return {
+    };
+}
+// Constructor Initializes Values for LERP and Set Position but Only SetPosition is being used atm
+BackgroundBuildingMover::BackgroundBuildingMover() :
+    IComponent(),
+    BuildObjY(0.0f),
+    BuildObjZ(0.0f),
+    BuildObjX(0.0f)
+{ }
+
+BackgroundBuildingMover::~BackgroundBuildingMover() = default;
+
+BackgroundBuildingMover::Sptr BackgroundBuildingMover::FromJson(const nlohmann::json & blob) {
+    BackgroundBuildingMover::Sptr result = std::make_shared<BackgroundBuildingMover>();
+    return result;
+}
+
+void BackgroundBuildingMover::Update(float deltaTime)
+{
+    // object with behavior attached X position
+    float BuildObjPosX = GetGameObject()->GetPosition().x;
+
+    // Object with behavior attached Y and Z position
+    BuildObjY = GetGameObject()->GetPosition().y;
+    BuildObjZ = GetGameObject()->GetPosition().z;
+
+    BuildObjPosX = BuildObjPosX - 5.0 * deltaTime;
+    GetGameObject()->SetPostion(glm::vec3(BuildObjPosX, BuildObjY, BuildObjZ));
+
+    if (GetGameObject()->GetPosition().x <= -50.0f)
+    {
+        GetGameObject()->SetPostion(glm::vec3(glm::vec3(40.870f, 21.880f, -36.040f)));
     }
 }
