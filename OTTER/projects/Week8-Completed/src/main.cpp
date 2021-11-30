@@ -597,7 +597,7 @@ void CreateScene() {
 		MeshResource::Sptr TutorialSign = ResourceManager::CreateAsset<MeshResource>("TutorialSign.obj");
 		MeshResource::Sptr Building = ResourceManager::CreateAsset<MeshResource>("Building.obj");
 		MeshResource::Sptr CharacterMesh = ResourceManager::CreateAsset<MeshResource>("dudeCharacter.obj");
-		MeshResource::Sptr DiscoBallMesh = ResourceManager::CreateAsset<MeshResource>("DiscoBallPlaceholder.obj");
+		MeshResource::Sptr DiscoBallMesh = ResourceManager::CreateAsset<MeshResource>("DiscoBall2.obj");
 		MeshResource::Sptr StartPlatform = ResourceManager::CreateAsset<MeshResource>("StartPlatformV6.obj");
 		MeshResource::Sptr Car1Mesh = ResourceManager::CreateAsset<MeshResource>("FutureCar1.obj");
 		MeshResource::Sptr SemiTruckMesh = ResourceManager::CreateAsset<MeshResource>("Semitruck.obj");
@@ -620,6 +620,7 @@ void CreateScene() {
 		Texture2D::Sptr SemiTruckTex = ResourceManager::CreateAsset<Texture2D>("textures/SemiTruckTex.png");
 		Texture2D::Sptr PickupTruckTex = ResourceManager::CreateAsset<Texture2D>("textures/PickupTruckTex.png");
 		Texture2D::Sptr BuildingTex = ResourceManager::CreateAsset<Texture2D>("textures/Building.png");
+		Texture2D::Sptr DiscoBallTex = ResourceManager::CreateAsset<Texture2D>("textures/DiscoBallTexV2.png");
 
 		Texture2D::Sptr UITex = ResourceManager::CreateAsset<Texture2D>("textures/UI.png");
 
@@ -706,6 +707,13 @@ void CreateScene() {
 			CharacterMaterial->Name = "Character";
 			CharacterMaterial->Set("u_Material.Diffuse", CharacterTex);
 			CharacterMaterial->Set("u_Material.Shininess", 0.1f);
+		}
+
+		Material::Sptr DiscoBallMaterial = ResourceManager::CreateAsset<Material>(reflectiveShader);
+		{
+			DiscoBallMaterial->Name = "DiscoBall";
+			DiscoBallMaterial->Set("u_Material.Diffuse", DiscoBallTex);
+			DiscoBallMaterial->Set("u_Material.Shininess", -0.4f);
 		}
 
 		Material::Sptr LoseScreenMaterial = ResourceManager::CreateAsset<Material>(basicShader);
@@ -980,10 +988,11 @@ void CreateScene() {
 		{
 			DiscoBall->SetPostion(glm::vec3(-10.270f, 5.710f, -1.0f));
 			DiscoBall->SetRotation(glm::vec3(90.0f, 0.0f, 90.0f));
+			DiscoBall->SetScale(glm::vec3(0.2f, 0.2f, 0.2f));
 
 			RenderComponent::Sptr renderer = DiscoBall->Add<RenderComponent>();
 			renderer->SetMesh(DiscoBallMesh);
-			renderer->SetMaterial(CharacterMaterial);
+			renderer->SetMaterial(DiscoBallMaterial);
 
 		SeekBehaviour::Sptr seeking = DiscoBall->Add<SeekBehaviour>();
 		seeking->seekTo(character);
