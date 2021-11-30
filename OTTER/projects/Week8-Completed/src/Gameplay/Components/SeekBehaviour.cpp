@@ -7,7 +7,10 @@
 #include "Gameplay/Physics/RigidBody.h"
 void SeekBehaviour::Awake()
 {
-
+    _body = GetComponent<Gameplay::Physics::RigidBody>();
+    if (_body == nullptr) {
+        IsEnabled = false;
+    }
 }
 
 void SeekBehaviour::RenderImGui() {
@@ -34,7 +37,8 @@ SeekBehaviour::Sptr SeekBehaviour::FromJson(const nlohmann::json & blob) {
 
 void SeekBehaviour::Update(float deltaTime)
 {
-  //  _body->SetLinearVelocity(glm::vec3(1.0f, 0.0f, 0.0f));
+    glm::vec3 velocity = glm::vec3(1.0f, 1.0f, 1.0f);
+    _body->SetLinearVelocity(velocity);
     LOG_INFO("update works");
 }
 void SeekBehaviour::seekTo(Gameplay::GameObject::Sptr& object) {
