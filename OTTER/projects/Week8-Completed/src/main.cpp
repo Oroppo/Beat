@@ -628,7 +628,7 @@ void CreateScene() {
 		//leafTex->SetMagFilter(MagFilter::Nearest);
 
 		// Here we'll load in the cubemap, as well as a special shader to handle drawing the skybox
-		TextureCube::Sptr testCubemap = ResourceManager::CreateAsset<TextureCube>("cubemaps/space/cubemap.png");
+		TextureCube::Sptr testCubemap = ResourceManager::CreateAsset<TextureCube>("cubemaps/space/space.png");
 		Shader::Sptr      skyboxShader = ResourceManager::CreateAsset<Shader>(std::unordered_map<ShaderPartType, std::string>{
 			{ ShaderPartType::Vertex, "shaders/vertex_shaders/skybox_vert.glsl" },
 			{ ShaderPartType::Fragment, "shaders/fragment_shaders/skybox_frag.glsl" }
@@ -1137,8 +1137,8 @@ int main() {
 	ToneFire::StudioSound test;
 	test.LoadEvent("event:/Music");
 	test.SetEventPosition("event:/Music", FMOD_VECTOR{ -10.270f, 5.710f, -3.800f });
-	test.PlayEvent("event:/Music");
-	test.SetEventParameter("event:/Music", "Volume", 0.5f);
+	//test.PlayEvent("event:/Music");
+	//test.SetEventParameter("event:/Music", "Volume", 0.5f);
 	
 	///// Game loop /////
 	while (!glfwWindowShouldClose(window)) {
