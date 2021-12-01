@@ -333,7 +333,7 @@ void SpawnGem(MeshResource::Sptr Mesh, Material::Sptr Material, std::string ObjN
 		// Add a dynamic rigid body to this object
 	RigidBody::Sptr physics = Startplatform->Add<RigidBody>(RigidBodyType::Kinematic);
 	// For Gem Colliders X = left/right Y = Up/Down Z = Towards/Away
-	physics->AddCollider(BoxCollider::Create(glm::vec3(0.1f, 0.1f, 0.1f)));
+	physics->AddCollider(BoxCollider::Create(glm::vec3(0.5f, 0.5f, 0.5f)));
 
 		// FIX THIS //
 		//ICollider::Sptr Box1 = physics->AddCollider(BoxCollider::Create(glm::vec3(1.0f, 1.0f, 1.0f)));
@@ -986,7 +986,7 @@ void CreateScene() {
 		SpawnObj(SmallPlatform, SmallPlatformMaterial, "Small Platform Block8 3", glm::vec3(-0.290f, 5.610f, -6.090f), parent, glm::vec3(180.0f, 0.0f, 180.0f), glm::vec3(0.350f, 0.350f, 0.350f));
 		SpawnObj(SmallPlatform, SmallPlatformMaterial, "Small Platform Block8 4", glm::vec3(1.540f, 5.610f, -5.050f), parent, glm::vec3(180.0f, 0.0f, 180.0f), glm::vec3(0.350f, 0.350f, 0.350f));
 		SpawnObj(SmallPlatform, SmallPlatformMaterial, "Small Platform Block8 5", glm::vec3(3.250f, 5.610f, 1.410f), parent, glm::vec3(180.0f, 0.0f, 180.0f), glm::vec3(0.350f, 0.350f, 0.350f));
-		SpawnGem(BeatGem, BeatGemMaterial, "BeatGem Block8 1", glm::vec3(-2.310f, 5.610f, -4.550f), glm::vec3(90.0f, 0.0f, 180.0f), glm::vec3(0.500f, 0.500f, 0.500f));
+		SpawnGem(BeatGem, BeatGemMaterial, "BeatGem", glm::vec3(-2.310f, 5.610f, -4.550f), glm::vec3(90.0f, 0.0f, 180.0f), glm::vec3(0.500f, 0.500f, 0.500f));
 		SpawnStartPlat(StartPlatform, StartPlatformMaterial, "EndPlatform Block8", glm::vec3(6.840f, 5.610f, -4.920f), glm::vec3(90.0f, 0.0f, 0.0f), glm::vec3(0.350f, 0.350f, 0.350f));
 
 		// Player:

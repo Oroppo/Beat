@@ -46,7 +46,11 @@ void CharacterController::OnTriggerVolumeEntered(const std::shared_ptr<Gameplay:
             _canJump = true;
             _platform = body->GetGameObject()->Name;
         }
-        body->GetGameObject()->SetRotationZ(90);
+      // GetGameObject()->GetScene()->FindObjectByName("Character/Player")->
+      //  body->GetGameObject()->SetPostion(body->GetGameObject()->GetPosition() - glm::vec3(0.f, 0.f, 0.5f));
+        if ((body->GetGameObject()->Name == "BeatGem")||(body->GetGameObject()->Name == "Falling Platform")) {
+            body->SetType(RigidBodyType::Dynamic);
+        }
 }
  void CharacterController::OnTriggerVolumeLeaving(const std::shared_ptr<Gameplay::Physics::RigidBody>& body) {
     LOG_INFO("Body has left our trigger volume: {}", body->GetGameObject()->Name);
@@ -60,8 +64,8 @@ void CharacterController::Update(float deltaTime) {
     bool _D = glfwGetKey(GetGameObject()->GetScene()->Window, GLFW_KEY_D);
     bool _W = glfwGetKey(GetGameObject()->GetScene()->Window, GLFW_KEY_SPACE);
     
-    LOG_INFO(_canJump);
-    if ((_platform == "Wall Jump 1")|| (_platform == "Wall Jump 2")) {
+ //   LOG_INFO(_canJump);
+    if (_platform == "Wall Jump") {
         if (_body->GetLinearVelocity().z < 0) {
             _body->ApplyForce(glm::vec3(0.0f, 0.0f, 20.0f));
         }
