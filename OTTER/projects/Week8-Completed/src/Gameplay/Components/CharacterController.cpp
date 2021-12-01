@@ -46,7 +46,7 @@ void CharacterController::OnTriggerVolumeEntered(const std::shared_ptr<Gameplay:
             _canJump = true;
             _platform = body->GetGameObject()->Name;
         }
-
+        body->GetGameObject()->SetRotationZ(90);
 }
  void CharacterController::OnTriggerVolumeLeaving(const std::shared_ptr<Gameplay::Physics::RigidBody>& body) {
     LOG_INFO("Body has left our trigger volume: {}", body->GetGameObject()->Name);

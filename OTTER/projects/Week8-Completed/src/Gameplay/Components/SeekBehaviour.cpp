@@ -34,16 +34,23 @@ SeekBehaviour::Sptr SeekBehaviour::FromJson(const nlohmann::json & blob) {
     return result;
 }
 
+void SeekBehaviour::seekTo(Gameplay::GameObject::Sptr& object) {
+    _target = object->GetPosition();
+}
 
 void SeekBehaviour::Update(float deltaTime)
 {
-    glm::vec3 velocity = glm::vec3(1.0f, 1.0f, 1.0f);
-    _body->SetLinearVelocity(velocity);
+    _target= GetGameObject()->GetScene()->FindObjectByName("Character/Player")->GetPosition();
+    glm::vec3 difference = _target-(_body->GetGameObject()->GetPosition()-glm::vec3(0.0f,0.0f,1.5f));
+    //if 
+    if (cbrt((difference.x * difference.x) + (difference.y * difference.y)+ (difference.z * difference.z))<1.0f) {
+        difference = -difference;
+   }
+    _body->SetLinearVelocity(difference);
     LOG_INFO("update works");
+
 }
-void SeekBehaviour::seekTo(Gameplay::GameObject::Sptr& object) {
-    target = object->GetPosition();
-}
+
 // Templated LERP function returns positon at current time for LERP
 template <typename T>
 T SeekBehaviour::Lerp(const T & p0, const T & p1, float t)

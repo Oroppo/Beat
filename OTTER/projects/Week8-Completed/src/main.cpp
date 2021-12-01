@@ -1032,7 +1032,7 @@ void CreateScene() {
 		SeekBehaviour::Sptr seeking = DiscoBall->Add<SeekBehaviour>();
 		seeking->seekTo(character);
 
-		RigidBody::Sptr ballphysics = DiscoBall->Add<RigidBody>(RigidBodyType::Kinematic);
+		RigidBody::Sptr ballphysics = DiscoBall->Add<RigidBody>(RigidBodyType::Dynamic);
 		}
 		// Call scene awake to start up all of our components
 		scene->Window = window;
