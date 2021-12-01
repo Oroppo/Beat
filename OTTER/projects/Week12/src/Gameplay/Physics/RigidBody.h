@@ -142,6 +142,8 @@ namespace Gameplay::Physics {
 		/// <param name="worldTorque">The torque, in radians per second and world space</param>
 		void ApplyTorqueImpulse(const glm::vec3& worldTorque);
 
+		btRigidBody* RigidBody::GetBody();
+
 		/// <summary>
 		/// Sets the type of rigid body (static, dynamic, kinematic)
 		/// </summary>

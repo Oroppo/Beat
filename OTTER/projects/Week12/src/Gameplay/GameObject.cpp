@@ -106,6 +106,11 @@ namespace Gameplay {
 		_isLocalTransformDirty = true;
 	}
 
+	void GameObject::SetPositionY(const float position) {
+		_position.y = position;
+		_isLocalTransformDirty = true;
+	}
+
 	const glm::vec3& GameObject::GetPosition() const {
 		return _position;
 	}

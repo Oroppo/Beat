@@ -24,7 +24,8 @@ public:
 	MAKE_TYPENAME(SeekBehaviour);
 	virtual nlohmann::json ToJson() const override;
 	static SeekBehaviour::Sptr FromJson(const nlohmann::json& blob);
-	 glm::vec3 target;
+	
 	void seekTo(Gameplay::GameObject::Sptr& object);
-
+protected:
+	glm::vec3 _target;
 };

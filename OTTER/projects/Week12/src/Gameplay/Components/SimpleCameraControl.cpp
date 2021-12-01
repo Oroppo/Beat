@@ -7,7 +7,6 @@
 #include "Gameplay/Scene.h"
 #include "Utils/JsonGlmHelpers.h"
 #include "Utils/ImGuiHelper.h"
-#include "Gameplay/InputEngine.h"
 
 SimpleCameraControl::SimpleCameraControl() :
 	IComponent(),
@@ -20,19 +19,27 @@ SimpleCameraControl::SimpleCameraControl() :
 
 SimpleCameraControl::~SimpleCameraControl() = default;
 
+void SimpleCameraControl::Awake() {
+	_window = GetGameObject()->GetScene()->Window;
+}
+
 void SimpleCameraControl::Update(float deltaTime)
 {
-	if (InputEngine::GetMouseState(GLFW_MOUSE_BUTTON_LEFT) == ButtonState::Pressed) {
-		_prevMousePos = InputEngine::GetMousePos();
-		LOG_INFO("doot");
+	if (glfwGetMouseButton(_window, 0)) {
+		if (_isMousePressed == false) {
+			glfwGetCursorPos(_window, &_prevMousePos.x, &_prevMousePos.y);
+		}
+		_isMousePressed = true;
+	} else {
+		_isMousePressed = false;
 	}
 
-	if (InputEngine::IsMouseButtonDown(GLFW_MOUSE_BUTTON_LEFT)) {
-		glm::dvec2 currentMousePos = InputEngine::GetMousePos();
-		glm::dvec2 delta = currentMousePos - _prevMousePos;
+	if (_isMousePressed) {
+		glm::dvec2 currentMousePos;
+		glfwGetCursorPos(_window, &currentMousePos.x, &currentMousePos.y);
 
-		_currentRot.x += static_cast<float>(delta.x) * _mouseSensitivity.x;
-		_currentRot.y += static_cast<float>(delta.y) * _mouseSensitivity.y;
+		_currentRot.x += static_cast<float>(currentMousePos.x - _prevMousePos.x) * _mouseSensitivity.x;
+		_currentRot.y += static_cast<float>(currentMousePos.y - _prevMousePos.y) * _mouseSensitivity.y;
 		glm::quat rotX = glm::angleAxis(glm::radians(_currentRot.x), glm::vec3(0, 0, 1));
 		glm::quat rotY = glm::angleAxis(glm::radians(_currentRot.y), glm::vec3(1, 0, 0));
 		glm::quat currentRot = rotX * rotY;
@@ -41,26 +48,26 @@ void SimpleCameraControl::Update(float deltaTime)
 		_prevMousePos = currentMousePos;
 
 		glm::vec3 input = glm::vec3(0.0f);
-		if (InputEngine::IsKeyDown(GLFW_KEY_W)) {
+		if (glfwGetKey(_window, GLFW_KEY_W)) {
 			input.z -= _moveSpeeds.x;
 		}
-		if (InputEngine::IsKeyDown(GLFW_KEY_S)) {
+		if (glfwGetKey(_window, GLFW_KEY_S)) {
 			input.z += _moveSpeeds.x;
 		}
-		if (InputEngine::IsKeyDown(GLFW_KEY_A)) {
+		if (glfwGetKey(_window, GLFW_KEY_A)) {
 			input.x -= _moveSpeeds.y;
 		}
-		if (InputEngine::IsKeyDown(GLFW_KEY_D)) {
+		if (glfwGetKey(_window, GLFW_KEY_D)) {
 			input.x += _moveSpeeds.y;
 		}
-		if (InputEngine::IsKeyDown(GLFW_KEY_LEFT_CONTROL)) {
+		if (glfwGetKey(_window, GLFW_KEY_LEFT_CONTROL)) {
 			input.y -= _moveSpeeds.z;
 		}
-		if (InputEngine::IsKeyDown(GLFW_KEY_SPACE)) {
+		if (glfwGetKey(_window, GLFW_KEY_SPACE)) {
 			input.y += _moveSpeeds.z;
 		}
 		
-		if (InputEngine::IsKeyDown(GLFW_KEY_LEFT_SHIFT)) {
+		if (glfwGetKey(_window, GLFW_KEY_LEFT_SHIFT)) {
 			input *= _shiftMultipler;
 		}
 

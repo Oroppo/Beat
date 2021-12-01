@@ -94,7 +94,7 @@ namespace Gameplay {
 		if (ImGui::CollapsingHeader(Name.c_str())) {
 			// Draw all of our valid uniforms
 			for (auto&[key, value] : _uniforms) {
-				if (value.Location != -2 && value.Location != -1) {
+				if (value.Location != -2) {
 					value.RenderImGui();
 				}
 			}
@@ -143,9 +143,7 @@ namespace Gameplay {
 
 		// Store all the uniforms
 		for (auto& [key, value] : _uniforms) {
-			if (value.Location != -1) {
-				result["parameters"][key] = value.ToJson();
-			}
+			result["parameters"][key] = value.ToJson();
 		}
 
 		return result;
@@ -370,121 +368,121 @@ namespace Gameplay {
 		result["type"] = ~Type;
 		switch (Type) {
 			case ShaderDataType::Float:
-				result["value"] = Get<float>();
+				result["data"] = Get<float>();
 				break;
 			case ShaderDataType::Float2:
-				result["value"] = GlmToJson(Get<glm::vec2>());
+				result["data"] = GlmToJson(Get<glm::vec2>());
 				break;
 			case ShaderDataType::Float3:
-				result["value"] = GlmToJson(Get<glm::vec3>());
+				result["data"] = GlmToJson(Get<glm::vec3>());
 				break;
 			case ShaderDataType::Float4:
-				result["value"] = GlmToJson(Get<glm::vec4>());
+				result["data"] = GlmToJson(Get<glm::vec4>());
 				break;
 			case ShaderDataType::Mat2:
-				result["value"] = GlmToJsonMat((Get<glm::mat2>()));
+				result["data"] = GlmToJsonMat((Get<glm::mat2>()));
 				break;
 			case ShaderDataType::Mat3: 
-				result["value"] = GlmToJsonMat((Get<glm::mat3>()));
+				result["data"] = GlmToJsonMat((Get<glm::mat3>()));
 				break;
 			case ShaderDataType::Mat4:
-				result["value"] = GlmToJsonMat((Get<glm::mat4>()));
+				result["data"] = GlmToJsonMat((Get<glm::mat4>()));
 				break;
 			case ShaderDataType::Mat2x3:
-				result["value"] = GlmToJsonMat((Get<glm::mat2x3>()));
+				result["data"] = GlmToJsonMat((Get<glm::mat2x3>()));
 				break;
 			case ShaderDataType::Mat2x4:
-				result["value"] = GlmToJsonMat((Get<glm::mat2x4>()));
+				result["data"] = GlmToJsonMat((Get<glm::mat2x4>()));
 				break;
 			case ShaderDataType::Mat3x2:
-				result["value"] = GlmToJsonMat((Get<glm::mat3x2>()));
+				result["data"] = GlmToJsonMat((Get<glm::mat3x2>()));
 				break;
 			case ShaderDataType::Mat3x4:
-				result["value"] = GlmToJsonMat((Get<glm::mat3x4>()));
+				result["data"] = GlmToJsonMat((Get<glm::mat3x4>()));
 				break;
 			case ShaderDataType::Mat4x2:
-				result["value"] = GlmToJsonMat((Get<glm::mat4x2>()));
+				result["data"] = GlmToJsonMat((Get<glm::mat4x2>()));
 				break;
 			case ShaderDataType::Mat4x3:
-				result["value"] = GlmToJsonMat((Get<glm::mat4x3>()));
+				result["data"] = GlmToJsonMat((Get<glm::mat4x3>()));
 				break;
 			case ShaderDataType::Int:
-				result["value"] = (Get<int>());
+				result["data"] = (Get<int>());
 				break;
 			case ShaderDataType::Int2:
-				result["value"] = GlmToJson(Get<glm::ivec2>());
+				result["data"] = GlmToJson(Get<glm::ivec2>());
 				break;
 			case ShaderDataType::Int3:
-				result["value"] = GlmToJson(Get<glm::ivec3>());
+				result["data"] = GlmToJson(Get<glm::ivec3>());
 				break;
 			case ShaderDataType::Int4:
-				result["value"] = GlmToJson(Get<glm::ivec4>());
+				result["data"] = GlmToJson(Get<glm::ivec4>());
 				break;
 			case ShaderDataType::Uint:
-				result["value"] = (Get<unsigned int>());
+				result["data"] = (Get<unsigned int>());
 				break;
 			case ShaderDataType::Uint2:
-				result["value"] = GlmToJson(Get<glm::uvec2>());
+				result["data"] = GlmToJson(Get<glm::uvec2>());
 				break;
 			case ShaderDataType::Uint3:
-				result["value"] = GlmToJson(Get<glm::uvec3>());
+				result["data"] = GlmToJson(Get<glm::uvec3>());
 				break;
 			case ShaderDataType::Uint4:
-				result["value"] = GlmToJson(Get<glm::uvec4>());
+				result["data"] = GlmToJson(Get<glm::uvec4>());
 				break;
 			case ShaderDataType::Uint64:
-				result["value"] = (Get<uint64_t>());
+				result["data"] = (Get<uint64_t>());
 				break;
 			case ShaderDataType::Double:
-				result["value"] = (Get<double>());
+				result["data"] = (Get<double>());
 				break;
 			case ShaderDataType::Double2:
-				result["value"] = GlmToJson(Get<glm::dvec2>());
+				result["data"] = GlmToJson(Get<glm::dvec2>());
 				break;
 			case ShaderDataType::Double3:
-				result["value"] = GlmToJson(Get<glm::dvec3>());
+				result["data"] = GlmToJson(Get<glm::dvec3>());
 				break;
 			case ShaderDataType::Double4:
-				result["value"] = GlmToJson(Get<glm::dvec4>());
+				result["data"] = GlmToJson(Get<glm::dvec4>());
 				break;
 			case ShaderDataType::Dmat2:
-				result["value"] = GlmToJsonMat(Get<glm::dmat2>());
+				result["data"] = GlmToJsonMat(Get<glm::dmat2>());
 				break;
 			case ShaderDataType::Dmat3:
-				result["value"] = GlmToJsonMat(Get<glm::dmat3>());
+				result["data"] = GlmToJsonMat(Get<glm::dmat3>());
 				break;
 			case ShaderDataType::Dmat4:
-				result["value"] = GlmToJsonMat(Get<glm::dmat4>());
+				result["data"] = GlmToJsonMat(Get<glm::dmat4>());
 				break;
 			case ShaderDataType::Dmat2x3:
-				result["value"] = GlmToJsonMat(Get<glm::dmat2x3>());
+				result["data"] = GlmToJsonMat(Get<glm::dmat2x3>());
 				break;
 			case ShaderDataType::Dmat2x4:
-				result["value"] = GlmToJsonMat(Get<glm::dmat2x4>());
+				result["data"] = GlmToJsonMat(Get<glm::dmat2x4>());
 				break;
 			case ShaderDataType::Dmat3x2:
-				result["value"] = GlmToJsonMat(Get<glm::dmat3x2>());
+				result["data"] = GlmToJsonMat(Get<glm::dmat3x2>());
 				break;
 			case ShaderDataType::Dmat3x4:
-				result["value"] = GlmToJsonMat(Get<glm::dmat3x4>());
+				result["data"] = GlmToJsonMat(Get<glm::dmat3x4>());
 				break;
 			case ShaderDataType::Dmat4x2:
-				result["value"] = GlmToJsonMat(Get<glm::dmat4x2>());
+				result["data"] = GlmToJsonMat(Get<glm::dmat4x2>());
 				break;
 			case ShaderDataType::Dmat4x3:
-				result["value"] = GlmToJsonMat(Get<glm::dmat4x3>());
+				result["data"] = GlmToJsonMat(Get<glm::dmat4x3>());
 				break;
 			case ShaderDataType::Bool:
-				result["value"] = (Get<bool>());
+				result["data"] = (Get<bool>());
 				break;
 			case ShaderDataType::Bool2:
-				result["value"] = GlmToJson(Get<glm::bvec2>());
+				result["data"] = GlmToJson(Get<glm::bvec2>());
 				break;
 			case ShaderDataType::Bool3:
-				result["value"] = GlmToJson(Get<glm::bvec3>());
+				result["data"] = GlmToJson(Get<glm::bvec3>());
 				break;
 			case ShaderDataType::Bool4:
-				result["value"] = GlmToJson(Get<glm::bvec4>());
+				result["data"] = GlmToJson(Get<glm::bvec4>());
 				break;
 			case ShaderDataType::Tex1D:
 			case ShaderDataType::Tex1D_Array:
@@ -522,7 +520,7 @@ namespace Gameplay {
 			case ShaderDataType::BufferTexture:
 			case ShaderDataType::BufferTextureInt:
 			case ShaderDataType::BufferTextureUint:
-				result["value"] = TextureAsset ? TextureAsset->GetGUID().str() : "null";
+				result["data"] = TextureAsset ? TextureAsset->GetGUID().str() : "null";
 				break;
 			case ShaderDataType::None:
 			default:

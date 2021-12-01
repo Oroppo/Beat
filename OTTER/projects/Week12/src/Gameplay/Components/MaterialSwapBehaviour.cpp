@@ -10,19 +10,6 @@ MaterialSwapBehaviour::MaterialSwapBehaviour() :
 { }
 MaterialSwapBehaviour::~MaterialSwapBehaviour() = default;
 
-void MaterialSwapBehaviour::OnEnteredTrigger(const Gameplay::Physics::TriggerVolume::Sptr& trigger) {
-	if (_renderer && EnterMaterial) {
-		_renderer->SetMaterial(EnterMaterial);
-	}
-	LOG_INFO("Entered trigger: {}", trigger->GetGameObject()->Name);
-}
-
-void MaterialSwapBehaviour::OnLeavingTrigger(const Gameplay::Physics::TriggerVolume::Sptr& trigger) {
-	if (_renderer && ExitMaterial) {
-		_renderer->SetMaterial(ExitMaterial);
-	}
-	LOG_INFO("Left trigger: {}", trigger->GetGameObject()->Name);
-}
 
 void MaterialSwapBehaviour::Awake() {
 	_renderer = GetComponent<RenderComponent>();
@@ -42,4 +29,13 @@ MaterialSwapBehaviour::Sptr MaterialSwapBehaviour::FromJson(const nlohmann::json
 	result->EnterMaterial = ResourceManager::Get<Gameplay::Material>(Guid(blob["enter_material"]));
 	result->ExitMaterial  = ResourceManager::Get<Gameplay::Material>(Guid(blob["exit_material"]));
 	return result;
+}
+void Update(float dt) 
+{
+
+	//check if condition true
+
+	//Swap Material here
+	//_renderer->SetMaterial(EnterMaterial);
+
 }

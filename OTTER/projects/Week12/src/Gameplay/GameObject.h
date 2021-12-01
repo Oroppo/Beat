@@ -123,6 +123,8 @@ namespace Gameplay {
 			void Reset();
 		};
 
+		void GameObject::SetPositionY(const float position);
+
 		// Human readable name for the object
 		std::string             Name;
 

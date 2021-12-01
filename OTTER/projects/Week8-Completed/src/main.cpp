@@ -594,8 +594,8 @@ void CreateScene() {
 
 		// This shader handles our basic materials without reflections (cause they expensive)
 		Shader::Sptr specShader = ResourceManager::CreateAsset<Shader>(std::unordered_map<ShaderPartType, std::string>{
-			{ ShaderPartType::Vertex, "shaders/vertex_shaders/basic.glsl" },
-			{ ShaderPartType::Fragment, "shaders/fragment_shaders/textured_specular.glsl" }
+			{ ShaderPartType::Vertex, "shaders/vertex_shaders/water-vert.glsl" },
+			{ ShaderPartType::Fragment, "shaders/fragment_shaders/water-frag.glsl" }
 		});
 
 

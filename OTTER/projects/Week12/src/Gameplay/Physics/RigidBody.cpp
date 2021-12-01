@@ -124,6 +124,10 @@ namespace Gameplay::Physics {
 		_body->applyTorqueImpulse(ToBt(worldTorque));
 	}
 
+	btRigidBody* RigidBody::GetBody() {
+		return _body;
+	}
+
 	void RigidBody::SetType(RigidBodyType type) {
 		_type = type;
 		if (_body != nullptr) {
