@@ -54,7 +54,7 @@ void CharacterController::OnTriggerVolumeEntered(const std::shared_ptr<Gameplay:
 }
  void CharacterController::OnTriggerVolumeLeaving(const std::shared_ptr<Gameplay::Physics::RigidBody>& body) {
     LOG_INFO("Body has left our trigger volume: {}", body->GetGameObject()->Name);
-    if (body->GetGameObject()->Name != "BeatGem") {
+    if ((body->GetGameObject()->Name != "BeatGem") || (body->GetGameObject()->Name == "Falling Platform")) {
         _platform = "";
         _canJump = false;
     }
