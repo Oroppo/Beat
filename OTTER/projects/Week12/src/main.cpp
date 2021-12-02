@@ -1395,7 +1395,7 @@ int main() {
 
 			// Draw the object
 			renderable->GetMesh()->Draw();
-			});
+		});
 
 		// Use our cubemap to draw our skybox
 		scene->DrawSkybox();

@@ -256,56 +256,11 @@ void CreateScene() {
 		scene->Awake();
 	} 
 	else {  
-		// This time we'll have 2 different shaders, and share data between both of them using the UBO
-		// This shader will handle reflective materials 
-		Shader::Sptr reflectiveShader = ResourceManager::CreateAsset<Shader>(std::unordered_map<ShaderPartType, std::string>{
-			{ ShaderPartType::Vertex, "shaders/vertex_shaders/basic.glsl" },
-			{ ShaderPartType::Fragment, "shaders/fragment_shaders/frag_environment_reflective.glsl" }
-		});
 
 		// This shader handles our basic materials without reflections (cause they expensive)
 		Shader::Sptr basicShader = ResourceManager::CreateAsset<Shader>(std::unordered_map<ShaderPartType, std::string>{
-			{ ShaderPartType::Vertex, "shaders/vertex_shaders/basic.glsl" },
-			{ ShaderPartType::Fragment, "shaders/fragment_shaders/frag_blinn_phong_textured.glsl" }
-		});
-
-		// This shader handles our basic materials without reflections (cause they expensive)
-		Shader::Sptr specShader = ResourceManager::CreateAsset<Shader>(std::unordered_map<ShaderPartType, std::string>{
-			{ ShaderPartType::Vertex, "shaders/vertex_shaders/basic.glsl" },
-			{ ShaderPartType::Fragment, "shaders/fragment_shaders/textured_specular.glsl" }
-		});
-
-		// This shader handles our foliage vertex shader example
-		Shader::Sptr foliageShader = ResourceManager::CreateAsset<Shader>(std::unordered_map<ShaderPartType, std::string>{
-			{ ShaderPartType::Vertex, "shaders/vertex_shaders/foliage.glsl" },
-			{ ShaderPartType::Fragment, "shaders/fragment_shaders/screendoor_transparency.glsl" }
-		});
-
-		// This shader handles our cel shading example
-		Shader::Sptr toonShader = ResourceManager::CreateAsset<Shader>(std::unordered_map<ShaderPartType, std::string>{
-			{ ShaderPartType::Vertex, "shaders/vertex_shaders/basic.glsl" },
-			{ ShaderPartType::Fragment, "shaders/fragment_shaders/toon_shading.glsl" }
-		});
-
-
-		///////////////////// NEW SHADERS ////////////////////////////////////////////
-
-		// This shader handles our displacement mapping example
-		Shader::Sptr displacementShader = ResourceManager::CreateAsset<Shader>(std::unordered_map<ShaderPartType, std::string>{
-			{ ShaderPartType::Vertex, "shaders/vertex_shaders/displacement_mapping.glsl" }, 
-			{ ShaderPartType::Fragment, "shaders/fragment_shaders/frag_tangentspace_normal_maps.glsl" }
-		});    
-
-		// This shader handles our displacement mapping example
-		Shader::Sptr tangentSpaceMapping = ResourceManager::CreateAsset<Shader>(std::unordered_map<ShaderPartType, std::string>{
-			{ ShaderPartType::Vertex, "shaders/vertex_shaders/basic.glsl" },
-			{ ShaderPartType::Fragment, "shaders/fragment_shaders/frag_tangentspace_normal_maps.glsl" }
-		});
-
-		// This shader handles our multitexturing example
-		Shader::Sptr multiTextureShader = ResourceManager::CreateAsset<Shader>(std::unordered_map<ShaderPartType, std::string>{
-			{ ShaderPartType::Vertex, "shaders/vertex_shaders/vert_multitextured.glsl" },
-			{ ShaderPartType::Fragment, "shaders/fragment_shaders/frag_multitextured.glsl" }
+			{ ShaderPartType::Vertex, "shaders/vertex_shaders/terrain_vert.glsl" },
+			{ ShaderPartType::Fragment, "shaders/fragment_shaders/terrain_frag.glsl" }
 		});
 
 		// This is a water Shader
@@ -314,25 +269,10 @@ void CreateScene() {
 			{ ShaderPartType::Fragment, "shaders/fragment_shaders/water_frag.glsl" }
 		});
 
-
-		Shader::Sptr terrainShader = ResourceManager::CreateAsset<Shader>(std::unordered_map<ShaderPartType, std::string>{
-			{ ShaderPartType::Vertex, "shaders/vertex_shaders/displacement_mapping.glsl" },
-			{ ShaderPartType::Fragment, "shaders/fragment_shaders/frag_tangentspace_normal_maps.glsl" }
-		});
-
-
-		// Load in the meshes
-		MeshResource::Sptr monkeyMesh = ResourceManager::CreateAsset<MeshResource>("Monkey.obj");
 		MeshResource::Sptr PlaneMesh = ResourceManager::CreateAsset<MeshResource>("plane.obj");
 
 		// Load in some textures
-		Texture2D::Sptr    boxTexture   = ResourceManager::CreateAsset<Texture2D>("textures/box-diffuse.png");
-		Texture2D::Sptr    boxSpec      = ResourceManager::CreateAsset<Texture2D>("textures/box-specular.png");
-		Texture2D::Sptr    monkeyTex    = ResourceManager::CreateAsset<Texture2D>("textures/monkey-uvMap.png");
-		Texture2D::Sptr    leafTex      = ResourceManager::CreateAsset<Texture2D>("textures/leaves.png");
 		Texture2D::Sptr	   WaterTexture = ResourceManager::CreateAsset<Texture2D>("textures/water.jpg");
-		leafTex->SetMinFilter(MinFilter::Nearest);
-		leafTex->SetMagFilter(MagFilter::Nearest);
 
 
 		// Here we'll load in the cubemap, as well as a special shader to handle drawing the skybox
@@ -341,6 +281,9 @@ void CreateScene() {
 			{ ShaderPartType::Vertex, "shaders/vertex_shaders/skybox_vert.glsl" },
 			{ ShaderPartType::Fragment, "shaders/fragment_shaders/skybox_frag.glsl" }
 		});
+
+
+
 
 		// Create an empty scene
 		scene = std::make_shared<Scene>();
@@ -351,106 +294,19 @@ void CreateScene() {
 		// Since the skybox I used was for Y-up, we need to rotate it 90 deg around the X-axis to convert it to z-up
 		scene->SetSkyboxRotation(glm::rotate(MAT4_IDENTITY, glm::half_pi<float>(), glm::vec3(1.0f, 0.0f, 0.0f)));
 
-		// Create our materials
-		// This will be our box material, with no environment reflections
-		Material::Sptr boxMaterial = ResourceManager::CreateAsset<Material>(basicShader);
-		{
-			boxMaterial->Name = "Box";
-			boxMaterial->Set("u_Material.Diffuse", boxTexture);
-			boxMaterial->Set("u_Material.Shininess", 0.1f);
-		}
-
-		// This will be the reflective material, we'll make the whole thing 90% reflective
-		Material::Sptr monkeyMaterial = ResourceManager::CreateAsset<Material>(reflectiveShader);
-		{
-			monkeyMaterial->Name = "Monkey";
-			monkeyMaterial->Set("u_Material.Diffuse", monkeyTex);
-			monkeyMaterial->Set("u_Material.Shininess", 0.5f);
-		}
-
-		// This will be the reflective material, we'll make the whole thing 90% reflective
-		Material::Sptr testMaterial = ResourceManager::CreateAsset<Material>(specShader);
-		{
-			testMaterial->Name = "Box-Specular";
-			testMaterial->Set("u_Material.Diffuse", boxTexture);
-			testMaterial->Set("u_Material.Specular", boxSpec);
-		}
-
-		// Our foliage vertex shader material
-		Material::Sptr foliageMaterial = ResourceManager::CreateAsset<Material>(foliageShader);
-		{
-			foliageMaterial->Name = "Foliage Shader";
-			foliageMaterial->Set("u_Material.Diffuse", leafTex);
-			foliageMaterial->Set("u_Material.Shininess", 0.1f);
-			foliageMaterial->Set("u_Material.Threshold", 0.1f);
-
-			foliageMaterial->Set("u_WaveDirection", glm::vec3(1.0f, 1.0f, 0.0f));
-			foliageMaterial->Set("u_WindStrength",  0.5f);
-			foliageMaterial->Set("u_WaveHeight", 1.0f);
-			foliageMaterial->Set("u_WaveSpeed",     1.0f);
-		}
-
-		// Our toon shader material
-		Material::Sptr toonMaterial = ResourceManager::CreateAsset<Material>(toonShader);
-		{
-			toonMaterial->Name = "Toon";
-			toonMaterial->Set("u_Material.Diffuse", boxTexture);
-			toonMaterial->Set("u_Material.Shininess", 0.1f);
-			toonMaterial->Set("u_Material.Steps", 8);
-		}
-
-		/////////////// NEW MATERIALS ////////////////////
-
-		Material::Sptr displacementTest = ResourceManager::CreateAsset<Material>(displacementShader);
-		{
-			Texture2D::Sptr displacementMap = ResourceManager::CreateAsset<Texture2D>("textures/displacement_map.png");
-			Texture2D::Sptr normalMap       = ResourceManager::CreateAsset<Texture2D>("textures/normal_map.png");
-			Texture2D::Sptr diffuseMap      = ResourceManager::CreateAsset<Texture2D>("textures/bricks_diffuse.png");
-
-			displacementTest->Name = "Displacement Map";
-			displacementTest->Set("u_Material.Diffuse", diffuseMap);   
-			displacementTest->Set("s_Heightmap", displacementMap);
-			displacementTest->Set("s_NormalMap", normalMap);  
-			displacementTest->Set("u_Material.Shininess", 0.5f); 
-			displacementTest->Set("u_Scale", 0.1f);   
-		}
-
-		Material::Sptr normalmapMat = ResourceManager::CreateAsset<Material>(tangentSpaceMapping);
-		{
-			Texture2D::Sptr normalMap       = ResourceManager::CreateAsset<Texture2D>("textures/normal_map.png");
-			Texture2D::Sptr diffuseMap      = ResourceManager::CreateAsset<Texture2D>("textures/bricks_diffuse.png");
-
-			normalmapMat->Name = "Tangent Space Normal Map";
-			normalmapMat->Set("u_Material.Diffuse", diffuseMap);
-			normalmapMat->Set("s_NormalMap", normalMap);
-			normalmapMat->Set("u_Material.Shininess", 0.5f);
-			normalmapMat->Set("u_Scale", 0.1f);
-		}
-
-		Material::Sptr multiTextureMat = ResourceManager::CreateAsset<Material>(multiTextureShader); 
-		{
-			Texture2D::Sptr sand  = ResourceManager::CreateAsset<Texture2D>("textures/terrain/sand.png");
-			Texture2D::Sptr grass = ResourceManager::CreateAsset<Texture2D>("textures/terrain/grass.png");
-		
-			multiTextureMat->Name = "Multitexturing";
-			multiTextureMat->Set("u_Material.DiffuseA", sand);
-			multiTextureMat->Set("u_Material.DiffuseB", grass); 
-			multiTextureMat->Set("u_Material.Shininess", 0.5f);
-			multiTextureMat->Set("u_Scale", 0.1f); 
-		}
 
 		Material::Sptr WaterMaterial = ResourceManager::CreateAsset<Material>(waterShader);
 		{
 			WaterMaterial->Name = "Water Shader";
 			WaterMaterial->Set("u_Material.Diffuse", WaterTexture);
 			WaterMaterial->Set("u_Material.Shininess", 0.1f);
-
+		
 			WaterMaterial->Set("u_WaveDirection", glm::vec3(1.0f, 1.0f, 0.0f));
 			WaterMaterial->Set("u_WaveStrength", 0.003f);
 			WaterMaterial->Set("u_WaveSpeed", 22.0f);
 		}
 
-		Material::Sptr TerrainMaterial = ResourceManager::CreateAsset<Material>(terrainShader);
+		Material::Sptr TerrainMaterial = ResourceManager::CreateAsset<Material>(basicShader);
 		{
 			Texture2D::Sptr displacementMap = ResourceManager::CreateAsset<Texture2D>("textures/displacement_map.png");
 			Texture2D::Sptr normalMap = ResourceManager::CreateAsset<Texture2D>("textures/normal_map.png");
@@ -459,13 +315,14 @@ void CreateScene() {
 			Texture2D::Sptr diffuseMap3 = ResourceManager::CreateAsset<Texture2D>("textures/snow.jpg");
 
 			TerrainMaterial->Name = "Terrain";
+			TerrainMaterial->Set("u_Material.Diffuse", diffuseMap1);
 			TerrainMaterial->Set("u_Material.DiffuseA", diffuseMap1);
 			TerrainMaterial->Set("u_Material.DiffuseB", diffuseMap2);
 			TerrainMaterial->Set("u_Material.DiffuseC", diffuseMap3);
 			TerrainMaterial->Set("s_Heightmap", displacementMap);
 			TerrainMaterial->Set("s_NormalMap", normalMap);
 			TerrainMaterial->Set("u_Material.Shininess", 0.5f);
-			TerrainMaterial->Set("u_Scale", 0.1f);
+			TerrainMaterial->Set("u_Scale", 0.6f);
 			//TerrainMaterial->Set("u_ScaleTexture", 0.1f);
 		}
 
@@ -493,28 +350,29 @@ void CreateScene() {
 		// Set up the scene's camera
 		// Set up the scene's camera
 
+
+
+
+
+
+
+
 		GameObject::Sptr camera = scene->CreateGameObject("Main Camera");
 		{
-			camera->SetPostion(glm::vec3(-5.810, -4.500, -3.150));
+			camera->SetPostion(glm::vec3(-5.810, -4.500, 0.6f));
 			camera->LookAt(glm::vec3(0.0f));
 			camera->SetRotation(glm::vec3(-103, 180, -180));
 
 			Camera::Sptr cam = camera->Add<Camera>();
-			//cam->SetOrthoEnabled(true);
-			//cam->SetOrthoVerticalScale(19.0f);
-			//cam->SetFovRadians(105.f);
-			//cam->SetNearPlane(0.3);
-
-			// Make sure that the camera is set as the scene's main camera!
 			scene->MainCamera = cam;
 		}
 
 		GameObject::Sptr WaterPlane = scene->CreateGameObject("Water");
 		{
-			WaterPlane->SetPostion(glm::vec3(-5.880f, -3.510f, -3.360f));
+			WaterPlane->SetPostion(glm::vec3(-5.880f, -3.510f, 0.15f));
 			WaterPlane->SetRotation(glm::vec3(0.0f, 0.0f, 0.0f));
 			WaterPlane->SetScale(glm::vec3(1.0f, 1.0f, 1.0f));
-
+		
 			RenderComponent::Sptr renderer = WaterPlane->Add<RenderComponent>();
 			renderer->SetMesh(PlaneMesh);
 			renderer->SetMaterial(WaterMaterial);
@@ -522,226 +380,14 @@ void CreateScene() {
 
 		GameObject::Sptr TerrainPlane = scene->CreateGameObject("Terrain");
 		{
-			TerrainPlane->SetPostion(glm::vec3(-5.880f, -3.510f, -3.360f));
+			TerrainPlane->SetPostion(glm::vec3(-5.880f, -3.510f, -0.14f));
 			TerrainPlane->SetRotation(glm::vec3(0.0f, 0.0f, 0.0f));
 			TerrainPlane->SetScale(glm::vec3(1.0f, 1.0f, 1.0f));
 
 			RenderComponent::Sptr renderer = TerrainPlane->Add<RenderComponent>();
 			renderer->SetMesh(PlaneMesh);
-			renderer->SetMaterial(multiTextureMat);
+			renderer->SetMaterial(TerrainMaterial);
 		}
-
-		//// Set up all our sample objects
-		//GameObject::Sptr plane = scene->CreateGameObject("Plane");
-		//{
-		//	// Make a big tiled mesh
-		//	MeshResource::Sptr tiledMesh = ResourceManager::CreateAsset<MeshResource>();
-		//	tiledMesh->AddParam(MeshBuilderParam::CreatePlane(ZERO, UNIT_Z, UNIT_X, glm::vec2(100.0f), glm::vec2(20.0f)));
-		//	tiledMesh->GenerateMesh();
-		//
-		//	// Create and attach a RenderComponent to the object to draw our mesh
-		//	RenderComponent::Sptr renderer = plane->Add<RenderComponent>();
-		//	renderer->SetMesh(tiledMesh);
-		//	renderer->SetMaterial(boxMaterial);
-		//
-		//	// Attach a plane collider that extends infinitely along the X/Y axis
-		//	RigidBody::Sptr physics = plane->Add<RigidBody>(/*static by default*/);
-		//	physics->AddCollider(BoxCollider::Create(glm::vec3(50.0f, 50.0f, 1.0f)))->SetPosition({ 0,0,-1 });
-		//}
-		//
-		//GameObject::Sptr monkey1 = scene->CreateGameObject("Monkey 1"); 
-		//{
-		//	// Set position in the scene
-		//	monkey1->SetPostion(glm::vec3(1.5f, 0.0f, 1.0f));
-		//
-		//	// Add some behaviour that relies on the physics body
-		//	monkey1->Add<JumpBehaviour>();
-		//
-		//	// Create and attach a renderer for the monkey
-		//	RenderComponent::Sptr renderer = monkey1->Add<RenderComponent>();
-		//	renderer->SetMesh(monkeyMesh);
-		//	renderer->SetMaterial(monkeyMaterial);
-		//
-		//	// Add a dynamic rigid body to this monkey
-		//	RigidBody::Sptr physics = monkey1->Add<RigidBody>(RigidBodyType::Dynamic);
-		//	physics->AddCollider(ConvexMeshCollider::Create());
-		//
-		//	// Example of a trigger that interacts with static and kinematic bodies as well as dynamic bodies
-		//	TriggerVolume::Sptr trigger = monkey1->Add<TriggerVolume>();
-		//	trigger->SetFlags(TriggerTypeFlags::Statics | TriggerTypeFlags::Kinematics);
-		//	trigger->AddCollider(BoxCollider::Create(glm::vec3(1.0f)));
-		//
-		//	monkey1->Add<TriggerVolumeEnterBehaviour>();
-		//}
-		//
-		//GameObject::Sptr monkey2 = scene->CreateGameObject("Complex Object");
-		//{
-		//	// Set and rotation position in the scene
-		//	monkey2->SetPostion(glm::vec3(-1.5f, 0.0f, 1.0f));
-		//	monkey2->SetRotation(glm::vec3(90.0f, 0.0f, 0.0f));
-		//
-		//	// Add a render component
-		//	RenderComponent::Sptr renderer = monkey2->Add<RenderComponent>();
-		//	renderer->SetMesh(monkeyMesh);
-		//	renderer->SetMaterial(boxMaterial);
-		//
-		//	// This is an example of attaching a component and setting some parameters
-		//	RotatingBehaviour::Sptr behaviour = monkey2->Add<RotatingBehaviour>();
-		//	behaviour->RotationSpeed = glm::vec3(0.0f, 0.0f, -90.0f);
-		//}
-		//
-		//GameObject::Sptr demoBase = scene->CreateGameObject("Demo Parent");
-		//
-		//// Box to showcase the specular material
-		//GameObject::Sptr specBox = scene->CreateGameObject("Specular Object"); 
-		//{
-		//	MeshResource::Sptr boxMesh = ResourceManager::CreateAsset<MeshResource>();
-		//	boxMesh->AddParam(MeshBuilderParam::CreateCube(ZERO, ONE));
-		//	boxMesh->GenerateMesh();
-		//
-		//	// Set and rotation position in the scene
-		//	specBox->SetPostion(glm::vec3(0, -4.0f, 1.0f));
-		//
-		//	// Add a render component
-		//	RenderComponent::Sptr renderer = specBox->Add<RenderComponent>();
-		//	renderer->SetMesh(boxMesh);
-		//	renderer->SetMaterial(testMaterial);
-		//
-		//	demoBase->AddChild(specBox);
-		//}
-		//
-		//// sphere to showcase the foliage material
-		//GameObject::Sptr foliageBall = scene->CreateGameObject("Foliage Sphere");
-		//{
-		//	// Set and rotation position in the scene
-		//	foliageBall->SetPostion(glm::vec3(-4.0f, -4.0f, 1.0f));
-		//
-		//	// Add a render component
-		//	RenderComponent::Sptr renderer = foliageBall->Add<RenderComponent>();
-		//	renderer->SetMesh(sphere);
-		//	renderer->SetMaterial(foliageMaterial);
-		//
-		//	demoBase->AddChild(foliageBall);
-		//}
-		//
-		//// Box to showcase the foliage material
-		//GameObject::Sptr foliageBox = scene->CreateGameObject("Foliage Box");
-		//{
-		//	MeshResource::Sptr box = ResourceManager::CreateAsset<MeshResource>();
-		//	box->AddParam(MeshBuilderParam::CreateCube(glm::vec3(0, 0, 0.5f) , ONE));
-		//	box->GenerateMesh();
-		//
-		//	// Set and rotation position in the scene
-		//	foliageBox->SetPostion(glm::vec3(-6.0f, -4.0f, 1.0f));
-		//
-		//	// Add a render component
-		//	RenderComponent::Sptr renderer = foliageBox->Add<RenderComponent>();
-		//	renderer->SetMesh(box);
-		//	renderer->SetMaterial(foliageMaterial);
-		//
-		//	demoBase->AddChild(foliageBox);
-		//}
-		//
-		//// Box to showcase the specular material
-		//GameObject::Sptr toonBall = scene->CreateGameObject("Toon Object");
-		//{
-		//	// Set and rotation position in the scene
-		//	toonBall->SetPostion(glm::vec3(-2.0f, -4.0f, 1.0f));
-		//
-		//	// Add a render component
-		//	RenderComponent::Sptr renderer = toonBall->Add<RenderComponent>();
-		//	renderer->SetMesh(sphere);
-		//	renderer->SetMaterial(toonMaterial); 
-		//
-		//	demoBase->AddChild(toonBall);
-		//}
-		//
-		//GameObject::Sptr displacementBall = scene->CreateGameObject("Displacement Object");
-		//{
-		//	// Set and rotation position in the scene
-		//	displacementBall->SetPostion(glm::vec3(2.0f, -4.0f, 1.0f));
-		//
-		//	// Add a render component
-		//	RenderComponent::Sptr renderer = displacementBall->Add<RenderComponent>();
-		//	renderer->SetMesh(sphere);
-		//	renderer->SetMaterial(displacementTest);
-		//
-		//	demoBase->AddChild(displacementBall);
-		//}
-		//
-		//GameObject::Sptr multiTextureBall = scene->CreateGameObject("Multitextured Object");
-		//{
-		//	// Set and rotation position in the scene 
-		//	multiTextureBall->SetPostion(glm::vec3(4.0f, -4.0f, 1.0f)); 
-		//
-		//	// Add a render component 
-		//	RenderComponent::Sptr renderer = multiTextureBall->Add<RenderComponent>();
-		//	renderer->SetMesh(sphere);
-		//	renderer->SetMaterial(multiTextureMat);
-		//
-		//	demoBase->AddChild(multiTextureBall);
-		//}
-		//
-		//GameObject::Sptr normalMapBall = scene->CreateGameObject("Normal Mapped Object");
-		//{
-		//	// Set and rotation position in the scene 
-		//	normalMapBall->SetPostion(glm::vec3(6.0f, -4.0f, 1.0f));
-		//
-		//	// Add a render component 
-		//	RenderComponent::Sptr renderer = normalMapBall->Add<RenderComponent>();
-		//	renderer->SetMesh(sphere);
-		//	renderer->SetMaterial(normalmapMat);
-		//
-		//	demoBase->AddChild(normalMapBall);
-		//}
-		//
-		//// Kinematic rigid bodies are those controlled by some outside controller
-		//// and ONLY collide with dynamic objects
-		//RigidBody::Sptr physics = monkey2->Add<RigidBody>(RigidBodyType::Kinematic);
-		//physics->AddCollider(ConvexMeshCollider::Create());
-		//
-		//// Create a trigger volume for testing how we can detect collisions with objects!
-		//GameObject::Sptr trigger = scene->CreateGameObject("Trigger");
-		//{
-		//	TriggerVolume::Sptr volume = trigger->Add<TriggerVolume>();
-		//	CylinderCollider::Sptr collider = CylinderCollider::Create(glm::vec3(3.0f, 3.0f, 1.0f));
-		//	collider->SetPosition(glm::vec3(0.0f, 0.0f, 0.5f));
-		//	volume->AddCollider(collider);
-		//
-		//	trigger->Add<TriggerVolumeEnterBehaviour>();
-		//}
-		//
-		///////////////////////////// UI //////////////////////////////
-		//GameObject::Sptr canvas = scene->CreateGameObject("UI Canvas");
-		//{
-		//	RectTransform::Sptr transform = canvas->Add<RectTransform>();
-		//	transform->SetMin({ 16, 16 });
-		//	transform->SetMax({ 256, 256 });
-		//
-		//	GuiPanel::Sptr canPanel = canvas->Add<GuiPanel>();
-		//	
-		//	GameObject::Sptr subPanel = scene->CreateGameObject("Sub Item");
-		//	{
-		//		RectTransform::Sptr transform = subPanel->Add<RectTransform>();
-		//		transform->SetMin({ 10, 10 });
-		//		transform->SetMax({ 128, 128 });
-		//
-		//		GuiPanel::Sptr panel = subPanel->Add<GuiPanel>();
-		//		panel->SetColor(glm::vec4(1.0f, 0.0f, 0.0f, 1.0f));
-		//
-		//		Font::Sptr font = ResourceManager::CreateAsset<Font>("fonts/Roboto-Medium.ttf", 16.0f);
-		//		font->Bake();
-		//
-		//		GuiText::Sptr text = subPanel->Add<GuiText>();
-		//		text->SetText("Hello world!");
-		//		text->SetFont(font);
-		//	}
-		//
-		//	canvas->AddChild(subPanel);
-		//}
-		//
-		//GuiBatcher::SetDefaultTexture(ResourceManager::CreateAsset<Texture2D>("textures/ui-sprite.png"));
-		//GuiBatcher::SetDefaultBorderRadius(8);
 
 
 		// Call scene awake to start up all of our components
