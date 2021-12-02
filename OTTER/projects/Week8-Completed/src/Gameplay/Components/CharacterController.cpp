@@ -100,8 +100,9 @@ void CharacterController::Update(float deltaTime) {
     _body->SetLinearDamping(0.5f);
 
     GetGameObject()->SetPositionY(5.61f);
-    //GetGameObject()->LockYRotation(70.f);
-    //GetGameObject()->LockZRotation(0.f);
-    //GetGameObject()->LockXRotation(0.f);
+ // GetGameObject()->LockYRotation(70.f);
+ // GetGameObject()->LockZRotation(0.f);
+ // GetGameObject()->LockXRotation(0.f);
+    _body->GetGameObject()->SetRotation(glm::vec3(90.0f, 0.0f, 90.0f));
 
 }
