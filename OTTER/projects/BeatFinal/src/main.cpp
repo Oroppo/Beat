@@ -753,10 +753,10 @@ void CreateScene() {
 		MeshResource::Sptr BeatGem = ResourceManager::CreateAsset<MeshResource>("Gem.obj");
 		MeshResource::Sptr Vinyl = ResourceManager::CreateAsset<MeshResource>("VinylV2.obj");
 		MeshResource::Sptr CD = ResourceManager::CreateAsset<MeshResource>("CDwithUnwrap.obj");
-		MeshResource::Sptr TutorialSign = ResourceManager::CreateAsset<MeshResource>("TutorialSign.obj");
-		MeshResource::Sptr Building = ResourceManager::CreateAsset<MeshResource>("Building.obj");
-		MeshResource::Sptr Building2 = ResourceManager::CreateAsset<MeshResource>("Building2.obj");
-		MeshResource::Sptr Building3 = ResourceManager::CreateAsset<MeshResource>("Building3.obj");
+	//	MeshResource::Sptr TutorialSign = ResourceManager::CreateAsset<MeshResource>("TutorialSign.obj");
+		MeshResource::Sptr Building = ResourceManager::CreateAsset<MeshResource>("RBuilding.obj");
+		MeshResource::Sptr Building2 = ResourceManager::CreateAsset<MeshResource>("RBuilding.obj");
+		MeshResource::Sptr Building3 = ResourceManager::CreateAsset<MeshResource>("RBuilding.obj");
 		MeshResource::Sptr KBuilding1Mesh = ResourceManager::CreateAsset<MeshResource>("KBuilding.obj");
 		MeshResource::Sptr CharacterMesh = ResourceManager::CreateAsset<MeshResource>("dudeCharacter.obj");
 		MeshResource::Sptr DiscoBallMesh = ResourceManager::CreateAsset<MeshResource>("DiscoBall2.obj");
@@ -776,7 +776,7 @@ void CreateScene() {
 		Texture2D::Sptr VinylTex = ResourceManager::CreateAsset<Texture2D>("textures/VinylTex.png");
 		Texture2D::Sptr CDTex = ResourceManager::CreateAsset<Texture2D>("textures/CDTex.png");
 		Texture2D::Sptr GemTex = ResourceManager::CreateAsset<Texture2D>("textures/Gem.png"); 
-		Texture2D::Sptr TutorialSignTex = ResourceManager::CreateAsset<Texture2D>("textures/TutorialSign.png"); 
+	//	Texture2D::Sptr TutorialSignTex = ResourceManager::CreateAsset<Texture2D>("textures/TutorialSign.png"); 
 		Texture2D::Sptr CharacterTex = ResourceManager::CreateAsset<Texture2D>("textures/shirt.png");
 		Texture2D::Sptr LoseScreenTex = ResourceManager::CreateAsset<Texture2D>("textures/Game_Over_Screen.png");
 		Texture2D::Sptr SmallWallJumpTex = ResourceManager::CreateAsset<Texture2D>("textures/SmallWallJumpTexBlue.png");
@@ -860,14 +860,6 @@ void CreateScene() {
 			CDMaterial->Name = "CD";
 			CDMaterial->Set("u_Material.Diffuse", CDTex);
 			CDMaterial->Set("u_Material.Shininess", 0.1f);
-		}
-
-		Material::Sptr TutorialSignMaterial = ResourceManager::CreateAsset<Material>(basicShader);
-		{
-			TutorialSignMaterial->Name = "Tutorial Sign";
-			TutorialSignMaterial->Set("u_Material.Diffuse", TutorialSignTex);
-			TutorialSignMaterial->Set("u_Material.Shininess", 0.1f);
-			
 		}
 
 		Material::Sptr CharacterMaterial = ResourceManager::CreateAsset<Material>(basicShader);
