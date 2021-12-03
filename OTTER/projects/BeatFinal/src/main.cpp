@@ -42,6 +42,9 @@
 #include "Graphics/Texture2D.h"
 #include "Graphics/VertexTypes.h"
 #include "Graphics/TextureCube.h"
+#include "Graphics/VertexTypes.h"+
+#include "Graphics/Font.h"
+#include "Graphics/GuiBatcher.h"
 
 // Utilities
 #include "Utils/MeshBuilder.h"
@@ -88,6 +91,12 @@
 #include "Sound/AudioEngine.h"
 #include "Fmod.h"
 #include "FMOD/ToneFire.h"
+
+// GUI
+#include "Gameplay/Components/GUI/RectTransform.h"
+#include "Gameplay/Components/GUI/GuiPanel.h"
+#include "Gameplay/Components/GUI/GuiText.h"
+#include "Gameplay/InputEngine.h"
 
 
 //#define LOG_GL_NOTIFICATIONS
@@ -193,6 +202,9 @@ bool DrawSaveLoadImGui(Scene::Sptr& scene, std::string& path) {
 	// Draw a save button, and save when pressed
 	if (ImGui::Button("Save")) {
 		scene->Save(path);
+
+		std::string newFilename = std::filesystem::path(path).stem().string() + "-manifest.json";
+		ResourceManager::SaveManifest(newFilename);
 	}
 	ImGui::SameLine();
 	// Load scene from file button
@@ -200,6 +212,9 @@ bool DrawSaveLoadImGui(Scene::Sptr& scene, std::string& path) {
 		// Since it's a reference to a ptr, this will
 		// overwrite the existing scene!
 		scene = nullptr;
+
+		std::string newFilename = std::filesystem::path(path).stem().string() + "-manifest.json";
+		ResourceManager::LoadManifest(newFilename);
 		scene = Scene::Load(path);
 
 		return true;
@@ -234,7 +249,7 @@ bool DrawLightImGui(const Scene::Sptr& scene, const char* title, int ix) {
 }
 // For spawning small platforms
 void SpawnObj(MeshResource::Sptr Mesh, Material::Sptr Material, std::string ObjName = "DeezNuts", glm::vec3 pos = glm::vec3(-10.900f, 5.610f, -4.920f), 
-	GameObject* parent =nullptr, glm::vec3 rot = glm::vec3(180.0f, 0.0f, 180.0f), glm::vec3 scale = glm::vec3(0.350f, 0.350f, 0.350f)) {
+	 glm::vec3 rot = glm::vec3(180.0f, 0.0f, 180.0f), glm::vec3 scale = glm::vec3(0.350f, 0.350f, 0.350f), GameObject::Sptr parent = nullptr) {
 	// Tutorial Stuff
 	GameObject::Sptr Startplatform = scene->CreateGameObject(ObjName);
 	{
@@ -259,32 +274,16 @@ void SpawnObj(MeshResource::Sptr Mesh, Material::Sptr Material, std::string ObjN
 		ICollider::Sptr Box1 = physics->AddCollider(BoxCollider::Create(glm::vec3(0.87f, 0.5f, 0.4f)));
 		Box1->SetPosition(glm::vec3(0.f, 0.f, 0.f));
 		Box1->SetScale(glm::vec3(1,1,1));
-	}
-}
 
-
-void SpawnUI(MeshResource::Sptr Mesh, Material::Sptr Material, std::string ObjName = "DeezNuts", glm::vec3 pos = glm::vec3(0.0f, 0.0f, 0.0f),
-	glm::vec3 rot = glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3 scale = glm::vec3(1.0f, 1.0f, 1.0f)) {
-
-	GameObject::Sptr UI = scene->CreateGameObject(ObjName);
-	{
-		// Set position in the scene
-		UI->SetPostion(pos);
-		UI->SetRotation(rot);
-		UI->SetScale(scale);
-
-		UI->Add<MaterialSwapBehaviour>();
-
-		// Create and attach a renderer for the Object
-		RenderComponent::Sptr renderer = UI->Add<RenderComponent>();
-		renderer->SetMesh(Mesh);
-		renderer->SetMaterial(Material);
+		if (parent != nullptr) {
+			parent->AddChild(Startplatform);
+		}
 	}
 }
 
 // for spawning start/end platforms
 void SpawnStartPlat(MeshResource::Sptr Mesh, Material::Sptr Material, std::string ObjName = "DeezNuts", glm::vec3 pos = glm::vec3(0.0f, 0.0f, 0.0f),
-	glm::vec3 rot = glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3 scale = glm::vec3(1.0f, 1.0f, 1.0f)) {
+	glm::vec3 rot = glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3 scale = glm::vec3(1.0f, 1.0f, 1.0f), GameObject::Sptr parent = nullptr ) {
 	
 	GameObject::Sptr Startplatform = scene->CreateGameObject(ObjName);
 	{
@@ -304,11 +303,15 @@ void SpawnStartPlat(MeshResource::Sptr Mesh, Material::Sptr Material, std::strin
 		RigidBody::Sptr physics = Startplatform->Add<RigidBody>(RigidBodyType::Kinematic);
 		physics->AddCollider(BoxCollider::Create(glm::vec3(1.8f, 0.7f, 1.0f)));
 
+		if (parent != nullptr) {
+			parent->AddChild(Startplatform);
+		}
+
 	}
 }
 // for spawning Beat Gems
 void SpawnGem(MeshResource::Sptr Mesh, Material::Sptr Material, std::string ObjName = "DeezNuts", glm::vec3 pos = glm::vec3(0.0f, 0.0f, 0.0f),
-	glm::vec3 rot = glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3 scale = glm::vec3(1.0f, 1.0f, 1.0f)) {
+	glm::vec3 rot = glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3 scale = glm::vec3(1.0f, 1.0f, 1.0f), GameObject::Sptr parent = nullptr) {
 
 	GameObject::Sptr Startplatform = scene->CreateGameObject(ObjName);
 	{
@@ -330,9 +333,14 @@ void SpawnGem(MeshResource::Sptr Mesh, Material::Sptr Material, std::string ObjN
 		volume->SetFlags(TriggerTypeFlags::Statics | TriggerTypeFlags::Kinematics);
 
 		// Add a dynamic rigid body to this object
-	RigidBody::Sptr physics = Startplatform->Add<RigidBody>(RigidBodyType::Kinematic);
-	// For Gem Colliders X = left/right Y = Up/Down Z = Towards/Away
-	physics->AddCollider(BoxCollider::Create(glm::vec3(0.5f, 0.5f, 0.5f)));
+		RigidBody::Sptr physics = Startplatform->Add<RigidBody>(RigidBodyType::Kinematic);
+		// For Gem Colliders X = left/right Y = Up/Down Z = Towards/Away
+		physics->AddCollider(BoxCollider::Create(glm::vec3(0.5f, 0.5f, 0.5f)));
+
+
+		if (parent != nullptr) {
+			parent->AddChild(Startplatform);
+		}
 
 		// FIX THIS //
 		//ICollider::Sptr Box1 = physics->AddCollider(BoxCollider::Create(glm::vec3(1.0f, 1.0f, 1.0f)));
@@ -342,7 +350,7 @@ void SpawnGem(MeshResource::Sptr Mesh, Material::Sptr Material, std::string ObjN
 }
 // For Spawning Collectables (Vinyls)
 void SpawnCollectable(MeshResource::Sptr Mesh, Material::Sptr Material, std::string ObjName = "DeezNuts", glm::vec3 pos = glm::vec3(0.0f, 0.0f, 0.0f),
-	glm::vec3 rot = glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3 scale = glm::vec3(1.0f, 1.0f, 1.0f)) {
+	glm::vec3 rot = glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3 scale = glm::vec3(1.0f, 1.0f, 1.0f), GameObject::Sptr parent = nullptr) {
 
 	GameObject::Sptr Startplatform = scene->CreateGameObject(ObjName);
 	{
@@ -367,12 +375,16 @@ void SpawnCollectable(MeshResource::Sptr Mesh, Material::Sptr Material, std::str
 		ICollider::Sptr CollectCollider = physics->AddCollider(BoxCollider::Create(glm::vec3(0.5f, 0.5f, 0.5f)));
 		CollectCollider->SetPosition(glm::vec3(0.0f, 0.5f, 0.0f));
 
+		if (parent != nullptr) {
+			parent->AddChild(Startplatform);
+		}
+
 	}
 }
 
 // Spawns CDs
 void SpawnCD(MeshResource::Sptr Mesh, Material::Sptr Material, std::string ObjName = "DeezNuts", glm::vec3 pos = glm::vec3(0.0f, 0.0f, 0.0f),
-	glm::vec3 rot = glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3 scale = glm::vec3(1.0f, 1.0f, 1.0f)) {
+	glm::vec3 rot = glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3 scale = glm::vec3(1.0f, 1.0f, 1.0f), GameObject::Sptr parent = nullptr) {
 
 	GameObject::Sptr Startplatform = scene->CreateGameObject(ObjName);
 	{
@@ -391,6 +403,10 @@ void SpawnCD(MeshResource::Sptr Mesh, Material::Sptr Material, std::string ObjNa
 		renderer->SetMesh(Mesh);
 		renderer->SetMaterial(Material);
 
+		if (parent != nullptr) {
+			parent->AddChild(Startplatform);
+		}
+
 		// Add a dynamic rigid body to this object
 		//RigidBody::Sptr physics = Startplatform->Add<RigidBody>(RigidBodyType::Kinematic);
 		// For Colliders X is towards Cam, Y is up/down , Z is Left and Right
@@ -401,7 +417,7 @@ void SpawnCD(MeshResource::Sptr Mesh, Material::Sptr Material, std::string ObjNa
 }
 
 void SpawnWallJump(MeshResource::Sptr Mesh, Material::Sptr Material, std::string ObjName = "DeezNuts", glm::vec3 pos = glm::vec3(0.0f, 0.0f, 0.0f),
-	glm::vec3 rot = glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3 scale = glm::vec3(1.0f, 1.0f, 1.0f)) {
+	glm::vec3 rot = glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3 scale = glm::vec3(1.0f, 1.0f, 1.0f), GameObject::Sptr parent = nullptr) {
 
 	GameObject::Sptr Startplatform = scene->CreateGameObject(ObjName);
 	{
@@ -423,11 +439,15 @@ void SpawnWallJump(MeshResource::Sptr Mesh, Material::Sptr Material, std::string
 		ICollider::Sptr CollectCollider = physics->AddCollider(BoxCollider::Create(glm::vec3(0.3f, 0.5f, 3.2f)));
 		CollectCollider->SetPosition(glm::vec3(0.0f, 0.0f, 0.0f));
 
+		if (parent != nullptr) {
+			parent->AddChild(Startplatform);
+		}
+
 	}
 }
 
 void SpawnBuilding(MeshResource::Sptr Mesh, Material::Sptr Material, std::string ObjName = "DeezNuts", glm::vec3 pos = glm::vec3(0.0f, 0.0f, 0.0f),
-	glm::vec3 rot = glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3 scale = glm::vec3(1.0f, 1.0f, 1.0f)) {
+	glm::vec3 rot = glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3 scale = glm::vec3(1.0f, 1.0f, 1.0f), GameObject::Sptr parent = nullptr) {
 
 	GameObject::Sptr Building = scene->CreateGameObject(ObjName);
 	{
@@ -449,11 +469,15 @@ void SpawnBuilding(MeshResource::Sptr Mesh, Material::Sptr Material, std::string
 		ICollider::Sptr CollectCollider = physics->AddCollider(BoxCollider::Create(glm::vec3(1.000f, 3.350f, 1.000f)));
 		CollectCollider->SetPosition(glm::vec3(0.020f, 3.660f, -0.060f));
 
+		if (parent != nullptr) {
+			parent->AddChild(Building);
+		}
+
 	}
 }
 
 void SpawnBuilding2(MeshResource::Sptr Mesh, Material::Sptr Material, std::string ObjName = "DeezNuts", glm::vec3 pos = glm::vec3(0.0f, 0.0f, 0.0f),
-	glm::vec3 rot = glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3 scale = glm::vec3(1.0f, 1.0f, 1.0f)) {
+	glm::vec3 rot = glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3 scale = glm::vec3(1.0f, 1.0f, 1.0f), GameObject::Sptr parent = nullptr) {
 
 	GameObject::Sptr Building2 = scene->CreateGameObject(ObjName);
 	{
@@ -475,11 +499,15 @@ void SpawnBuilding2(MeshResource::Sptr Mesh, Material::Sptr Material, std::strin
 		ICollider::Sptr CollectCollider = physics->AddCollider(BoxCollider::Create(glm::vec3(1.700f, 3.500f, 1.000f)));
 		CollectCollider->SetPosition(glm::vec3(-0.050f, 3.290f, 0.0f));
 
+		if (parent != nullptr) {
+			parent->AddChild(Building2);
+		}
+
 	}
 }
 
 void SpawnBuilding3(MeshResource::Sptr Mesh, Material::Sptr Material, std::string ObjName = "DeezNuts", glm::vec3 pos = glm::vec3(0.0f, 0.0f, 0.0f),
-	glm::vec3 rot = glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3 scale = glm::vec3(1.0f, 1.0f, 1.0f)) {
+	glm::vec3 rot = glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3 scale = glm::vec3(1.0f, 1.0f, 1.0f), GameObject::Sptr parent = nullptr) {
 
 	GameObject::Sptr Building3 = scene->CreateGameObject(ObjName);
 	{
@@ -501,11 +529,15 @@ void SpawnBuilding3(MeshResource::Sptr Mesh, Material::Sptr Material, std::strin
 		ICollider::Sptr CollectCollider = physics->AddCollider(BoxCollider::Create(glm::vec3(1.700f, 4.900f, 1.700f)));
 		CollectCollider->SetPosition(glm::vec3(-0.030f, 5.030f, 0.240f));
 
+		if (parent != nullptr) {
+			parent->AddChild(Building3);
+		}
+
 	}
 }
 
 void SpawnSmallWallJump(MeshResource::Sptr Mesh, Material::Sptr Material, std::string ObjName = "DeezNuts", glm::vec3 pos = glm::vec3(0.0f, 0.0f, 0.0f),
-	glm::vec3 rot = glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3 scale = glm::vec3(1.0f, 1.0f, 1.0f)) {
+	glm::vec3 rot = glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3 scale = glm::vec3(1.0f, 1.0f, 1.0f), GameObject::Sptr parent = nullptr) {
 
 	GameObject::Sptr SmallWallJump = scene->CreateGameObject(ObjName);
 	{
@@ -527,11 +559,16 @@ void SpawnSmallWallJump(MeshResource::Sptr Mesh, Material::Sptr Material, std::s
 		ICollider::Sptr CollectCollider = physics->AddCollider(BoxCollider::Create(glm::vec3(0.3f, 0.5f, 2.5f)));
 		CollectCollider->SetPosition(glm::vec3(0.0f, 0.0f, 0.0f));
 
+		if (parent != nullptr) {
+			parent->AddChild(SmallWallJump);
+
+		}
+
 	}
 }
 
 void SpawnSuperSmallWallJump(MeshResource::Sptr Mesh, Material::Sptr Material, std::string ObjName = "DeezNuts", glm::vec3 pos = glm::vec3(0.0f, 0.0f, 0.0f),
-	glm::vec3 rot = glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3 scale = glm::vec3(1.0f, 1.0f, 1.0f)) {
+	glm::vec3 rot = glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3 scale = glm::vec3(1.0f, 1.0f, 1.0f), GameObject::Sptr parent = nullptr) {
 
 	GameObject::Sptr SuperSmallWallJump = scene->CreateGameObject(ObjName);
 	{
@@ -553,6 +590,11 @@ void SpawnSuperSmallWallJump(MeshResource::Sptr Mesh, Material::Sptr Material, s
 		ICollider::Sptr CollectCollider = physics->AddCollider(BoxCollider::Create(glm::vec3(0.100f, 0.200f, 0.800f)));
 		CollectCollider->SetPosition(glm::vec3(0.0f, 0.0f, 0.0f));
 
+		if (parent != nullptr) {
+			parent->AddChild(SuperSmallWallJump);
+
+		}
+
 	}
 }
 
@@ -569,7 +611,7 @@ void DrawMaterialsWindow() {
 }
 
 void SpawnBackGroundCar(MeshResource::Sptr Mesh, Material::Sptr Material, std::string ObjName = "DeezNuts", glm::vec3 pos = glm::vec3(0.0f, 0.0f, 0.0f),
-	glm::vec3 rot = glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3 scale = glm::vec3(1.0f, 1.0f, 1.0f)) {
+	glm::vec3 rot = glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3 scale = glm::vec3(1.0f, 1.0f, 1.0f), GameObject::Sptr parent = nullptr) {
 
 	GameObject::Sptr Car1 = scene->CreateGameObject(ObjName);
 	{
@@ -589,12 +631,17 @@ void SpawnBackGroundCar(MeshResource::Sptr Mesh, Material::Sptr Material, std::s
 		// Is background Object and therefore has no colliders
 		// Add a dynamic rigid body to this object
 		RigidBody::Sptr physics = Car1->Add<RigidBody>(RigidBodyType::Kinematic);
+
+		if (parent != nullptr) {
+			parent->AddChild(Car1);
+
+		}
 	}
 }
 
 
 void SpawnForeGroundCar(MeshResource::Sptr Mesh, Material::Sptr Material, std::string ObjName = "DeezNuts", glm::vec3 pos = glm::vec3(0.0f, 0.0f, 0.0f),
-	glm::vec3 rot = glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3 scale = glm::vec3(1.0f, 1.0f, 1.0f)) {
+	glm::vec3 rot = glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3 scale = glm::vec3(1.0f, 1.0f, 1.0f), GameObject::Sptr parent = nullptr) {
 
 	GameObject::Sptr Car1 = scene->CreateGameObject(ObjName);
 	{
@@ -614,11 +661,16 @@ void SpawnForeGroundCar(MeshResource::Sptr Mesh, Material::Sptr Material, std::s
 		// Is background Object and therefore has no colliders
 		// Add a dynamic rigid body to this object
 		RigidBody::Sptr physics = Car1->Add<RigidBody>(RigidBodyType::Kinematic);
+
+		if (parent != nullptr) {
+			parent->AddChild(Car1);
+
+		}
 	}
 }
 
 void SpawnBackGroundBuilding(MeshResource::Sptr Mesh, Material::Sptr Material, std::string ObjName = "DeezNuts", glm::vec3 pos = glm::vec3(0.0f, 0.0f, 0.0f),
-	glm::vec3 rot = glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3 scale = glm::vec3(1.0f, 1.0f, 1.0f)) {
+	glm::vec3 rot = glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3 scale = glm::vec3(1.0f, 1.0f, 1.0f), GameObject::Sptr parent = nullptr) {
 
 	GameObject::Sptr KBuilding = scene->CreateGameObject(ObjName);
 	{
@@ -639,6 +691,11 @@ void SpawnBackGroundBuilding(MeshResource::Sptr Mesh, Material::Sptr Material, s
 		// Is background Object and therefore has no colliders
 		// Add a dynamic rigid body to this object
 		RigidBody::Sptr physics = KBuilding->Add<RigidBody>(RigidBodyType::Kinematic);
+
+		if (parent != nullptr) {
+			parent->AddChild(KBuilding);
+
+		}
 	}
 }
 
@@ -922,198 +979,227 @@ void CreateScene() {
 			scene->MainCamera = cam;
 		}
 
+		//MAIN BLOCK GAMEOBJECTS
+		//Move these if you want to move entire blocks 
+		//It's Good practice to place these at the approximate centre of each block
 
-		//GameObject::Sptr Block1 = scene->CreateGameObject("Block1");
-		//{
-		//	Block1->SetPostion(glm::vec3(0,0,0));
-		//	Block1->SetRotation(glm::vec3(0, 0, 0));
-		//	Block1->SetScale(glm::vec3(1, 1, 1));
-		//
-		//	//Block1->Add<LevelMover>();
-		//}
+		GameObject::Sptr TutorialBlock = scene->CreateGameObject("TutorialBlock");
+		GameObject::Sptr Block1 = scene->CreateGameObject("Block1");
+		GameObject::Sptr Block2 = scene->CreateGameObject("Block2");
+		GameObject::Sptr Block3 = scene->CreateGameObject("Block3");
+		GameObject::Sptr Block4 = scene->CreateGameObject("Block4");
+		GameObject::Sptr Block5 = scene->CreateGameObject("Block5");
+		GameObject::Sptr Block6 = scene->CreateGameObject("Block6");
+		GameObject::Sptr Block7 = scene->CreateGameObject("Block7");
+		GameObject::Sptr Block8 = scene->CreateGameObject("Block8");
+		{
+			Block1->Add<LevelMover>();
+			Block2->Add<LevelMover>();
+			Block3->Add<LevelMover>();
+			Block4->Add<LevelMover>();
+			Block5->Add<LevelMover>();
+			Block6->Add<LevelMover>();
+			Block7->Add<LevelMover>();
+			Block8->Add<LevelMover>();
+			TutorialBlock->Add<LevelMover>();
 
-		GameObject* parent = nullptr;
+			//These have rigid bodies so that our objects can move
+			auto rb1 = Block1->Add<RigidBody>();
+			auto rb2 = Block2->Add<RigidBody>();
+			auto rb3 = Block3->Add<RigidBody>();
+			auto rb4 = Block4->Add<RigidBody>();
+			auto rb5 = Block5->Add<RigidBody>();
+			auto rb6 = Block6->Add<RigidBody>();
+			auto rb7 = Block7->Add<RigidBody>();
+			auto rb8 = Block8->Add<RigidBody>();
+			auto rbt = TutorialBlock->Add<RigidBody>();
+		}
 
+		//This is a game object built purely to manage game systems i.e. Scene Swaps
+		//Level Spawning, Score Counting, and a few miscellaneous systems
+		GameObject::Sptr GameManager = scene->CreateGameObject("GameManager");
+		{
+			//Pos-Rot-Scale Doesn't matter
 
-		//UI Elements
-			//SpawnUI();
-			//SpawnUI();
-			//SpawnUI();
-			//SpawnUI();
-			//SpawnUI();
-			// 
-		//Game Objects
+			//ScoreComponent
+			//LevelSpawningComponent
+			//Scene Swapper
+
+		}
+	
+
 		// Tutorial
 		
-		// Background and forground vehicles
+		// Background and forground vehicles\\
+		Give these Parents for Foreground/Background Blocks if we have enough objects to do that with!
 		SpawnBackGroundCar(Car1Mesh, Car1Material, "Car1", glm::vec3(14.870f, 7.80f, 2.7f), glm::vec3(90.0f, 0.0f, -90.0f), glm::vec3(0.250f, 0.250f, 0.250f));
 		SpawnBackGroundCar(SemiTruckMesh, SemiTruckMaterial, "Semi1", glm::vec3(28.870f, 7.80f, 2.7f), glm::vec3(90.0f, 0.0f, -90.0f), glm::vec3(0.250f, 0.250f, 0.250f));
 		SpawnForeGroundCar(Car1Mesh, Car1Material, "Car2", glm::vec3(-9.970f, 0.470f, -1.90f), glm::vec3(90.0f, 0.0f, 90.0f), glm::vec3(0.250f, 0.250f, 0.250f));
 		SpawnForeGroundCar(PickupTruckMesh, PickupTruckMaterial, "Pickup1", glm::vec3(-18.970f, 0.470f, -1.90f), glm::vec3(90.0f, 0.0f, 90.0f), glm::vec3(0.250f, 0.250f, 0.250f));
 		SpawnBackGroundBuilding(KBuilding1Mesh, KBuildingMaterial, "KBuilding1", glm::vec3(0.0f, 21.880f, -36.040f), glm::vec3(90.0f, 0.0f, 0.0f), glm::vec3(0.780f, 1.470f, 1.0f));
 
-		//Make a component that 
-		/*SpawnStartPlat(StartPlatform, StartPlatformMaterial, "StartPlatform", glm::vec3(-9.820f, 5.610f, -4.450), glm::vec3(90.0f, 0.0f, 0.0f), glm::vec3(0.350f, 0.350f, 0.350f));
-		SpawnObj(SmallPlatform, SmallPlatformMaterial, "Small Platform 1", glm::vec3(-6.070f, 5.610f, -4.150f), parent, glm::vec3(180.0f, 0.0f, 180.0f), glm::vec3(0.350f, 0.350f, 0.350f));
-		SpawnObj(SmallPlatform, SmallPlatformMaterial, "Small Platform 2", glm::vec3(-3.320f, 5.610f, -2.200f), parent, glm::vec3(180.0f, 0.0f, 180.0f), glm::vec3(0.350f, 0.350f, 0.350f));
-		SpawnObj(SmallPlatform, SmallPlatformMaterial, "Small Platform 3", glm::vec3(-0.400f, 5.610f, -4.040f), parent, glm::vec3(180.0f, 0.0f, 180.0f), glm::vec3(0.350f, 0.350f, 0.350f));
-		SpawnObj(SmallPlatform, SmallPlatformMaterial, "Small Platform 4", glm::vec3(-0.060f, 5.610f, 4.450f), parent,  glm::vec3(180.0f, 0.0f, 180.0f), glm::vec3(0.350f, 0.350f, 0.350f));
-		SpawnWallJump(WallJump, WallJumpMaterial, "Wall Jump 1", glm::vec3(1.680f, 5.610f, 2.610f), glm::vec3(180.0f, 0.0f, 180.0f), glm::vec3(0.500f, 0.210f, 1.500f));
-		SpawnWallJump(WallJump, WallJumpMaterial, "Wall Jump 2", glm::vec3(4.350f, 5.610f, 3.930f), glm::vec3(180.0f, 0.0f, 180.0f), glm::vec3(0.500f, 0.210f, 1.500f));
-		SpawnGem(BeatGem, BeatGemMaterial, "BeatGem", glm::vec3(2.410f, 5.610f, -3.160f), glm::vec3(90.0f, 0.0f, 180.0f), glm::vec3(0.500f, 0.500f, 0.500f));
-		SpawnCollectable(Vinyl, VinylMaterial, "Vinyl", glm::vec3(-0.040f, 5.610f, 5.120f), glm::vec3(90.000f, 0.0f, 90.000f), glm::vec3(1.000f, 1.000f, 1.000f));
-		//SpawnObj(TutorialSign, TutorialSignMaterial, "Tutorial Sign 1", glm::vec3(-9.770f, 5.690f, -3.890f), glm::vec3(90.0f, 0.0f, 90.0f), glm::vec3(0.310f, 0.310f, 0.310f));
-		//SpawnObj(TutorialSign, TutorialSignMaterial, "Tutorial Sign 2", glm::vec3(-0.390f, 5.690f, -3.440f), glm::vec3(90.0f, 0.0f, 90.0f), glm::vec3(0.310f, 0.310f, 0.310f));
-		SpawnStartPlat(StartPlatform, StartPlatformMaterial, "EndPlatform", glm::vec3(6.360f, 5.610f, -4.920f), glm::vec3(90.0f, 0.0f, 0.0f), glm::vec3(0.350f, 0.350f, 0.350f));
-		SpawnBackGroundCar(Car1Mesh, Car1Material, "Car1", glm::vec3(14.870f, 9.80f, 2.7f), glm::vec3(90.0f, 0.0f, -90.0f), glm::vec3(0.250f, 0.250f, 0.250f));
-		SpawnBackGroundCar(SemiTruckMesh, SemiTruckMaterial, "Semi1", glm::vec3(28.870f, 9.80f, 2.7f), glm::vec3(90.0f, 0.0f, -90.0f), glm::vec3(0.250f, 0.250f, 0.250f));
-		SpawnForeGroundCar(Car1Mesh, Car1Material, "Car2", glm::vec3(-9.970f, 0.470f, -1.90f), glm::vec3(90.0f, 0.0f, 90.0f), glm::vec3(0.250f, 0.250f, 0.250f));
-		SpawnForeGroundCar(PickupTruckMesh, PickupTruckMaterial, "Pickup1", glm::vec3(-18.970f, 0.470f, -1.90f), glm::vec3(90.0f, 0.0f, 90.0f), glm::vec3(0.250f, 0.250f, 0.250f));
-		*/
+		//Give those tutorial Signs Textures
+		//SpawnStartPlat(StartPlatform, StartPlatformMaterial, "StartPlatform", glm::vec3(-9.820f, 5.610f, -4.450), glm::vec3(90.0f, 0.0f, 0.0f), glm::vec3(0.350f, 0.350f, 0.350f), TutorialBlock);
+		//SpawnObj(SmallPlatform, SmallPlatformMaterial, "Small Platform 1", glm::vec3(-6.070f, 5.610f, -4.150f), glm::vec3(180.0f, 0.0f, 180.0f), glm::vec3(0.350f, 0.350f, 0.350f), TutorialBlock);
+		//SpawnObj(SmallPlatform, SmallPlatformMaterial, "Small Platform 2", glm::vec3(-3.320f, 5.610f, -2.200f), glm::vec3(180.0f, 0.0f, 180.0f), glm::vec3(0.350f, 0.350f, 0.350f), TutorialBlock);
+		//SpawnObj(SmallPlatform, SmallPlatformMaterial, "Small Platform 3", glm::vec3(-0.400f, 5.610f, -4.040f), glm::vec3(180.0f, 0.0f, 180.0f), glm::vec3(0.350f, 0.350f, 0.350f), TutorialBlock);
+		//SpawnObj(SmallPlatform, SmallPlatformMaterial, "Small Platform 4", glm::vec3(-0.060f, 5.610f, 4.450f),  glm::vec3(180.0f, 0.0f, 180.0f), glm::vec3(0.350f, 0.350f, 0.350f), TutorialBlock);
+		//SpawnWallJump(WallJump, WallJumpMaterial, "Wall Jump 1", glm::vec3(1.680f, 5.610f, 2.610f), glm::vec3(180.0f, 0.0f, 180.0f), glm::vec3(0.500f, 0.210f, 1.500f), TutorialBlock);
+		//SpawnWallJump(WallJump, WallJumpMaterial, "Wall Jump 2", glm::vec3(4.350f, 5.610f, 3.930f), glm::vec3(180.0f, 0.0f, 180.0f), glm::vec3(0.500f, 0.210f, 1.500f), TutorialBlock);
+		//SpawnGem(BeatGem, BeatGemMaterial, "BeatGem", glm::vec3(2.410f, 5.610f, -3.160f), glm::vec3(90.0f, 0.0f, 180.0f), glm::vec3(0.500f, 0.500f, 0.500f), TutorialBlock);
+		//SpawnCollectable(Vinyl, VinylMaterial, "Vinyl", glm::vec3(-0.040f, 5.610f, 5.120f), glm::vec3(90.000f, 0.0f, 90.000f), glm::vec3(1.000f, 1.000f, 1.000f), TutorialBlock);
+		////SpawnObj(TutorialSign, TutorialSignMaterial, "Tutorial Sign 1", glm::vec3(-9.770f, 5.690f, -3.890f), glm::vec3(90.0f, 0.0f, 90.0f), glm::vec3(0.310f, 0.310f, 0.310f));
+		////SpawnObj(TutorialSign, TutorialSignMaterial, "Tutorial Sign 2", glm::vec3(-0.390f, 5.690f, -3.440f), glm::vec3(90.0f, 0.0f, 90.0f), glm::vec3(0.310f, 0.310f, 0.310f));
+		//SpawnStartPlat(StartPlatform, StartPlatformMaterial, "EndPlatform", glm::vec3(6.360f, 5.610f, -4.920f), glm::vec3(90.0f, 0.0f, 0.0f), glm::vec3(0.350f, 0.350f, 0.350f), TutorialBlock);
+		//SpawnBackGroundCar(Car1Mesh, Car1Material, "Car1", glm::vec3(14.870f, 9.80f, 2.7f), glm::vec3(90.0f, 0.0f, -90.0f), glm::vec3(0.250f, 0.250f, 0.250f), TutorialBlock);
+		//SpawnBackGroundCar(SemiTruckMesh, SemiTruckMaterial, "Semi1", glm::vec3(28.870f, 9.80f, 2.7f), glm::vec3(90.0f, 0.0f, -90.0f), glm::vec3(0.250f, 0.250f, 0.250f), TutorialBlock);
+		//SpawnForeGroundCar(Car1Mesh, Car1Material, "Car2", glm::vec3(-9.970f, 0.470f, -1.90f), glm::vec3(90.0f, 0.0f, 90.0f), glm::vec3(0.250f, 0.250f, 0.250f), TutorialBlock);
+		//SpawnForeGroundCar(PickupTruckMesh, PickupTruckMaterial, "Pickup1", glm::vec3(-18.970f, 0.470f, -1.90f), glm::vec3(90.0f, 0.0f, 90.0f), glm::vec3(0.250f, 0.250f, 0.250f), TutorialBlock);
+		
 
 		// 1st Block
-		/*
-		SpawnStartPlat(StartPlatform, StartPlatformMaterial, "StartPlatform Block1", glm::vec3(-9.820f, 5.610f, -4.450), glm::vec3(90.0f, 0.0f, 0.0f), glm::vec3(0.350f, 0.350f, 0.350f));
-		SpawnObj(SmallPlatform, SmallPlatformMaterial, "Small Platform Block1 1", glm::vec3(-6.070f, 5.610f, -4.150f), parent, glm::vec3(180.0f, 0.0f, 180.0f), glm::vec3(0.350f, 0.350f, 0.350f));
-		SpawnObj(SmallPlatform, SmallPlatformMaterial, "Small Platform Block1 2", glm::vec3(-2.840f, 5.610f, -4.150f), parent, glm::vec3(180.0f, 0.0f, 180.0f), glm::vec3(0.350f, 0.350f, 0.350f));
-		SpawnObj(SmallPlatform, SmallPlatformMaterial, "Small Platform Block1 3", glm::vec3(2.760f, 5.610f, -1.770f), parent, glm::vec3(180.0f, 0.0f, 180.0f), glm::vec3(0.350f, 0.350f, 0.350f));
-		SpawnGem(BeatGem, BeatGemMaterial, "BeatGem Block1", glm::vec3(0.120f, 5.610f, -3.160f), glm::vec3(90.0f, 0.0f, 180.0f), glm::vec3(0.500f, 0.500f, 0.500f));
-		SpawnCollectable(Vinyl, VinylMaterial, "Vinyl Block1", glm::vec3(5.640f, 5.610f, 0.080f), glm::vec3(90.000f, 0.0f, 90.000f), glm::vec3(1.000f, 1.000f, 1.000f));
-		SpawnStartPlat(StartPlatform, StartPlatformMaterial, "EndPlatform Block1", glm::vec3(6.360f, 5.610f, -4.920f), glm::vec3(90.0f, 0.0f, 0.0f), glm::vec3(0.350f, 0.350f, 0.350f));
 		
-		// CDs for Block 1
-		SpawnCD(CD, CDMaterial, "CD Block1 1", glm::vec3(-6.030f, 5.610f, -3.220f), glm::vec3(90.000f, 0.0f, 90.000f), glm::vec3(1.000f, 1.000f, 1.000f));
-		SpawnCD(CD, CDMaterial, "CD Block1 2", glm::vec3(-2.710f, 5.610f, -3.190f), glm::vec3(90.000f, 0.0f, 90.000f), glm::vec3(1.000f, 1.000f, 1.000f));
-		SpawnCD(CD, CDMaterial, "CD Block1 3", glm::vec3(0.170f, 5.610f, -2.380f), glm::vec3(90.000f, 0.0f, 90.000f), glm::vec3(1.000f, 1.000f, 1.000f));
-		SpawnCD(CD, CDMaterial, "CD Block1 4", glm::vec3(2.640f, 5.610f, -0.770f), glm::vec3(90.000f, 0.0f, 90.000f), glm::vec3(1.000f, 1.000f, 1.000f));
-		*/
+		//SpawnStartPlat(StartPlatform, StartPlatformMaterial, "StartPlatform Block1", glm::vec3(-9.820f, 5.610f, -4.450), glm::vec3(90.0f, 0.0f, 0.0f), glm::vec3(0.350f, 0.350f, 0.350f), Block1);
+		//SpawnObj(SmallPlatform, SmallPlatformMaterial, "Small Platform Block1 1", glm::vec3(-6.070f, 5.610f, -4.150f), glm::vec3(180.0f, 0.0f, 180.0f), glm::vec3(0.350f, 0.350f, 0.350f), Block1);
+		//SpawnObj(SmallPlatform, SmallPlatformMaterial, "Small Platform Block1 2", glm::vec3(-2.840f, 5.610f, -4.150f), glm::vec3(180.0f, 0.0f, 180.0f), glm::vec3(0.350f, 0.350f, 0.350f), Block1);
+		//SpawnObj(SmallPlatform, SmallPlatformMaterial, "Small Platform Block1 3", glm::vec3(2.760f, 5.610f, -1.770f), glm::vec3(180.0f, 0.0f, 180.0f), glm::vec3(0.350f, 0.350f, 0.350f), Block1);
+		//SpawnGem(BeatGem, BeatGemMaterial, "BeatGem Block1", glm::vec3(0.120f, 5.610f, -3.160f), glm::vec3(90.0f, 0.0f, 180.0f), glm::vec3(0.500f, 0.500f, 0.500f), Block1);
+		//SpawnCollectable(Vinyl, VinylMaterial, "Vinyl Block1", glm::vec3(5.640f, 5.610f, 0.080f), glm::vec3(90.000f, 0.0f, 90.000f), glm::vec3(1.000f, 1.000f, 1.000f), Block1);
+		//SpawnStartPlat(StartPlatform, StartPlatformMaterial, "EndPlatform Block1", glm::vec3(6.360f, 5.610f, -4.920f), glm::vec3(90.0f, 0.0f, 0.0f), glm::vec3(0.350f, 0.350f, 0.350f), Block1);
+		//
+		//// CDs for Block 1
+		//SpawnCD(CD, CDMaterial, "CD Block1 1", glm::vec3(-6.030f, 5.610f, -3.220f), glm::vec3(90.000f, 0.0f, 90.000f), glm::vec3(1.000f, 1.000f, 1.000f), Block1);
+		//SpawnCD(CD, CDMaterial, "CD Block1 2", glm::vec3(-2.710f, 5.610f, -3.190f), glm::vec3(90.000f, 0.0f, 90.000f), glm::vec3(1.000f, 1.000f, 1.000f), Block1);
+		//SpawnCD(CD, CDMaterial, "CD Block1 3", glm::vec3(0.170f, 5.610f, -2.380f), glm::vec3(90.000f, 0.0f, 90.000f), glm::vec3(1.000f, 1.000f, 1.000f), Block1);
+		//SpawnCD(CD, CDMaterial, "CD Block1 4", glm::vec3(2.640f, 5.610f, -0.770f), glm::vec3(90.000f, 0.0f, 90.000f), glm::vec3(1.000f, 1.000f, 1.000f), Block1);
+		
 		
 		// 2nd Block
-		/*
-		SpawnStartPlat(StartPlatform, StartPlatformMaterial, "StartPlatform Block2", glm::vec3(-9.820f, 5.610f, -4.450), glm::vec3(90.0f, 0.0f, 0.0f), glm::vec3(0.350f, 0.350f, 0.350f));
-		SpawnWallJump(WallJump, WallJumpMaterial, "Wall Jump Block2 1", glm::vec3(-8.590f, 5.610f, 3.210f), glm::vec3(180.0f, 0.0f, 180.0f), glm::vec3(0.500f, 0.040f, 1.500f));
-		SpawnWallJump(WallJump, WallJumpMaterial, "Wall Jump Block2 2", glm::vec3(-6.660f, 5.610f, 2.000f), glm::vec3(180.0f, 0.0f, 180.0f), glm::vec3(0.500f, 0.040f, 1.500f));
-		SpawnObj(SmallPlatform, SmallPlatformMaterial, "Small Platform Block2 1", glm::vec3(-4.400f, 5.610f, 4.000f), parent, glm::vec3(180.0f, 0.0f, 180.0f), glm::vec3(0.350f, 0.350f, 0.350f));
-		SpawnObj(SmallPlatform, SmallPlatformMaterial, "Small Platform Block2 2", glm::vec3(1.940f, 5.610f, -4.150f), parent, glm::vec3(180.0f, 0.0f, 180.0f), glm::vec3(0.350f, 0.350f, 0.350f));
-		SpawnGem(BeatGem, BeatGemMaterial, "BeatGem Block2", glm::vec3(-1.340f, 5.610f, 0.500f), glm::vec3(90.0f, 0.0f, 180.0f), glm::vec3(0.500f, 0.500f, 0.500f));
-		SpawnStartPlat(StartPlatform, StartPlatformMaterial, "EndPlatform Block2", glm::vec3(6.360f, 5.610f, -4.920f), glm::vec3(90.0f, 0.0f, 0.0f), glm::vec3(0.350f, 0.350f, 0.350f));
 		
-		// CDs for Block 2
-		SpawnCD(CD, CDMaterial, "CD Block2 1", glm::vec3(-7.720f, 5.610f, -0.030f), glm::vec3(90.000f, 0.0f, 90.000f), glm::vec3(1.000f, 1.000f, 1.000f));
-		SpawnCD(CD, CDMaterial, "CD Block2 2", glm::vec3(-7.720f, 5.610f, 2.130f), glm::vec3(90.000f, 0.0f, 90.000f), glm::vec3(1.000f, 1.000f, 1.000f));
-		SpawnCD(CD, CDMaterial, "CD Block2 3", glm::vec3(-7.720f, 5.610f, 4.610f), glm::vec3(90.000f, 0.0f, 90.000f), glm::vec3(1.000f, 1.000f, 1.000f));
-		SpawnCD(CD, CDMaterial, "CD Block2 4", glm::vec3(-4.420f, 5.610f, 4.750f), glm::vec3(90.000f, 0.0f, 90.000f), glm::vec3(1.000f, 1.000f, 1.000f));
-		SpawnCD(CD, CDMaterial, "CD Block2 5", glm::vec3(-1.340f, 5.610f, 0.810f), glm::vec3(90.000f, 0.0f, 90.000f), glm::vec3(1.000f, 1.000f, 1.000f));
-		SpawnCD(CD, CDMaterial, "CD Block2 6", glm::vec3(1.920f, 5.610f, -3.610f), glm::vec3(90.000f, 0.0f, 90.000f), glm::vec3(1.000f, 1.000f, 1.000f));
-		*/
+		//SpawnStartPlat(StartPlatform, StartPlatformMaterial, "StartPlatform Block2", glm::vec3(-9.820f, 5.610f, -4.450), glm::vec3(90.0f, 0.0f, 0.0f), glm::vec3(0.350f, 0.350f, 0.350f), Block2);
+		//SpawnWallJump(WallJump, WallJumpMaterial, "Wall Jump Block2 1", glm::vec3(-8.590f, 5.610f, 3.210f), glm::vec3(180.0f, 0.0f, 180.0f), glm::vec3(0.500f, 0.040f, 1.500f), Block2);
+		//SpawnWallJump(WallJump, WallJumpMaterial, "Wall Jump Block2 2", glm::vec3(-6.660f, 5.610f, 2.000f), glm::vec3(180.0f, 0.0f, 180.0f), glm::vec3(0.500f, 0.040f, 1.500f), Block2);
+		//SpawnObj(SmallPlatform, SmallPlatformMaterial, "Small Platform Block2 1", glm::vec3(-4.400f, 5.610f, 4.000f), glm::vec3(180.0f, 0.0f, 180.0f), glm::vec3(0.350f, 0.350f, 0.350f), Block2);
+		//SpawnObj(SmallPlatform, SmallPlatformMaterial, "Small Platform Block2 2", glm::vec3(1.940f, 5.610f, -4.150f), glm::vec3(180.0f, 0.0f, 180.0f), glm::vec3(0.350f, 0.350f, 0.350f), Block2);
+		//SpawnGem(BeatGem, BeatGemMaterial, "BeatGem Block2", glm::vec3(-1.340f, 5.610f, 0.500f), glm::vec3(90.0f, 0.0f, 180.0f), glm::vec3(0.500f, 0.500f, 0.500f), Block2);
+		//SpawnStartPlat(StartPlatform, StartPlatformMaterial, "EndPlatform Block2", glm::vec3(6.360f, 5.610f, -4.920f), glm::vec3(90.0f, 0.0f, 0.0f), glm::vec3(0.350f, 0.350f, 0.350f), Block2);
+		//
+		//// CDs for Block 2
+		//SpawnCD(CD, CDMaterial, "CD Block2 1", glm::vec3(-7.720f, 5.610f, -0.030f), glm::vec3(90.000f, 0.0f, 90.000f), glm::vec3(1.000f, 1.000f, 1.000f), Block2);
+		//SpawnCD(CD, CDMaterial, "CD Block2 2", glm::vec3(-7.720f, 5.610f, 2.130f), glm::vec3(90.000f, 0.0f, 90.000f), glm::vec3(1.000f, 1.000f, 1.000f), Block2);
+		//SpawnCD(CD, CDMaterial, "CD Block2 3", glm::vec3(-7.720f, 5.610f, 4.610f), glm::vec3(90.000f, 0.0f, 90.000f), glm::vec3(1.000f, 1.000f, 1.000f), Block2);
+		//SpawnCD(CD, CDMaterial, "CD Block2 4", glm::vec3(-4.420f, 5.610f, 4.750f), glm::vec3(90.000f, 0.0f, 90.000f), glm::vec3(1.000f, 1.000f, 1.000f), Block2);
+		//SpawnCD(CD, CDMaterial, "CD Block2 5", glm::vec3(-1.340f, 5.610f, 0.810f), glm::vec3(90.000f, 0.0f, 90.000f), glm::vec3(1.000f, 1.000f, 1.000f), Block2);
+		//SpawnCD(CD, CDMaterial, "CD Block2 6", glm::vec3(1.920f, 5.610f, -3.610f), glm::vec3(90.000f, 0.0f, 90.000f), glm::vec3(1.000f, 1.000f, 1.000f), Block2);
+		
 
 		// 3rd Block
-		/*
-		SpawnStartPlat(StartPlatform, StartPlatformMaterial, "StartPlatform Block3", glm::vec3(-9.820f, 5.610f, -4.450), glm::vec3(90.0f, 0.0f, 0.0f), glm::vec3(0.350f, 0.350f, 0.350f));
-		SpawnObj(SmallPlatform, SmallPlatformMaterial, "Small Platform Block3 1", glm::vec3(-4.360f, 5.610f, -0.290f), parent, glm::vec3(180.0f, 0.0f, 180.0f), glm::vec3(0.350f, 0.350f, 0.350f));
-		SpawnObj(SmallPlatform, SmallPlatformMaterial, "Small Platform Block3 2", glm::vec3(0.350f, 5.610f, -0.290f), parent, glm::vec3(180.0f, 0.0f, 180.0f), glm::vec3(0.350f, 0.350f, 0.350f));
-		SpawnObj(FallingPlat, PianoMaterial, "Falling Platform", glm::vec3(0.390f, 5.610f, -4.150f), parent, glm::vec3(180.0f, 0.0f, 180.0f), glm::vec3(0.350f, 0.350f, 0.350f));
-		SpawnObj(SmallPlatform, SmallPlatformMaterial, "Small Platform Block3 4", glm::vec3(3.220f, 5.610f, -4.150f), parent, glm::vec3(180.0f, 0.0f, 180.0f), glm::vec3(0.350f, 0.350f, 0.350f));
-		SpawnGem(BeatGem, BeatGemMaterial, "BeatGem Block3 1", glm::vec3(-6.870f, 5.610f, -1.970f), glm::vec3(90.0f, 0.0f, 180.0f), glm::vec3(0.500f, 0.500f, 0.500f));
-		SpawnGem(BeatGem, BeatGemMaterial, "BeatGem Block3 2", glm::vec3(-1.870f, 5.610f, -1.970f), glm::vec3(90.0f, 0.0f, 180.0f), glm::vec3(0.500f, 0.500f, 0.500f));
-		SpawnCollectable(Vinyl, VinylMaterial, "Vinyl Block3", glm::vec3(0.370f, 5.610f, -2.830f), glm::vec3(90.000f, 0.0f, 90.000f), glm::vec3(1.000f, 1.000f, 1.000f));
-		SpawnStartPlat(StartPlatform, StartPlatformMaterial, "EndPlatform Block3", glm::vec3(6.360f, 5.610f, -4.920f), glm::vec3(90.0f, 0.0f, 0.0f), glm::vec3(0.350f, 0.350f, 0.350f));
 		
-		// CDs for Block 3
-		SpawnCD(CD, CDMaterial, "CD Block3 1", glm::vec3(-4.390f, 5.610f, 0.440f), glm::vec3(90.000f, 0.0f, 90.000f), glm::vec3(1.000f, 1.000f, 1.000f));
-		SpawnCD(CD, CDMaterial, "CD Block3 2", glm::vec3(0.350f, 5.610f, 0.290f), glm::vec3(90.000f, 0.0f, 90.000f), glm::vec3(1.000f, 1.000f, 1.000f));
-		SpawnCD(CD, CDMaterial, "CD Block3 3", glm::vec3(3.260f, 5.610f, -3.210f), glm::vec3(90.000f, 0.0f, 90.000f), glm::vec3(1.000f, 1.000f, 1.000f));
-		SpawnCD(CD, CDMaterial, "CD Block3 4", glm::vec3(-6.690f, 5.610f, -1.180f), glm::vec3(90.000f, 0.0f, 90.000f), glm::vec3(1.000f, 1.000f, 1.000f));
-		*/
+		//SpawnStartPlat(StartPlatform, StartPlatformMaterial, "StartPlatform Block3", glm::vec3(-9.820f, 5.610f, -4.450), glm::vec3(90.0f, 0.0f, 0.0f), glm::vec3(0.350f, 0.350f, 0.350f), Block3);
+		//SpawnObj(SmallPlatform, SmallPlatformMaterial, "Small Platform Block3 1", glm::vec3(-4.360f, 5.610f, -0.290f), glm::vec3(180.0f, 0.0f, 180.0f), glm::vec3(0.350f, 0.350f, 0.350f), Block2);
+		//SpawnObj(SmallPlatform, SmallPlatformMaterial, "Small Platform Block3 2", glm::vec3(0.350f, 5.610f, -0.290f), glm::vec3(180.0f, 0.0f, 180.0f), glm::vec3(0.350f, 0.350f, 0.350f), Block2);
+		//SpawnObj(FallingPlat, PianoMaterial, "Falling Platform", glm::vec3(0.390f, 5.610f, -4.150f), glm::vec3(180.0f, 0.0f, 180.0f), glm::vec3(0.350f, 0.350f, 0.350f), Block3);
+		//SpawnObj(SmallPlatform, SmallPlatformMaterial, "Small Platform Block3 4", glm::vec3(3.220f, 5.610f, -4.150f), glm::vec3(180.0f, 0.0f, 180.0f), glm::vec3(0.350f, 0.350f, 0.350f), Block3);
+		//SpawnGem(BeatGem, BeatGemMaterial, "BeatGem Block3 1", glm::vec3(-6.870f, 5.610f, -1.970f), glm::vec3(90.0f, 0.0f, 180.0f), glm::vec3(0.500f, 0.500f, 0.500f), Block3);
+		//SpawnGem(BeatGem, BeatGemMaterial, "BeatGem Block3 2", glm::vec3(-1.870f, 5.610f, -1.970f), glm::vec3(90.0f, 0.0f, 180.0f), glm::vec3(0.500f, 0.500f, 0.500f), Block3);
+		//SpawnCollectable(Vinyl, VinylMaterial, "Vinyl Block3", glm::vec3(0.370f, 5.610f, -2.830f), glm::vec3(90.000f, 0.0f, 90.000f), glm::vec3(1.000f, 1.000f, 1.000f), Block3);
+		//SpawnStartPlat(StartPlatform, StartPlatformMaterial, "EndPlatform Block3", glm::vec3(6.360f, 5.610f, -4.920f), glm::vec3(90.0f, 0.0f, 0.0f), glm::vec3(0.350f, 0.350f, 0.350f), Block3);
+		//
+		//// CDs for Block 3
+		//SpawnCD(CD, CDMaterial, "CD Block3 1", glm::vec3(-4.390f, 5.610f, 0.440f), glm::vec3(90.000f, 0.0f, 90.000f), glm::vec3(1.000f, 1.000f, 1.000f), Block3);
+		//SpawnCD(CD, CDMaterial, "CD Block3 2", glm::vec3(0.350f, 5.610f, 0.290f), glm::vec3(90.000f, 0.0f, 90.000f), glm::vec3(1.000f, 1.000f, 1.000f), Block3);
+		//SpawnCD(CD, CDMaterial, "CD Block3 3", glm::vec3(3.260f, 5.610f, -3.210f), glm::vec3(90.000f, 0.0f, 90.000f), glm::vec3(1.000f, 1.000f, 1.000f), Block3);
+		//SpawnCD(CD, CDMaterial, "CD Block3 4", glm::vec3(-6.690f, 5.610f, -1.180f), glm::vec3(90.000f, 0.0f, 90.000f), glm::vec3(1.000f, 1.000f, 1.000f), Block3);
+		
 
 		// 4th Block
 		
-		SpawnStartPlat(StartPlatform, StartPlatformMaterial, "StartPlatform Block4", glm::vec3(-9.820f, 5.610f, -4.450), glm::vec3(90.0f, 0.0f, 0.0f), glm::vec3(0.350f, 0.350f, 0.350f));
-		SpawnObj(SmallPlatform, SmallPlatformMaterial, "Small Platform Block4 1", glm::vec3(-6.540f, 5.610f, -4.220f), parent, glm::vec3(180.0f, 0.0f, 180.0f), glm::vec3(0.350f, 0.350f, 0.350f));
-		SpawnObj(SmallPlatform, SmallPlatformMaterial, "Small Platform Block4 2", glm::vec3(-3.640f, 5.610f, -4.220f), parent, glm::vec3(180.0f, 0.0f, 180.0f), glm::vec3(0.350f, 0.350f, 0.350f));
-		SpawnObj(HalfCirclePlat, HalfCirclePlatMaterial, "Half Circle Platform", glm::vec3(-0.720f, 5.610f, -4.220f), parent, glm::vec3(-90.000f, 0.0f, 180.0f), glm::vec3(0.500f, 0.500f, 0.500f));
-		SpawnObj(SmallPlatform, SmallPlatformMaterial, "Small Platform Block4 4", glm::vec3(2.290f, 5.610f, 4.700f), parent, glm::vec3(180.0f, 0.0f, 180.0f), glm::vec3(0.350f, 0.350f, 0.350f));
-		SpawnBuilding(Building, BuildingMaterial, "Building Block4", glm::vec3(4.150f, 5.610f, -7.110f), glm::vec3(90.0f, 0.0f, 0.0f), glm::vec3(0.350f, 0.350f, 0.350f));
-		SpawnWallJump(WallJump, WallJumpMaterial, "Wall Jump Block4 1", glm::vec3(-1.590f, 5.610f, 2.650f), glm::vec3(180.0f, 0.0f, 180.0f), glm::vec3(0.500f, 0.210f, 1.500f));
-		SpawnWallJump(WallJump, WallJumpMaterial, "Wall Jump Block4 2", glm::vec3(0.460f, 5.610f, 1.610), glm::vec3(180.0f, 0.0f, 180.0f), glm::vec3(0.500f, 0.210f, 1.500f));
-		SpawnGem(BeatGem, BeatGemMaterial, "BeatGem Block4 2", glm::vec3(1.770f, 5.610f, -3.520f), glm::vec3(90.0f, 0.0f, 180.0f), glm::vec3(0.500f, 0.500f, 0.500f));
-		SpawnCollectable(Vinyl, VinylMaterial, "Vinyl Block4", glm::vec3(2.190f, 5.610f, 5.390f), glm::vec3(90.000f, 0.0f, 90.000f), glm::vec3(1.000f, 1.000f, 1.000f));
-		SpawnStartPlat(StartPlatform, StartPlatformMaterial, "EndPlatform Block3", glm::vec3(6.840f, 5.610f, -4.920f), glm::vec3(90.0f, 0.0f, 0.0f), glm::vec3(0.350f, 0.350f, 0.350f));
+		SpawnStartPlat(StartPlatform, StartPlatformMaterial, "StartPlatform Block4", glm::vec3(-9.820f, 5.610f, -4.450), glm::vec3(90.0f, 0.0f, 0.0f), glm::vec3(0.350f, 0.350f, 0.350f), Block4);
+		SpawnObj(SmallPlatform, SmallPlatformMaterial, "Small Platform Block4 1", glm::vec3(-6.540f, 5.610f, -4.220f),  glm::vec3(180.0f, 0.0f, 180.0f), glm::vec3(0.350f, 0.350f, 0.350f), Block4);
+		SpawnObj(SmallPlatform, SmallPlatformMaterial, "Small Platform Block4 2", glm::vec3(-3.640f, 5.610f, -4.220f), glm::vec3(180.0f, 0.0f, 180.0f), glm::vec3(0.350f, 0.350f, 0.350f), Block4);
+		SpawnObj(HalfCirclePlat, HalfCirclePlatMaterial, "Half Circle Platform", glm::vec3(-0.720f, 5.610f, -4.220f),  glm::vec3(-90.000f, 0.0f, 180.0f), glm::vec3(0.500f, 0.500f, 0.500f), Block4);
+		SpawnObj(SmallPlatform, SmallPlatformMaterial, "Small Platform Block4 4", glm::vec3(2.290f, 5.610f, 4.700f), glm::vec3(180.0f, 0.0f, 180.0f), glm::vec3(0.350f, 0.350f, 0.350f), Block4);
+		SpawnBuilding(Building, BuildingMaterial, "Building Block4", glm::vec3(4.150f, 5.610f, -7.110f), glm::vec3(90.0f, 0.0f, 0.0f), glm::vec3(0.350f, 0.350f, 0.350f), Block4);
+		SpawnWallJump(WallJump, WallJumpMaterial, "Wall Jump Block4 1", glm::vec3(-1.590f, 5.610f, 2.650f), glm::vec3(180.0f, 0.0f, 180.0f), glm::vec3(0.500f, 0.210f, 1.500f), Block4);
+		SpawnWallJump(WallJump, WallJumpMaterial, "Wall Jump Block4 2", glm::vec3(0.460f, 5.610f, 1.610), glm::vec3(180.0f, 0.0f, 180.0f), glm::vec3(0.500f, 0.210f, 1.500f), Block4);
+		SpawnGem(BeatGem, BeatGemMaterial, "BeatGem Block4 2", glm::vec3(1.770f, 5.610f, -3.520f), glm::vec3(90.0f, 0.0f, 180.0f), glm::vec3(0.500f, 0.500f, 0.500f), Block4);
+		SpawnCollectable(Vinyl, VinylMaterial, "Vinyl Block4", glm::vec3(2.190f, 5.610f, 5.390f), glm::vec3(90.000f, 0.0f, 90.000f), glm::vec3(1.000f, 1.000f, 1.000f), Block4);
+		SpawnStartPlat(StartPlatform, StartPlatformMaterial, "EndPlatform Block3", glm::vec3(6.840f, 5.610f, -4.920f), glm::vec3(90.0f, 0.0f, 0.0f), glm::vec3(0.350f, 0.350f, 0.350f), Block4);
 		
 
 		// 5th Block
-		/*
-		SpawnStartPlat(StartPlatform, StartPlatformMaterial, "StartPlatform Block5", glm::vec3(-9.820f, 5.610f, -4.450), glm::vec3(90.0f, 0.0f, 0.0f), glm::vec3(0.350f, 0.350f, 0.350f));
-		SpawnObj(SmallPlatform, SmallPlatformMaterial, "Small Platform Block5 1", glm::vec3(-6.540f, 5.610f, -4.220f), parent, glm::vec3(180.0f, 0.0f, 180.0f), glm::vec3(0.350f, 0.350f, 0.350f));
-		SpawnObj(SmallPlatform, SmallPlatformMaterial, "Small Platform Block5 2", glm::vec3(-5.000f, 5.610f, -2.830f), parent, glm::vec3(180.0f, 0.0f, 180.0f), glm::vec3(0.350f, 0.350f, 0.350f));
-		SpawnObj(SmallPlatform, SmallPlatformMaterial, "Small Platform Block5 3", glm::vec3(-3.550f, 5.610f, -1.410f), parent, glm::vec3(180.0f, 0.0f, 180.0f), glm::vec3(0.350f, 0.350f, 0.350f));
-		SpawnObj(SmallPlatform, SmallPlatformMaterial, "Small Platform Block5 4", glm::vec3(-6.450f, 5.610f, -0.730f), parent, glm::vec3(180.0f, 0.0f, 180.0f), glm::vec3(0.350f, 0.350f, 0.350f));
-		SpawnObj(SmallPlatform, SmallPlatformMaterial, "Small Platform Block5 5", glm::vec3(-3.330f, 5.610f, 5.950f), parent, glm::vec3(180.0f, 0.0f, 180.0f), glm::vec3(0.350f, 0.350f, 0.350f));
-		SpawnObj(SmallPlatform, SmallPlatformMaterial, "Small Platform Block5 6", glm::vec3(2.280f, 5.610f, 4.180f), parent, glm::vec3(180.0f, 0.0f, 180.0f), glm::vec3(0.350f, 0.350f, 0.350f));
-		SpawnObj(SmallPlatform, SmallPlatformMaterial, "Small Platform Block5 7", glm::vec3(2.280f, 5.610f, -4.010f), parent, glm::vec3(180.0f, 0.0f, 180.0f), glm::vec3(0.350f, 0.350f, 0.350f));
-		SpawnSmallWallJump(SmallWallJump, SmallWallJumpMaterial, "Small Wall Jump Block5 1", glm::vec3(-6.730f, 5.610f, 4.460f), glm::vec3(180.0f, 0.0f, 180.0f), glm::vec3(0.500f, 0.210f, 1.500f));
-		SpawnSmallWallJump(SmallWallJump, SmallWallJumpMaterial, "Small Wall Jump Block5 2", glm::vec3(-5.030f, 5.610f, 4.110f), glm::vec3(180.0f, 0.0f, 180.0f), glm::vec3(0.500f, 0.210f, 1.500f));
-		SpawnSmallWallJump(SmallWallJump, SmallWallJumpMaterial, "Small Wall Jump Block5 3", glm::vec3(-1.590f, 5.610f, 2.650f), glm::vec3(180.0f, 0.0f, 180.0f), glm::vec3(0.500f, 0.210f, 1.500f));
-		SpawnSmallWallJump(SmallWallJump, SmallWallJumpMaterial, "Small Wall Jump Block5 4", glm::vec3(0.460f, 5.610f, 1.610f), glm::vec3(180.0f, 0.0f, 180.0f), glm::vec3(0.500f, 0.210f, 1.500f));
-		SpawnGem(BeatGem, BeatGemMaterial, "BeatGem Block5 1", glm::vec3(-0.580f, 5.610f, -1.970f), glm::vec3(90.0f, 0.0f, 180.0f), glm::vec3(0.500f, 0.500f, 0.500f));
-		SpawnCollectable(Vinyl, VinylMaterial, "Vinyl Block5", glm::vec3(2.190f, 5.610f, 5.390f), glm::vec3(90.000f, 0.0f, 90.000f), glm::vec3(1.000f, 1.000f, 1.000f));
-		SpawnStartPlat(StartPlatform, StartPlatformMaterial, "EndPlatform Block5", glm::vec3(6.840f, 5.610f, -4.920f), glm::vec3(90.0f, 0.0f, 0.0f), glm::vec3(0.350f, 0.350f, 0.350f));
-		*/
-
-		// 6th Block
-		/*
-		SpawnStartPlat(StartPlatform, StartPlatformMaterial, "StartPlatform Block6", glm::vec3(-9.820f, 5.610f, -4.450), glm::vec3(90.0f, 0.0f, 0.0f), glm::vec3(0.350f, 0.350f, 0.350f));
-		SpawnObj(SmallPlatform, SmallPlatformMaterial, "Small Platform Block6 1", glm::vec3(-6.540f, 5.610f, -4.220f), parent, glm::vec3(180.0f, 0.0f, 180.0f), glm::vec3(0.350f, 0.350f, 0.350f));
-		SpawnObj(SmallPlatform, SmallPlatformMaterial, "Small Platform Block6 2", glm::vec3(-5.000f, 5.610f, -2.830f), parent, glm::vec3(180.0f, 0.0f, 180.0f), glm::vec3(0.350f, 0.350f, 0.350f));
-		SpawnObj(SmallPlatform, SmallPlatformMaterial, "Small Platform Block6 3", glm::vec3(-3.550f, 5.610f, -1.410f), parent, glm::vec3(180.0f, 0.0f, 180.0f), glm::vec3(0.350f, 0.350f, 0.350f));
-		SpawnObj(SmallPlatform, SmallPlatformMaterial, "Small Platform Block6 4", glm::vec3(4.150f, 5.610f, 2.610f), parent, glm::vec3(180.0f, 0.0f, 180.0f), glm::vec3(0.350f, 0.350f, 0.350f));
-		SpawnObj(SmallPlatform, SmallPlatformMaterial, "Small Platform Block6 5", glm::vec3(6.340f, 5.610f, 0.720f), parent, glm::vec3(180.0f, 0.0f, 180.0f), glm::vec3(0.350f, 0.350f, 0.350f));
-		SpawnObj(SmallPlatform, SmallPlatformMaterial, "Small Platform Block6 6", glm::vec3(4.220f, 5.610f, -1.110f), parent, glm::vec3(180.0f, 0.0f, 180.0f), glm::vec3(0.350f, 0.350f, 0.350f));
-		SpawnObj(SmallPlatform, SmallPlatformMaterial, "Small Platform Block6 7", glm::vec3(6.810f, 5.610f, -2.630f), parent, glm::vec3(180.0f, 0.0f, 180.0f), glm::vec3(0.350f, 0.350f, 0.350f));
-		SpawnSmallWallJump(SmallWallJump, SmallWallJumpMaterial, "Small Wall Jump Block6 1", glm::vec3(-2.600f, 5.610f, 5.940f), glm::vec3(180.0f, 0.0f, 180.0f), glm::vec3(0.500f, 0.210f, 1.500f));
-		SpawnSmallWallJump(SmallWallJump, SmallWallJumpMaterial, "Small Wall Jump Block6 2", glm::vec3(-1.170f, 5.610f, 6.950f), glm::vec3(180.0f, 0.0f, 180.0f), glm::vec3(0.500f, 0.210f, 1.500f));
-		SpawnBuilding(Building, BuildingMaterial, "Building Block6 1", glm::vec3(-1.830f, 5.610f, -5.420f), glm::vec3(90.0f, 0.0f, 0.0f), glm::vec3(0.350f, 0.350f, 0.350f));
-		SpawnBuilding(Building, BuildingMaterial, "Building Block6 2", glm::vec3(2.270f, 5.610f, -3.810f), glm::vec3(90.0f, 0.0f, 0.0f), glm::vec3(0.350f, 0.350f, 0.350f)); // Make this building bigger
-		SpawnGem(BeatGem, BeatGemMaterial, "BeatGem Block6 1", glm::vec3(-3.380f, 5.610f, 0.630f), glm::vec3(90.0f, 0.0f, 180.0f), glm::vec3(0.500f, 0.500f, 0.500f));
-		SpawnGem(BeatGem, BeatGemMaterial, "BeatGem Block6 2", glm::vec3(0.030f, 5.610f, 2.410f), glm::vec3(90.0f, 0.0f, 180.0f), glm::vec3(0.500f, 0.500f, 0.500f));
-		SpawnCollectable(Vinyl, VinylMaterial, "Vinyl Block6", glm::vec3(-1.890f, 5.610f, 5.390f), glm::vec3(90.000f, 0.0f, 90.000f), glm::vec3(1.000f, 1.000f, 1.000f));
-		SpawnStartPlat(StartPlatform, StartPlatformMaterial, "EndPlatform Block6", glm::vec3(6.840f, 5.610f, -4.920f), glm::vec3(90.0f, 0.0f, 0.0f), glm::vec3(0.350f, 0.350f, 0.350f));
-		*/
 		
-		// 7th Block
-		/*
-		SpawnStartPlat(StartPlatform, StartPlatformMaterial, "StartPlatform Block7", glm::vec3(-9.820f, 5.610f, -4.450), glm::vec3(90.0f, 0.0f, 0.0f), glm::vec3(0.350f, 0.350f, 0.350f));
-		SpawnObj(SmallPlatform, SmallPlatformMaterial, "Small Platform Block7 1", glm::vec3(-4.170f, 5.610f, 2.210f), parent, glm::vec3(180.0f, 0.0f, 180.0f), glm::vec3(0.350f, 0.350f, 0.350f));
-		SpawnObj(SmallPlatform, SmallPlatformMaterial, "Small Platform Block7 2", glm::vec3(-0.810f, 5.610f, 2.270f), parent, glm::vec3(180.0f, 0.0f, 180.0f), glm::vec3(0.350f, 0.350f, 0.350f));
-		SpawnObj(SmallPlatform, SmallPlatformMaterial, "Small Platform Block7 3", glm::vec3(2.440f, 5.610f, 2.260f), parent, glm::vec3(180.0f, 0.0f, 180.0f), glm::vec3(0.350f, 0.350f, 0.350f));
-		SpawnObj(SmallPlatform, SmallPlatformMaterial, "Small Platform Block7 4", glm::vec3(-2.610f, 5.610f, -0.240f), parent, glm::vec3(180.0f, 0.0f, 180.0f), glm::vec3(0.350f, 0.350f, 0.350f));
-		SpawnObj(SmallPlatform, SmallPlatformMaterial, "Small Platform Block7 5", glm::vec3(-0.100f, 5.610f, -1.110f), parent, glm::vec3(180.0f, 0.0f, 180.0f), glm::vec3(0.350f, 0.350f, 0.350f));
-		SpawnSmallWallJump(SmallWallJump, SmallWallJumpMaterial, "Small Wall Jump Block7 1", glm::vec3(-8.210f, 5.610f, 2.050f), glm::vec3(180.0f, 0.0f, 180.0f), glm::vec3(0.500f, 0.210f, 1.500f));
-		SpawnSmallWallJump(SmallWallJump, SmallWallJumpMaterial, "Small Wall Jump Block7 2", glm::vec3(-5.780f, 5.610f, 0.380f), glm::vec3(180.0f, 0.0f, 180.0f), glm::vec3(0.500f, 0.210f, 1.500f));
-		SpawnBuilding(Building, BuildingMaterial, "Building Block7 1", glm::vec3(4.130f, 5.610f, -3.610f), glm::vec3(90.0f, 0.0f, 0.0f), glm::vec3(0.350f, 0.350f, 0.350f)); // Make this building bigger
-		SpawnGem(BeatGem, BeatGemMaterial, "BeatGem Block7 1", glm::vec3(0.860f, 5.610f, 0.630f), glm::vec3(90.0f, 0.0f, 180.0f), glm::vec3(0.500f, 0.500f, 0.500f));
-		SpawnCollectable(Vinyl, VinylMaterial, "Vinyl Block7", glm::vec3(-0.180f, 5.610f, -0.330f), glm::vec3(90.000f, 0.0f, 90.000f), glm::vec3(1.000f, 1.000f, 1.000f));
-		SpawnStartPlat(StartPlatform, StartPlatformMaterial, "EndPlatform Block7", glm::vec3(6.840f, 5.610f, -4.920f), glm::vec3(90.0f, 0.0f, 0.0f), glm::vec3(0.350f, 0.350f, 0.350f));
-		*/
+		//SpawnStartPlat(StartPlatform, StartPlatformMaterial, "StartPlatform Block5", glm::vec3(-9.820f, 5.610f, -4.450), glm::vec3(90.0f, 0.0f, 0.0f), glm::vec3(0.350f, 0.350f, 0.350f), Block5);
+		//SpawnObj(SmallPlatform, SmallPlatformMaterial, "Small Platform Block5 1", glm::vec3(-6.540f, 5.610f, -4.220f), glm::vec3(180.0f, 0.0f, 180.0f), glm::vec3(0.350f, 0.350f, 0.350f), Block5);
+		//SpawnObj(SmallPlatform, SmallPlatformMaterial, "Small Platform Block5 2", glm::vec3(-5.000f, 5.610f, -2.830f), glm::vec3(180.0f, 0.0f, 180.0f), glm::vec3(0.350f, 0.350f, 0.350f), Block5);
+		//SpawnObj(SmallPlatform, SmallPlatformMaterial, "Small Platform Block5 3", glm::vec3(-3.550f, 5.610f, -1.410f), glm::vec3(180.0f, 0.0f, 180.0f), glm::vec3(0.350f, 0.350f, 0.350f), Block5);
+		//SpawnObj(SmallPlatform, SmallPlatformMaterial, "Small Platform Block5 4", glm::vec3(-6.450f, 5.610f, -0.730f), glm::vec3(180.0f, 0.0f, 180.0f), glm::vec3(0.350f, 0.350f, 0.350f), Block5);
+		//SpawnObj(SmallPlatform, SmallPlatformMaterial, "Small Platform Block5 5", glm::vec3(-3.330f, 5.610f, 5.950f), glm::vec3(180.0f, 0.0f, 180.0f), glm::vec3(0.350f, 0.350f, 0.350f), Block5);
+		//SpawnObj(SmallPlatform, SmallPlatformMaterial, "Small Platform Block5 6", glm::vec3(2.280f, 5.610f, 4.180f), glm::vec3(180.0f, 0.0f, 180.0f), glm::vec3(0.350f, 0.350f, 0.350f), Block5);
+		//SpawnObj(SmallPlatform, SmallPlatformMaterial, "Small Platform Block5 7", glm::vec3(2.280f, 5.610f, -4.010f), glm::vec3(180.0f, 0.0f, 180.0f), glm::vec3(0.350f, 0.350f, 0.350f), Block5);
+		//SpawnSmallWallJump(SmallWallJump, SmallWallJumpMaterial, "Small Wall Jump Block5 1", glm::vec3(-6.730f, 5.610f, 4.460f), glm::vec3(180.0f, 0.0f, 180.0f), glm::vec3(0.500f, 0.210f, 1.500f), Block5);
+		//SpawnSmallWallJump(SmallWallJump, SmallWallJumpMaterial, "Small Wall Jump Block5 2", glm::vec3(-5.030f, 5.610f, 4.110f), glm::vec3(180.0f, 0.0f, 180.0f), glm::vec3(0.500f, 0.210f, 1.500f), Block5);
+		//SpawnSmallWallJump(SmallWallJump, SmallWallJumpMaterial, "Small Wall Jump Block5 3", glm::vec3(-1.590f, 5.610f, 2.650f), glm::vec3(180.0f, 0.0f, 180.0f), glm::vec3(0.500f, 0.210f, 1.500f), Block5);
+		//SpawnSmallWallJump(SmallWallJump, SmallWallJumpMaterial, "Small Wall Jump Block5 4", glm::vec3(0.460f, 5.610f, 1.610f), glm::vec3(180.0f, 0.0f, 180.0f), glm::vec3(0.500f, 0.210f, 1.500f), Block5);
+		//SpawnGem(BeatGem, BeatGemMaterial, "BeatGem Block5 1", glm::vec3(-0.580f, 5.610f, -1.970f), glm::vec3(90.0f, 0.0f, 180.0f), glm::vec3(0.500f, 0.500f, 0.500f), Block5);
+		//SpawnCollectable(Vinyl, VinylMaterial, "Vinyl Block5", glm::vec3(2.190f, 5.610f, 5.390f), glm::vec3(90.000f, 0.0f, 90.000f), glm::vec3(1.000f, 1.000f, 1.000f), Block5);
+		//SpawnStartPlat(StartPlatform, StartPlatformMaterial, "EndPlatform Block5", glm::vec3(6.840f, 5.610f, -4.920f), glm::vec3(90.0f, 0.0f, 0.0f), glm::vec3(0.350f, 0.350f, 0.350f), Block5);
+		//
+		//
+		//// 6th Block
+		//
+		//SpawnStartPlat(StartPlatform, StartPlatformMaterial, "StartPlatform Block6", glm::vec3(-9.820f, 5.610f, -4.450), glm::vec3(90.0f, 0.0f, 0.0f), glm::vec3(0.350f, 0.350f, 0.350f), Block6);
+		//SpawnObj(SmallPlatform, SmallPlatformMaterial, "Small Platform Block6 1", glm::vec3(-6.540f, 5.610f, -4.220f), glm::vec3(180.0f, 0.0f, 180.0f), glm::vec3(0.350f, 0.350f, 0.350f), Block6);
+		//SpawnObj(SmallPlatform, SmallPlatformMaterial, "Small Platform Block6 2", glm::vec3(-5.000f, 5.610f, -2.830f), glm::vec3(180.0f, 0.0f, 180.0f), glm::vec3(0.350f, 0.350f, 0.350f), Block6);
+		//SpawnObj(SmallPlatform, SmallPlatformMaterial, "Small Platform Block6 3", glm::vec3(-3.550f, 5.610f, -1.410f), glm::vec3(180.0f, 0.0f, 180.0f), glm::vec3(0.350f, 0.350f, 0.350f), Block6);
+		//SpawnObj(SmallPlatform, SmallPlatformMaterial, "Small Platform Block6 4", glm::vec3(4.150f, 5.610f, 2.610f), glm::vec3(180.0f, 0.0f, 180.0f), glm::vec3(0.350f, 0.350f, 0.350f), Block6);
+		//SpawnObj(SmallPlatform, SmallPlatformMaterial, "Small Platform Block6 5", glm::vec3(6.340f, 5.610f, 0.720f), glm::vec3(180.0f, 0.0f, 180.0f), glm::vec3(0.350f, 0.350f, 0.350f), Block6);
+		//SpawnObj(SmallPlatform, SmallPlatformMaterial, "Small Platform Block6 6", glm::vec3(4.220f, 5.610f, -1.110f), glm::vec3(180.0f, 0.0f, 180.0f), glm::vec3(0.350f, 0.350f, 0.350f), Block6);
+		//SpawnObj(SmallPlatform, SmallPlatformMaterial, "Small Platform Block6 7", glm::vec3(6.810f, 5.610f, -2.630f), glm::vec3(180.0f, 0.0f, 180.0f), glm::vec3(0.350f, 0.350f, 0.350f), Block6);
+		//SpawnSmallWallJump(SmallWallJump, SmallWallJumpMaterial, "Small Wall Jump Block6 1", glm::vec3(-2.600f, 5.610f, 5.940f), glm::vec3(180.0f, 0.0f, 180.0f), glm::vec3(0.500f, 0.210f, 1.500f), Block6);
+		//SpawnSmallWallJump(SmallWallJump, SmallWallJumpMaterial, "Small Wall Jump Block6 2", glm::vec3(-1.170f, 5.610f, 6.950f), glm::vec3(180.0f, 0.0f, 180.0f), glm::vec3(0.500f, 0.210f, 1.500f), Block6);
+		//SpawnBuilding(Building, BuildingMaterial, "Building Block6 1", glm::vec3(-1.830f, 5.610f, -5.420f), glm::vec3(90.0f, 0.0f, 0.0f), glm::vec3(0.350f, 0.350f, 0.350f), Block6);
+		//SpawnBuilding(Building, BuildingMaterial, "Building Block6 2", glm::vec3(2.270f, 5.610f, -3.810f), glm::vec3(90.0f, 0.0f, 0.0f), glm::vec3(0.350f, 0.350f, 0.350f), Block6); // Make this building bigger
+		//SpawnGem(BeatGem, BeatGemMaterial, "BeatGem Block6 1", glm::vec3(-3.380f, 5.610f, 0.630f), glm::vec3(90.0f, 0.0f, 180.0f), glm::vec3(0.500f, 0.500f, 0.500f), Block6);
+		//SpawnGem(BeatGem, BeatGemMaterial, "BeatGem Block6 2", glm::vec3(0.030f, 5.610f, 2.410f), glm::vec3(90.0f, 0.0f, 180.0f), glm::vec3(0.500f, 0.500f, 0.500f), Block6);
+		//SpawnCollectable(Vinyl, VinylMaterial, "Vinyl Block6", glm::vec3(-1.890f, 5.610f, 5.390f), glm::vec3(90.000f, 0.0f, 90.000f), glm::vec3(1.000f, 1.000f, 1.000f), Block6);
+		//SpawnStartPlat(StartPlatform, StartPlatformMaterial, "EndPlatform Block6", glm::vec3(6.840f, 5.610f, -4.920f), glm::vec3(90.0f, 0.0f, 0.0f), glm::vec3(0.350f, 0.350f, 0.350f), Block6);
+		//
+		//
+		//// 7th Block
+		//
+		//SpawnStartPlat(StartPlatform, StartPlatformMaterial, "StartPlatform Block7", glm::vec3(-9.820f, 5.610f, -4.450), glm::vec3(90.0f, 0.0f, 0.0f), glm::vec3(0.350f, 0.350f, 0.350f), Block7);
+		//SpawnObj(SmallPlatform, SmallPlatformMaterial, "Small Platform Block7 1", glm::vec3(-4.170f, 5.610f, 2.210f), glm::vec3(180.0f, 0.0f, 180.0f), glm::vec3(0.350f, 0.350f, 0.350f), Block7);
+		//SpawnObj(SmallPlatform, SmallPlatformMaterial, "Small Platform Block7 2", glm::vec3(-0.810f, 5.610f, 2.270f), glm::vec3(180.0f, 0.0f, 180.0f), glm::vec3(0.350f, 0.350f, 0.350f), Block7);
+		//SpawnObj(SmallPlatform, SmallPlatformMaterial, "Small Platform Block7 3", glm::vec3(2.440f, 5.610f, 2.260f), glm::vec3(180.0f, 0.0f, 180.0f), glm::vec3(0.350f, 0.350f, 0.350f), Block7);
+		//SpawnObj(SmallPlatform, SmallPlatformMaterial, "Small Platform Block7 4", glm::vec3(-2.610f, 5.610f, -0.240f), glm::vec3(180.0f, 0.0f, 180.0f), glm::vec3(0.350f, 0.350f, 0.350f), Block7);
+		//SpawnObj(SmallPlatform, SmallPlatformMaterial, "Small Platform Block7 5", glm::vec3(-0.100f, 5.610f, -1.110f), glm::vec3(180.0f, 0.0f, 180.0f), glm::vec3(0.350f, 0.350f, 0.350f), Block7);
+		//SpawnSmallWallJump(SmallWallJump, SmallWallJumpMaterial, "Small Wall Jump Block7 1", glm::vec3(-8.210f, 5.610f, 2.050f), glm::vec3(180.0f, 0.0f, 180.0f), glm::vec3(0.500f, 0.210f, 1.500f), Block7);
+		//SpawnSmallWallJump(SmallWallJump, SmallWallJumpMaterial, "Small Wall Jump Block7 2", glm::vec3(-5.780f, 5.610f, 0.380f), glm::vec3(180.0f, 0.0f, 180.0f), glm::vec3(0.500f, 0.210f, 1.500f), Block7);
+		//SpawnBuilding(Building, BuildingMaterial, "Building Block7 1", glm::vec3(4.130f, 5.610f, -3.610f), glm::vec3(90.0f, 0.0f, 0.0f), glm::vec3(0.350f, 0.350f, 0.350f)); // Make this building bigger
+		//SpawnGem(BeatGem, BeatGemMaterial, "BeatGem Block7 1", glm::vec3(0.860f, 5.610f, 0.630f), glm::vec3(90.0f, 0.0f, 180.0f), glm::vec3(0.500f, 0.500f, 0.500f), Block7);
+		//SpawnCollectable(Vinyl, VinylMaterial, "Vinyl Block7", glm::vec3(-0.180f, 5.610f, -0.330f), glm::vec3(90.000f, 0.0f, 90.000f), glm::vec3(1.000f, 1.000f, 1.000f), Block7);
+		//SpawnStartPlat(StartPlatform, StartPlatformMaterial, "EndPlatform Block7", glm::vec3(6.840f, 5.610f, -4.920f), glm::vec3(90.0f, 0.0f, 0.0f), glm::vec3(0.350f, 0.350f, 0.350f), Block7);
+		
 		
 		// 8th Block
-		/*
-		SpawnStartPlat(StartPlatform, StartPlatformMaterial, "StartPlatform Block8", glm::vec3(-9.820f, 5.610f, -4.450), glm::vec3(90.0f, 0.0f, 0.0f), glm::vec3(0.350f, 0.350f, 0.350f));
-		SpawnObj(SmallPlatform, SmallPlatformMaterial, "Small Platform Block8 1", glm::vec3(-6.640f, 5.610f, -4.140f), parent, glm::vec3(180.0f, 0.0f, 180.0f), glm::vec3(0.350f, 0.350f, 0.350f));
-		SpawnObj(SmallPlatform, SmallPlatformMaterial, "Small Platform Block8 2", glm::vec3(-4.430f, 5.610f, -3.310f), parent, glm::vec3(180.0f, 0.0f, 180.0f), glm::vec3(0.350f, 0.350f, 0.350f));
-		SpawnObj(SmallPlatform, SmallPlatformMaterial, "Small Platform Block8 3", glm::vec3(-0.540f, 5.610f, -6.090f), parent, glm::vec3(180.0f, 0.0f, 180.0f), glm::vec3(0.350f, 0.350f, 0.350f));
-		SpawnObj(SmallPlatform, SmallPlatformMaterial, "Small Platform Block8 4", glm::vec3(1.540f, 5.610f, -5.310f), parent, glm::vec3(180.0f, 0.0f, 180.0f), glm::vec3(0.350f, 0.350f, 0.350f));
-		SpawnObj(SmallPlatform, SmallPlatformMaterial, "Small Platform Block8 5", glm::vec3(4.320f, 5.610f, 0.860f), parent, glm::vec3(180.0f, 0.0f, 180.0f), glm::vec3(0.350f, 0.350f, 0.350f));
-		SpawnBuilding(Building, BuildingMaterial, "Building Block8 1", glm::vec3(4.110f, 5.610f, -6.630f), glm::vec3(90.0f, 0.0f, 0.0f), glm::vec3(0.350f, 0.350f, 0.350f));
-		SpawnBuilding2(Building2, BuildingMaterial, "Building2 Block8 1", glm::vec3(-4.050f, 5.610f, 0.900f), glm::vec3(90.0f, 0.0f, 0.0f), glm::vec3(0.350f, 0.350f, 0.350f));
-		SpawnBuilding3(Building3, BuildingMaterial, "Building3 Block8 1", glm::vec3(-0.810f, 5.610f, -1.250f), glm::vec3(90.0f, 0.0f, 0.0f), glm::vec3(0.290f, 0.290f, 0.290f));
-		SpawnGem(BeatGem, BeatGemMaterial, "BeatGem", glm::vec3(-2.630f, 5.610f, -4.550f), glm::vec3(90.0f, 0.0f, 180.0f), glm::vec3(0.500f, 0.500f, 0.500f));
-		SpawnSuperSmallWallJump(SuperSmallWallJump, SuperSmallWallJumpMaterial, "Super Small Wall Jump Block8 1", glm::vec3(2.850f, 5.610f, -3.180f), glm::vec3(180.0f, 0.0f, 180.0f), glm::vec3(0.500f, 0.210f, 1.500f));
-		SpawnSuperSmallWallJump(SuperSmallWallJump, SuperSmallWallJumpMaterial, "Super Small Wall Jump Block8 2", glm::vec3(1.520f, 5.610f, -1.510f), glm::vec3(180.0f, 0.0f, 180.0f), glm::vec3(0.500f, 0.210f, 1.500f));
-		SpawnSuperSmallWallJump(SuperSmallWallJump, SuperSmallWallJumpMaterial, "Super Small Wall Jump Block8 3", glm::vec3(2.860f, 5.610f, -0.590f), glm::vec3(180.0f, 0.0f, 180.0f), glm::vec3(0.500f, 0.210f, 1.500f));
-		SpawnSuperSmallWallJump(SuperSmallWallJump, SuperSmallWallJumpMaterial, "Super Small Wall Jump Block8 4", glm::vec3(1.520f, 5.610f, 0.700f), glm::vec3(180.0f, 0.0f, 180.0f), glm::vec3(0.500f, 0.210f, 1.500f));
-		SpawnStartPlat(StartPlatform, StartPlatformMaterial, "EndPlatform Block8", glm::vec3(6.840f, 5.610f, -4.920f), glm::vec3(90.0f, 0.0f, 0.0f), glm::vec3(0.350f, 0.350f, 0.350f));
-		*/
+		
+		//SpawnStartPlat(StartPlatform, StartPlatformMaterial, "StartPlatform Block8", glm::vec3(-9.820f, 5.610f, -4.450), glm::vec3(90.0f, 0.0f, 0.0f), glm::vec3(0.350f, 0.350f, 0.350f), Block8);
+		//SpawnObj(SmallPlatform, SmallPlatformMaterial, "Small Platform Block8 1", glm::vec3(-6.640f, 5.610f, -4.140f), glm::vec3(180.0f, 0.0f, 180.0f), glm::vec3(0.350f, 0.350f, 0.350f), Block8);
+		//SpawnObj(SmallPlatform, SmallPlatformMaterial, "Small Platform Block8 2", glm::vec3(-4.430f, 5.610f, -3.310f), glm::vec3(180.0f, 0.0f, 180.0f), glm::vec3(0.350f, 0.350f, 0.350f), Block8);
+		//SpawnObj(SmallPlatform, SmallPlatformMaterial, "Small Platform Block8 3", glm::vec3(-0.540f, 5.610f, -6.090f), glm::vec3(180.0f, 0.0f, 180.0f), glm::vec3(0.350f, 0.350f, 0.350f), Block8);
+		//SpawnObj(SmallPlatform, SmallPlatformMaterial, "Small Platform Block8 4", glm::vec3(1.540f, 5.610f, -5.310f), glm::vec3(180.0f, 0.0f, 180.0f), glm::vec3(0.350f, 0.350f, 0.350f), Block8);
+		//SpawnObj(SmallPlatform, SmallPlatformMaterial, "Small Platform Block8 5", glm::vec3(4.320f, 5.610f, 0.860f), glm::vec3(180.0f, 0.0f, 180.0f), glm::vec3(0.350f, 0.350f, 0.350f), Block8);
+		//SpawnBuilding(Building, BuildingMaterial, "Building Block8 1", glm::vec3(4.110f, 5.610f, -6.630f), glm::vec3(90.0f, 0.0f, 0.0f), glm::vec3(0.350f, 0.350f, 0.350f), Block8);
+		//SpawnBuilding2(Building2, BuildingMaterial, "Building2 Block8 1", glm::vec3(-4.050f, 5.610f, 0.900f), glm::vec3(90.0f, 0.0f, 0.0f), glm::vec3(0.350f, 0.350f, 0.350f), Block8);
+		//SpawnBuilding3(Building3, BuildingMaterial, "Building3 Block8 1", glm::vec3(-0.810f, 5.610f, -1.250f), glm::vec3(90.0f, 0.0f, 0.0f), glm::vec3(0.290f, 0.290f, 0.290f), Block8);
+		//SpawnGem(BeatGem, BeatGemMaterial, "BeatGem", glm::vec3(-2.630f, 5.610f, -4.550f), glm::vec3(90.0f, 0.0f, 180.0f), glm::vec3(0.500f, 0.500f, 0.500f), Block8);
+		//SpawnSuperSmallWallJump(SuperSmallWallJump, SuperSmallWallJumpMaterial, "Super Small Wall Jump Block8 1", glm::vec3(2.850f, 5.610f, -3.180f), glm::vec3(180.0f, 0.0f, 180.0f), glm::vec3(0.500f, 0.210f, 1.500f), Block8);
+		//SpawnSuperSmallWallJump(SuperSmallWallJump, SuperSmallWallJumpMaterial, "Super Small Wall Jump Block8 2", glm::vec3(1.520f, 5.610f, -1.510f), glm::vec3(180.0f, 0.0f, 180.0f), glm::vec3(0.500f, 0.210f, 1.500f), Block8);
+		//SpawnSuperSmallWallJump(SuperSmallWallJump, SuperSmallWallJumpMaterial, "Super Small Wall Jump Block8 3", glm::vec3(2.860f, 5.610f, -0.590f), glm::vec3(180.0f, 0.0f, 180.0f), glm::vec3(0.500f, 0.210f, 1.500f), Block8);
+		//SpawnSuperSmallWallJump(SuperSmallWallJump, SuperSmallWallJumpMaterial, "Super Small Wall Jump Block8 4", glm::vec3(1.520f, 5.610f, 0.700f), glm::vec3(180.0f, 0.0f, 180.0f), glm::vec3(0.500f, 0.210f, 1.500f), Block8);
+		//SpawnStartPlat(StartPlatform, StartPlatformMaterial, "EndPlatform Block8", glm::vec3(6.840f, 5.610f, -4.920f), glm::vec3(90.0f, 0.0f, 0.0f), glm::vec3(0.350f, 0.350f, 0.350f), Block8);
+		
 
 		// Player:
 		GameObject::Sptr character = scene->CreateGameObject("Character/Player");
@@ -1160,6 +1246,39 @@ void CreateScene() {
 
 		RigidBody::Sptr ballphysics = DiscoBall->Add<RigidBody>(RigidBodyType::Dynamic);
 		}
+
+		/////////////////////////// UI //////////////////////////////
+		GameObject::Sptr canvas = scene->CreateGameObject("UI Canvas");
+		{
+			RectTransform::Sptr transform = canvas->Add<RectTransform>();
+			transform->SetMin({ 16, 16 });
+			transform->SetMax({ 256, 256 });
+
+			GuiPanel::Sptr canPanel = canvas->Add<GuiPanel>();
+
+			GameObject::Sptr subPanel = scene->CreateGameObject("Sub Item");
+			{
+				RectTransform::Sptr transform = subPanel->Add<RectTransform>();
+				transform->SetMin({ 10, 10 });
+				transform->SetMax({ 128, 128 });
+
+				GuiPanel::Sptr panel = subPanel->Add<GuiPanel>();
+				panel->SetColor(glm::vec4(1.0f, 0.0f, 0.0f, 1.0f));
+
+				Font::Sptr font = ResourceManager::CreateAsset<Font>("fonts/Roboto-Medium.ttf", 16.0f);
+				font->Bake();
+
+				GuiText::Sptr text = subPanel->Add<GuiText>();
+				text->SetText("Hello world!");
+				text->SetFont(font);
+			}
+
+			canvas->AddChild(subPanel);
+		}
+
+		GuiBatcher::SetDefaultTexture(ResourceManager::CreateAsset<Texture2D>("textures/ui-sprite.png"));
+		GuiBatcher::SetDefaultBorderRadius(8);
+
 		// Call scene awake to start up all of our components
 		scene->Window = window;
 		scene->Awake();
@@ -1227,7 +1346,9 @@ int main() {
 	ComponentManager::RegisterType<BackgroundBuildingMover>();
 	ComponentManager::RegisterType<VinylAnim>();
 	ComponentManager::RegisterType<ForeGroundMover>();
-
+	ComponentManager::RegisterType<RectTransform>();
+	ComponentManager::RegisterType<GuiPanel>();
+	ComponentManager::RegisterType<GuiText>();
 
 
 	// GL states, we'll enable depth testing and backface fulling
@@ -1490,6 +1611,37 @@ int main() {
 
 		// Use our cubemap to draw our skybox
 		scene->DrawSkybox();
+		
+		// Disable culling
+		glDisable(GL_CULL_FACE);
+
+		// Disable depth testing, we're going to use order-dependant layering
+		//glDisable(GL_DEPTH_TEST);
+		// Disable depth writing
+		//glDepthMask(GL_FALSE);
+		
+		// Enable alpha blending
+		glEnable(GL_BLEND);
+		glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+		
+		// Enable the scissor test;
+		glEnable(GL_SCISSOR_TEST);
+		
+		// Our projection matrix will be our entire window for now
+			glm::mat4 proj = glm::ortho(0.0f, (float)windowSize.x, (float)windowSize.y, 0.0f, -1.0f, 1.0f);
+		GuiBatcher::SetProjection(proj);
+
+		scene->RenderGUI();
+
+		// Flush the Gui Batch renderer
+		GuiBatcher::Flush();
+
+		// Disable alpha blending
+		glDisable(GL_BLEND);
+		// Disable scissor testing
+		glDisable(GL_SCISSOR_TEST);
+		// Re-enable depth writing
+		glDepthMask(GL_TRUE);
 
 		// End our ImGui window
 		ImGui::End();
