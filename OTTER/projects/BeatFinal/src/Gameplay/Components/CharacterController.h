@@ -24,17 +24,19 @@ public:
 	static CharacterController::Sptr FromJson(const nlohmann::json& blob);
 	//void OnTriggerEnter(const Gameplay::Physics::TriggerVolume::Sptr& trigger);
 	//void OnTriggerExit(const Gameplay::Physics::TriggerVolume::Sptr& trigger);
-	virtual void OnTriggerVolumeEntered(const std::shared_ptr<Gameplay::Physics::RigidBody>& body) ;
-	virtual void OnTriggerVolumeLeaving(const std::shared_ptr<Gameplay::Physics::RigidBody>& body) ;
-	
+	virtual void OnTriggerVolumeEntered(const std::shared_ptr<Gameplay::Physics::RigidBody>& body);
+	virtual void OnTriggerVolumeLeaving(const std::shared_ptr<Gameplay::Physics::RigidBody>& body);
+
 
 protected:
-	double xPos=0, yPos=0;
+	double xPos = 0, yPos = 0;
 	float _impulse2;
 	bool _canJump;
-	std::string _platform; 
-	glm::vec3 _impulse = glm::vec3(0,0,13.0);
+	std::string _platform;
+	glm::vec3 _impulse = glm::vec3(0, 0, 13.0);
 	Gameplay::Physics::RigidBody::Sptr _body;
-
+	Gameplay::Physics::RigidBody::Sptr _curvePlatform;
+	bool _onCurvePlatform;
+	glm::vec3 _rotPlat = glm::vec3(0.0f, 0.0f, 0.0f);
 
 };

@@ -46,17 +46,30 @@ void CharacterController::OnTriggerVolumeEntered(const std::shared_ptr<Gameplay:
             _canJump = true;
             _platform = body->GetGameObject()->Name;
         }
-      // GetGameObject()->GetScene()->FindObjectByName("Character/Player")->
-      //  body->GetGameObject()->SetPostion(body->GetGameObject()->GetPosition() - glm::vec3(0.f, 0.f, 0.5f));
-        if ((body->GetGameObject()->Name == "BeatGem")||(body->GetGameObject()->Name == "Falling Platform")) {
+        //"Half Circle Platform"  
+        //make certain things fall when touched 
+        if ((_platform == "BeatGem")||(_platform == "Falling Platform")) {
             body->SetType(RigidBodyType::Dynamic);
+        }
+        //rotate half circle platforms
+        if (_platform == "Half Circle Platform") {
+            _rotPlat = (_body->GetGameObject()->GetPosition()) - body->GetGameObject()->GetPosition();
+            body->GetGameObject()->SetRotation(body->GetGameObject()->GetRotationEuler() + glm::vec3(0.0f, -20 * _rotPlat.x, 0.0f));
+            LOG_INFO(_rotPlat.x);
         }
 }
  void CharacterController::OnTriggerVolumeLeaving(const std::shared_ptr<Gameplay::Physics::RigidBody>& body) {
     LOG_INFO("Body has left our trigger volume: {}", body->GetGameObject()->Name);
-    if ((body->GetGameObject()->Name != "BeatGem") || (body->GetGameObject()->Name == "Falling Platform")) {
+
+    //maintain ability to jump once left trigger volume if leaving beat gem or falling platform 
+    //if neither, loose the ability to jump
+    if ((_platform != "BeatGem") || (_platform == "Falling Platform")) {
         _platform = "";
         _canJump = false;
+    }
+    if (body->GetGameObject()->Name == "Half Circle Platform") {
+        LOG_INFO("functions");
+        body->GetGameObject()->SetRotation(glm::vec3(-90.000f, 0.0f, 180.0f));
     }
 }
 void CharacterController::Update(float deltaTime) {
@@ -100,9 +113,6 @@ void CharacterController::Update(float deltaTime) {
     _body->SetLinearDamping(0.5f);
 
     GetGameObject()->SetPositionY(5.61f);
- // GetGameObject()->LockYRotation(70.f);
- // GetGameObject()->LockZRotation(0.f);
- // GetGameObject()->LockXRotation(0.f);
     _body->GetGameObject()->SetRotation(glm::vec3(90.0f, 0.0f, 90.0f));
 
 }

@@ -35,6 +35,8 @@ protected:
 	std::string _platform; 
 	glm::vec3 _impulse = glm::vec3(0,0,13.0);
 	Gameplay::Physics::RigidBody::Sptr _body;
-
+	Gameplay::Physics::RigidBody::Sptr _curvePlatform;
+	bool _onCurvePlatform;
+	glm::vec3 _rotPlat = glm::vec3(0.0f, 0.0f, 0.0f);
 
 };

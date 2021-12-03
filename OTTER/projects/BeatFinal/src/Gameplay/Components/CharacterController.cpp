@@ -39,32 +39,45 @@ CharacterController::Sptr CharacterController::FromJson(const nlohmann::json & b
     return result;
 }
 
-void CharacterController::OnTriggerVolumeEntered(const std::shared_ptr<Gameplay::Physics::RigidBody>& body) {
-        LOG_INFO("Body has entered our trigger volume: {}", body->GetGameObject()->Name);
-        
-        if (_platform != body->GetGameObject()->Name) {
-            _canJump = true;
-            _platform = body->GetGameObject()->Name;
-        }
-      // GetGameObject()->GetScene()->FindObjectByName("Character/Player")->
-      //  body->GetGameObject()->SetPostion(body->GetGameObject()->GetPosition() - glm::vec3(0.f, 0.f, 0.5f));
-        if ((body->GetGameObject()->Name == "BeatGem")||(body->GetGameObject()->Name == "Falling Platform")) {
-            body->SetType(RigidBodyType::Dynamic);
-        }
+void CharacterController::OnTriggerVolumeEntered(const std::shared_ptr<Gameplay::Physics::RigidBody>&body) {
+    LOG_INFO("Body has entered our trigger volume: {}", body->GetGameObject()->Name);
+
+    if (_platform != body->GetGameObject()->Name) {
+        _canJump = true;
+        _platform = body->GetGameObject()->Name;
+    }
+    //"Half Circle Platform"  
+    //make certain things fall when touched 
+    if ((_platform == "BeatGem") || (_platform == "Falling Platform")) {
+        body->SetType(RigidBodyType::Dynamic);
+    }
+    //rotate half circle platforms
+    if (_platform == "Half Circle Platform") {
+        _rotPlat = (_body->GetGameObject()->GetPosition()) - body->GetGameObject()->GetPosition();
+        body->GetGameObject()->SetRotation(body->GetGameObject()->GetRotationEuler() + glm::vec3(0.0f, -20 * _rotPlat.x, 0.0f));
+        LOG_INFO(_rotPlat.x);
+    }
 }
- void CharacterController::OnTriggerVolumeLeaving(const std::shared_ptr<Gameplay::Physics::RigidBody>& body) {
+void CharacterController::OnTriggerVolumeLeaving(const std::shared_ptr<Gameplay::Physics::RigidBody>&body) {
     LOG_INFO("Body has left our trigger volume: {}", body->GetGameObject()->Name);
-    if ((body->GetGameObject()->Name != "BeatGem") || (body->GetGameObject()->Name == "Falling Platform")) {
+
+    //maintain ability to jump once left trigger volume if leaving beat gem or falling platform 
+    //if neither, loose the ability to jump
+    if ((_platform != "BeatGem") || (_platform == "Falling Platform")) {
         _platform = "";
         _canJump = false;
+    }
+    if (body->GetGameObject()->Name == "Half Circle Platform") {
+        LOG_INFO("functions");
+        body->GetGameObject()->SetRotation(glm::vec3(-90.000f, 0.0f, 180.0f));
     }
 }
 void CharacterController::Update(float deltaTime) {
     bool _A = glfwGetKey(GetGameObject()->GetScene()->Window, GLFW_KEY_A);
     bool _D = glfwGetKey(GetGameObject()->GetScene()->Window, GLFW_KEY_D);
     bool _W = glfwGetKey(GetGameObject()->GetScene()->Window, GLFW_KEY_SPACE);
-    
- //   LOG_INFO(_canJump);
+
+    //   LOG_INFO(_canJump);
     if (_platform == "Wall Jump") {
         if (_body->GetLinearVelocity().z < 0) {
             _body->ApplyForce(glm::vec3(0.0f, 0.0f, 20.0f));
@@ -76,18 +89,18 @@ void CharacterController::Update(float deltaTime) {
         _body->SetLinearVelocity(glm::vec3(-3.0f, _body->GetLinearVelocity().y, _body->GetLinearVelocity().z));
     }
     if (_D) {
-        _body->SetLinearVelocity(glm::vec3(3.0f,_body->GetLinearVelocity().y, _body->GetLinearVelocity().z));
+        _body->SetLinearVelocity(glm::vec3(3.0f, _body->GetLinearVelocity().y, _body->GetLinearVelocity().z));
     }
     if ((_W) && (_canJump == true)) {
-        _body->SetLinearVelocity(glm::vec3(_body->GetLinearVelocity().x, _body->GetLinearVelocity().y,_impulse.z));
+        _body->SetLinearVelocity(glm::vec3(_body->GetLinearVelocity().x, _body->GetLinearVelocity().y, _impulse.z));
         _canJump = false;
     }
     if ((!_A) && (!_D) && (!_W) && (_platform != "") && (_platform != "BeatGem")) {
         _body->SetLinearVelocity(glm::vec3(0.0f, 0.0f, 0.0f));
     }
- 
+
     //- glm::vec3( 0.0f,_body->GetLinearVelocity().y,0.0f)
-    
+
 
     if (GetGameObject()->GetPosition().z <= -14.5f)
     {
@@ -100,9 +113,6 @@ void CharacterController::Update(float deltaTime) {
     _body->SetLinearDamping(0.5f);
 
     GetGameObject()->SetPositionY(5.61f);
- // GetGameObject()->LockYRotation(70.f);
- // GetGameObject()->LockZRotation(0.f);
- // GetGameObject()->LockXRotation(0.f);
     _body->GetGameObject()->SetRotation(glm::vec3(90.0f, 0.0f, 90.0f));
 
 }
