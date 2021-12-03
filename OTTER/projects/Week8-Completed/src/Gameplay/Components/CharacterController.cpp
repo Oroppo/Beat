@@ -76,7 +76,6 @@ void CharacterController::Update(float deltaTime) {
     bool _A = glfwGetKey(GetGameObject()->GetScene()->Window, GLFW_KEY_A);
     bool _D = glfwGetKey(GetGameObject()->GetScene()->Window, GLFW_KEY_D);
     bool _W = glfwGetKey(GetGameObject()->GetScene()->Window, GLFW_KEY_SPACE);
-    
  //   LOG_INFO(_canJump);
     if (_platform == "Wall Jump") {
         if (_body->GetLinearVelocity().z < 0) {
