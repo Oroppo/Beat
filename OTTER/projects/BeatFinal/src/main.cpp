@@ -135,7 +135,7 @@ void GlDebugMessage(GLenum source, GLenum type, GLuint id, GLenum severity, GLsi
 // Stores our GLFW window in a global variable for now
 GLFWwindow* window;
 // The current size of our window in pixels
-glm::ivec2 windowSize = glm::ivec2(1000, 1000);
+glm::ivec2 windowSize = glm::ivec2(1920, 1080);
 // The title of our GLFW window
 std::string windowTitle = "Beat!";
 
@@ -790,7 +790,19 @@ void CreateScene() {
 		Texture2D::Sptr DiscoBallTex = ResourceManager::CreateAsset<Texture2D>("textures/DiscoBallTexV2.png");
 		Texture2D::Sptr FallingPlatTex = ResourceManager::CreateAsset<Texture2D>("textures/pianotex.png");
 		Texture2D::Sptr HalfCirclePlatTex = ResourceManager::CreateAsset<Texture2D>("textures/halfCircleTex.png");
-		Texture2D::Sptr UITex = ResourceManager::CreateAsset<Texture2D>("textures/UI.png");
+		Texture2D::Sptr TexBeatLogo = ResourceManager::CreateAsset<Texture2D>("textures/GUI/BeatLogo.png");
+		Texture2D::Sptr TexPlayButton = ResourceManager::CreateAsset<Texture2D>("textures/GUI/BPlay.png");
+		Texture2D::Sptr TexOptionsButton = ResourceManager::CreateAsset<Texture2D>("textures/GUI/BOptions.png");
+		Texture2D::Sptr TexMusicButton = ResourceManager::CreateAsset<Texture2D>("textures/GUI/BMusic.png");
+		Texture2D::Sptr TexCreditsButton = ResourceManager::CreateAsset<Texture2D>("textures/GUI/BCredits.png");
+		Texture2D::Sptr TexQuitButton = ResourceManager::CreateAsset<Texture2D>("textures/GUI/BQuit.png");
+		Texture2D::Sptr TexResumeButton = ResourceManager::CreateAsset<Texture2D>("textures/GUI/BResume.png");
+		Texture2D::Sptr TexResyncButton = ResourceManager::CreateAsset<Texture2D>("textures/GUI/BResync.png");
+		Texture2D::Sptr TexContinueButton = ResourceManager::CreateAsset<Texture2D>("textures/GUI/BContinue.png");
+		Texture2D::Sptr TexPauseMenu = ResourceManager::CreateAsset<Texture2D>("textures/GUI/PauseMenuBG.png");
+		Texture2D::Sptr TexDimmedBG = ResourceManager::CreateAsset<Texture2D>("textures/GUI/DimBG.png");
+		Texture2D::Sptr TexScoreBreakdown = ResourceManager::CreateAsset<Texture2D>("textures/GUI/ScoreBreakdown.png");
+		Texture2D::Sptr TexGameOverText = ResourceManager::CreateAsset<Texture2D>("textures/GUI/GameOverText.png");
 
 		//Minification and Magnification
 		//leafTex->SetMinFilter(MinFilter::Nearest);
@@ -1240,34 +1252,366 @@ void CreateScene() {
 		}
 
 		/////////////////////////// UI //////////////////////////////
-		GameObject::Sptr canvas = scene->CreateGameObject("UI Canvas");
-		{
-			RectTransform::Sptr transform = canvas->Add<RectTransform>();
-			transform->SetMin({ 16, 16 });
-			transform->SetMax({ 256, 256 });
+		
+		/*
+		{//Main Menu Block
+		
+				{//Logo
+					GameObject::Sptr logo = scene->CreateGameObject("Logo");
 
-			GuiPanel::Sptr canPanel = canvas->Add<GuiPanel>();
+					RectTransform::Sptr transform = logo->Add<RectTransform>();
+					transform->SetPosition({ 0, 0 });
+					transform->SetRotationDeg(0);
+					transform->SetSize({ 750, 750 });
+					transform->SetMin({ 0, 0 });
+					transform->SetMax({ 750, 750 });
 
-			GameObject::Sptr subPanel = scene->CreateGameObject("Sub Item");
-			{
-				RectTransform::Sptr transform = subPanel->Add<RectTransform>();
-				transform->SetMin({ 10, 10 });
-				transform->SetMax({ 128, 128 });
+					GuiPanel::Sptr logoPanel = logo->Add<GuiPanel>();
+					logoPanel->SetTexture(TexBeatLogo);
+					logoPanel->SetColor(glm::vec4(1.0f, 1.0f, 1.0f, 1.0f));
+					logoPanel->SetBorderRadius(0);
 
-				GuiPanel::Sptr panel = subPanel->Add<GuiPanel>();
-				panel->SetColor(glm::vec4(1.0f, 0.0f, 0.0f, 1.0f));
 
-				Font::Sptr font = ResourceManager::CreateAsset<Font>("fonts/Roboto-Medium.ttf", 16.0f);
-				font->Bake();
 
-				GuiText::Sptr text = subPanel->Add<GuiText>();
-				text->SetText("Hello world!");
-				text->SetFont(font);
+					transform->SetPosition({ (float)windowSize.x * 0.5, 300 });
+
+				}
+
+				{//Play Button
+					GameObject::Sptr button = scene->CreateGameObject("Play Button");
+
+					RectTransform::Sptr transform = button->Add<RectTransform>();
+					transform->SetPosition({ 0, 0 });
+					transform->SetRotationDeg(0);
+					transform->SetSize({ 200, 100 });
+					transform->SetMin({ 0, 0 });
+					transform->SetMax({ 200, 100 });
+
+					GuiPanel::Sptr panel = button->Add<GuiPanel>();
+					panel->SetTexture(TexPlayButton);
+					panel->SetColor(glm::vec4(1.0f, 1.0f, 1.0f, 1.0f));
+					panel->SetBorderRadius(0);
+
+
+					transform->SetPosition({ (float)windowSize.x * 0.20, (float)windowSize.y * 0.8});
+
+				}
+
+				{//Options Button
+					GameObject::Sptr button = scene->CreateGameObject("Options Button");
+
+					RectTransform::Sptr transform = button->Add<RectTransform>();
+					transform->SetPosition({ 0, 0 });
+					transform->SetRotationDeg(0);
+					transform->SetSize({ 200, 100 });
+					transform->SetMin({ 0, 0 });
+					transform->SetMax({ 200, 100 });
+
+					GuiPanel::Sptr panel = button->Add<GuiPanel>();
+					panel->SetTexture(TexOptionsButton);
+					panel->SetColor(glm::vec4(1.0f, 1.0f, 1.0f, 0.6f));
+					panel->SetBorderRadius(0);
+
+
+					transform->SetPosition({ (float)windowSize.x * 0.35, (float)windowSize.y * 0.8 });
+
+				}
+
+				{//Music Button
+					GameObject::Sptr button = scene->CreateGameObject("Music Button");
+
+					RectTransform::Sptr transform = button->Add<RectTransform>();
+					transform->SetPosition({ 0, 0 });
+					transform->SetRotationDeg(0);
+					transform->SetSize({ 200, 100 });
+					transform->SetMin({ 0, 0 });
+					transform->SetMax({ 200, 100 });
+
+					GuiPanel::Sptr panel = button->Add<GuiPanel>();
+					panel->SetTexture(TexMusicButton);
+					panel->SetColor(glm::vec4(1.0f, 1.0f, 1.0f, 0.6f));
+					panel->SetBorderRadius(0);
+
+
+					transform->SetPosition({ (float)windowSize.x * 0.5, (float)windowSize.y * 0.8 });
+
+				}
+
+				{//Credits Button
+					GameObject::Sptr button = scene->CreateGameObject("Credits Button");
+
+					RectTransform::Sptr transform = button->Add<RectTransform>();
+					transform->SetPosition({ 0, 0 });
+					transform->SetRotationDeg(0);
+					transform->SetSize({ 200, 100 });
+					transform->SetMin({ 0, 0 });
+					transform->SetMax({ 200, 100 });
+
+					GuiPanel::Sptr panel = button->Add<GuiPanel>();
+					panel->SetTexture(TexCreditsButton);
+					panel->SetColor(glm::vec4(1.0f, 1.0f, 1.0f, 0.6f));
+					panel->SetBorderRadius(0);
+
+
+
+					transform->SetPosition({ (float)windowSize.x * 0.65, (float)windowSize.y * 0.8 });
+
+				}
+
+				{//Quit Button
+					GameObject::Sptr button = scene->CreateGameObject("Quit Button");
+
+					RectTransform::Sptr transform = button->Add<RectTransform>();
+					transform->SetPosition({ 0, 0 });
+					transform->SetRotationDeg(0);
+					transform->SetSize({ 200, 100 });
+					transform->SetMin({ 0, 0 });
+					transform->SetMax({ 200, 100 });
+
+					GuiPanel::Sptr panel = button->Add<GuiPanel>();
+					panel->SetTexture(TexQuitButton);
+					panel->SetColor(glm::vec4(1.0f, 1.0f, 1.0f, 1.0f));
+					panel->SetBorderRadius(0);
+
+
+
+					transform->SetPosition({ (float)windowSize.x * 0.8, (float)windowSize.y * 0.8 });
+
+				}
+
 			}
+		
+		*/
+		/*
 
-			canvas->AddChild(subPanel);
+			{//Pause Menu Block
+
+				{//Dim BG
+					GameObject::Sptr background = scene->CreateGameObject("Dimmed Background");
+
+					RectTransform::Sptr transform = background->Add<RectTransform>();
+					transform->SetPosition({ 0, 0 });
+					transform->SetRotationDeg(0);
+					transform->SetSize({ 1920, 1080 });
+					transform->SetMin({ 0, 0 });
+					transform->SetMax({ 1920, 1080 });
+
+					GuiPanel::Sptr panel = background->Add<GuiPanel>();
+					panel->SetTexture(TexDimmedBG);
+					panel->SetColor(glm::vec4(1.0f, 1.0f, 1.0f, 1.0f));
+					panel->SetBorderRadius(0);
+
+
+					transform->SetPosition({ (float)windowSize.x * 0.5, (float)windowSize.y * 0.5 });
+
+				}
+
+				{//Background
+					GameObject::Sptr background = scene->CreateGameObject("Pause Menu Background");
+
+					RectTransform::Sptr transform = background->Add<RectTransform>();
+					transform->SetPosition({ 0, 0 });
+					transform->SetRotationDeg(0);
+					transform->SetSize({ 400, 750 });
+					transform->SetMin({ 0, 0 });
+					transform->SetMax({ 400, 750 });
+
+					GuiPanel::Sptr panel = background->Add<GuiPanel>();
+					panel->SetTexture(TexPauseMenu);
+					panel->SetColor(glm::vec4(1.0f, 1.0f, 1.0f, 1.0f));
+					panel->SetBorderRadius(0);
+
+
+					transform->SetPosition({ (float)windowSize.x * 0.5, (float)windowSize.y * 0.5 });
+
+				}
+
+				{//Resume Button
+					GameObject::Sptr button = scene->CreateGameObject("Resume Button");
+
+					RectTransform::Sptr transform = button->Add<RectTransform>();
+					transform->SetPosition({ 0, 0 });
+					transform->SetRotationDeg(0);
+					transform->SetSize({ 300, 150 });
+					transform->SetMin({ 0, 0 });
+					transform->SetMax({ 300, 150 });
+
+					GuiPanel::Sptr panel = button->Add<GuiPanel>();
+					panel->SetTexture(TexResumeButton);
+					panel->SetColor(glm::vec4(1.0f, 1.0f, 1.0f, 1.0f));
+					panel->SetBorderRadius(0);
+
+
+					transform->SetPosition({ (float)windowSize.x * 0.5, (float)windowSize.y * 0.28});
+
+				}
+
+				{//Options Button
+					GameObject::Sptr button = scene->CreateGameObject("Options Button");
+
+					RectTransform::Sptr transform = button->Add<RectTransform>();
+					transform->SetPosition({ 0, 0 });
+					transform->SetRotationDeg(0);
+					transform->SetSize({ 300, 150 });
+					transform->SetMin({ 0, 0 });
+					transform->SetMax({ 300, 150 });
+
+					GuiPanel::Sptr panel = button->Add<GuiPanel>();
+					panel->SetTexture(TexOptionsButton);
+					panel->SetColor(glm::vec4(1.0f, 1.0f, 1.0f, 0.6f));
+					panel->SetBorderRadius(0);
+
+					transform->SetPosition({ (float)windowSize.x * 0.5, (float)windowSize.y * 0.43 });
+
+				}
+
+				{//Resync Button
+					GameObject::Sptr button = scene->CreateGameObject("Music Button");
+
+					RectTransform::Sptr transform = button->Add<RectTransform>();
+					transform->SetPosition({ 0, 0 });
+					transform->SetRotationDeg(0);
+					transform->SetSize({ 300, 150 });
+					transform->SetMin({ 0, 0 });
+					transform->SetMax({ 300, 150 });
+
+					GuiPanel::Sptr panel = button->Add<GuiPanel>();
+					panel->SetTexture(TexResyncButton);
+					panel->SetColor(glm::vec4(1.0f, 1.0f, 1.0f, 0.6f));
+					panel->SetBorderRadius(0);
+
+					transform->SetPosition({ (float)windowSize.x * 0.5, (float)windowSize.y * 0.58 });
+
+				}
+
+				{//Quit Button
+					GameObject::Sptr button = scene->CreateGameObject("Quit Button");
+
+					RectTransform::Sptr transform = button->Add<RectTransform>();
+					transform->SetPosition({ 0, 0 });
+					transform->SetRotationDeg(0);
+					transform->SetSize({ 300, 150 });
+					transform->SetMin({ 0, 0 });
+					transform->SetMax({ 300, 150 });
+
+					GuiPanel::Sptr panel = button->Add<GuiPanel>();
+					panel->SetTexture(TexQuitButton);
+					panel->SetColor(glm::vec4(1.0f, 1.0f, 1.0f, 1.0f));
+					panel->SetBorderRadius(0);
+
+
+					transform->SetPosition({ (float)windowSize.x * 0.5, (float)windowSize.y * 0.73 });
+
+				}
+		}
+		*/
+
+		/*
+
+		{//Game Over Block
+
+				{//Dim BG
+					GameObject::Sptr background = scene->CreateGameObject("Dimmed Background");
+
+					RectTransform::Sptr transform = background->Add<RectTransform>();
+					transform->SetPosition({ 0, 0 });
+					transform->SetRotationDeg(0);
+					transform->SetSize({ 1920, 1080 });
+					transform->SetMin({ 0, 0 });
+					transform->SetMax({ 1920, 1080 });
+
+					GuiPanel::Sptr panel = background->Add<GuiPanel>();
+					panel->SetTexture(TexDimmedBG);
+					panel->SetColor(glm::vec4(1.0f, 1.0f, 1.0f, 1.0f));
+					panel->SetBorderRadius(0);
+
+
+					transform->SetPosition({ (float)windowSize.x * 0.5, (float)windowSize.y * 0.5 });
+
+				}
+
+				{//Game Over Text
+					GameObject::Sptr button = scene->CreateGameObject("Game Over Text");
+
+					RectTransform::Sptr transform = button->Add<RectTransform>();
+					transform->SetPosition({ 0, 0 });
+					transform->SetRotationDeg(0);
+					transform->SetSize({ 809, 249 });
+					transform->SetMin({ 0, 0 });
+					transform->SetMax({ 809, 249 });
+
+					GuiPanel::Sptr panel = button->Add<GuiPanel>();
+					panel->SetTexture(TexGameOverText);
+					panel->SetColor(glm::vec4(1.0f, 1.0f, 1.0f, 1.0f));
+					panel->SetBorderRadius(0);
+
+
+					transform->SetPosition({ (float)windowSize.x * 0.5, (float)windowSize.y * 0.2});
+
+				}
+
+				{//Score breakdown
+					GameObject::Sptr button = scene->CreateGameObject("Score breakdown");
+
+					RectTransform::Sptr transform = button->Add<RectTransform>();
+					transform->SetPosition({ 0, 0 });
+					transform->SetRotationDeg(0);
+					transform->SetSize({ 504 * 0.75, 475 * 0.75 });
+					transform->SetMin({ 0, 0 });
+					transform->SetMax({ 504 *0.75, 475 * 0.75 });
+
+					GuiPanel::Sptr panel = button->Add<GuiPanel>();
+					panel->SetTexture(TexScoreBreakdown);
+					panel->SetColor(glm::vec4(1.0f, 1.0f, 1.0f, 1.0f));
+					panel->SetBorderRadius(0);
+
+					transform->SetPosition({ (float)windowSize.x * 0.4, (float)windowSize.y * 0.5 });
+
+				}
+
+				{//Quit
+					GameObject::Sptr button = scene->CreateGameObject("Quit Button");
+
+					RectTransform::Sptr transform = button->Add<RectTransform>();
+					transform->SetPosition({ 0, 0 });
+					transform->SetRotationDeg(0);
+					transform->SetSize({ 300, 150 });
+					transform->SetMin({ 0, 0 });
+					transform->SetMax({ 300, 150 });
+
+					GuiPanel::Sptr panel = button->Add<GuiPanel>();
+					panel->SetTexture(TexQuitButton);
+					panel->SetColor(glm::vec4(1.0f, 1.0f, 1.0f, 1.0f));
+					panel->SetBorderRadius(0);
+
+					transform->SetPosition({ (float)windowSize.x * 0.35, (float)windowSize.y * 0.8 });
+
+				}
+
+				{//Continue Button
+					GameObject::Sptr button = scene->CreateGameObject("Continue Button");
+
+					RectTransform::Sptr transform = button->Add<RectTransform>();
+					transform->SetPosition({ 0, 0 });
+					transform->SetRotationDeg(0);
+					transform->SetSize({ 300, 150 });
+					transform->SetMin({ 0, 0 });
+					transform->SetMax({ 300, 150 });
+
+					GuiPanel::Sptr panel = button->Add<GuiPanel>();
+					panel->SetTexture(TexContinueButton);
+					panel->SetColor(glm::vec4(1.0f, 1.0f, 1.0f, 1.0f));
+					panel->SetBorderRadius(0);
+
+
+					transform->SetPosition({ (float)windowSize.x * 0.65, (float)windowSize.y * 0.8 });
+
+				}
 		}
 
+		*/
+		
+	
 		GuiBatcher::SetDefaultTexture(ResourceManager::CreateAsset<Texture2D>("textures/ui-sprite.png"));
 		GuiBatcher::SetDefaultBorderRadius(8);
 
@@ -1603,33 +1947,35 @@ int main() {
 
 		// Use our cubemap to draw our skybox
 		scene->DrawSkybox();
-		
-		// Disable culling
-		glDisable(GL_CULL_FACE);
 
+		// Disable culling
+		  glDisable(GL_CULL_FACE);
 		// Disable depth testing, we're going to use order-dependant layering
-		//glDisable(GL_DEPTH_TEST);
+		  glDisable(GL_DEPTH_TEST);
 		// Disable depth writing
-		//glDepthMask(GL_FALSE);
-		
+		  glDepthMask(GL_FALSE);
+
 		// Enable alpha blending
-		glEnable(GL_BLEND);
-		glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-		
+		  glEnable(GL_BLEND);
+		  glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+
 		// Enable the scissor test;
-		glEnable(GL_SCISSOR_TEST);
-		
+		//  glEnable(GL_SCISSOR_TEST);
+
 		// Our projection matrix will be our entire window for now
-			glm::mat4 proj = glm::ortho(0.0f, (float)windowSize.x, (float)windowSize.y, 0.0f, -1.0f, 1.0f);
+		glm::mat4 proj = glm::ortho(0.0f, (float)windowSize.x, (float)windowSize.y, 0.0f, -1.0f, 1.0f);
 		GuiBatcher::SetProjection(proj);
 
+		// Iterate over and render all the GUI objects
 		scene->RenderGUI();
 
 		// Flush the Gui Batch renderer
 		GuiBatcher::Flush();
 
+		glEnable(GL_DEPTH_TEST);
+
 		// Disable alpha blending
-		glDisable(GL_BLEND);
+		 glDisable(GL_BLEND);
 		// Disable scissor testing
 		glDisable(GL_SCISSOR_TEST);
 		// Re-enable depth writing
@@ -1642,6 +1988,7 @@ int main() {
 
 		lastFrame = thisFrame;
 		ImGuiHelper::EndFrame();
+		// InputEngine::EndFrame();
 		glfwSwapBuffers(window);
 	}
 
