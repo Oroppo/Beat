@@ -975,9 +975,11 @@ void CreateScene() {
 
 		// Create some lights for our scene
 		scene->Lights.resize(2);
-		scene->Lights[0].Position = glm::vec3(0.0f, 1.0f, 3.0f);
+		//scene->Lights[0].Position = glm::vec3(0.0f, 1.0f, 3.0f);
 		scene->Lights[0].Color = glm::vec3(1.0f, 1.0f, 1.0f);
 		scene->Lights[0].Range = 100.0f;
+		scene->Lights[1].Color = glm::vec3((1.0f, 0.99f, 0.99f));
+		scene->Lights[1].Range = 100.0f;
 
 
 
@@ -1827,6 +1829,27 @@ int main() {
 		ImGuiHelper::StartFrame();
 		studio.Update();
 
+		glm::vec3 playerPos = scene->FindObjectByName("Character/Player")->GetPosition();
+		float playerPosX = playerPos.x;
+		float playerPosY = playerPos.y;
+		glm::vec3 lightFollowPos = glm::vec3(playerPosX, playerPosY, (playerPos.z + 3));
+
+		///////////// For moving Lights will be expanded upon later ///////////////////////////////////
+		if (playerPos.x < 2.0f)
+		{
+			scene->Lights[1].Color = glm::vec3(0.98f, 0.10f, 0.10f);
+		}
+
+		if (playerPos.x >= 2.0f)
+		{
+			scene->Lights[1].Color = glm::vec3(0.011f, 0.70f, 0.20f);
+		}
+		scene->Lights[1].Position = glm::vec3(6.840f, 5.610f, 3.0f);
+		scene->Lights[0].Position = glm::vec3(lightFollowPos);
+		scene->Lights[1].Range = 50;
+		scene->Lights[0].Range = 50;
+		scene->SetupShaderAndLights();
+
 		// Calculate the time since our last frame (dt)
 		double thisFrame = glfwGetTime();
 		float dt = static_cast<float>(thisFrame - lastFrame);
@@ -1925,6 +1948,7 @@ int main() {
 		glm::mat4 viewProj = camera->GetViewProjection();
 		DebugDrawer::Get().SetViewProjection(viewProj);
 
+	
 		// Update our worlds physics!
 		scene->DoPhysics(dt);
 

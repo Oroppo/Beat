@@ -217,6 +217,13 @@ namespace Gameplay {
 		_lightingUbo->Update();
 	}
 
+	void Scene::CallLightUpdate()
+	{
+		_lightingUbo->Update();
+	}
+
+
+
 	btDynamicsWorld* Scene::GetPhysicsWorld() const {
 		return _physicsWorld;
 	}
