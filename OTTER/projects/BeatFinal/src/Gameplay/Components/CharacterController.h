@@ -30,7 +30,6 @@ public:
 
 protected:
 	double xPos = 0, yPos = 0;
-	int score=0;
 	float _impulse2;
 	bool _canJump;
 	std::string _platform;

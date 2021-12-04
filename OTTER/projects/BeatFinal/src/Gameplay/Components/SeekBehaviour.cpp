@@ -47,6 +47,7 @@ void SeekBehaviour::Update(float deltaTime)
         difference = -difference;
    }
     _body->SetLinearVelocity(difference);
+    LOG_INFO("update works");
 
 }
 
