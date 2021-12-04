@@ -258,7 +258,7 @@ void SpawnObj(MeshResource::Sptr Mesh, Material::Sptr Material, std::string ObjN
 		Startplatform->SetRotation(rot);
 		Startplatform->SetScale(scale);
 
-		//Startplatform->Add<LevelMover>();
+		Startplatform->Add<LevelMover>();
 
 		// Create and attach a renderer for the monkey
 		RenderComponent::Sptr renderer = Startplatform->Add<RenderComponent>();
@@ -292,7 +292,7 @@ void SpawnStartPlat(MeshResource::Sptr Mesh, Material::Sptr Material, std::strin
 		Startplatform->SetRotation(rot);
 		Startplatform->SetScale(scale);
 
-		//Startplatform->Add<LevelMover>();
+		Startplatform->Add<LevelMover>();
 
 		// Create and attach a renderer for the Object
 		RenderComponent::Sptr renderer = Startplatform->Add<RenderComponent>();
@@ -321,7 +321,7 @@ void SpawnGem(MeshResource::Sptr Mesh, Material::Sptr Material, std::string ObjN
 		Startplatform->SetScale(scale);
 
 		//Add Components
-		//Startplatform->Add<LevelMover>();
+		Startplatform->Add<LevelMover>();
 		Startplatform->Add<RotatingBehaviour>();
 		
 		// Create and attach a renderer for the Object
@@ -394,7 +394,7 @@ void SpawnCD(MeshResource::Sptr Mesh, Material::Sptr Material, std::string ObjNa
 		Startplatform->SetScale(scale);
 
 		//Add Components
-	//	Startplatform->Add<LevelMover>();
+		Startplatform->Add<LevelMover>();
 		
 		Startplatform->Add<RotatingBehaviourCD>();
 
@@ -426,7 +426,7 @@ void SpawnWallJump(MeshResource::Sptr Mesh, Material::Sptr Material, std::string
 		Startplatform->SetRotation(rot);
 		Startplatform->SetScale(scale);
 
-		//Startplatform->Add<LevelMover>();
+		Startplatform->Add<LevelMover>();
 
 		// Create and attach a renderer for the Object
 		RenderComponent::Sptr renderer = Startplatform->Add<RenderComponent>();
@@ -456,7 +456,7 @@ void SpawnBuilding(MeshResource::Sptr Mesh, Material::Sptr Material, std::string
 		Building->SetRotation(rot);
 		Building->SetScale(scale);
 
-		//Building->Add<LevelMover>();
+		Building->Add<LevelMover>();
 
 		// Create and attach a renderer for the Object
 		RenderComponent::Sptr renderer = Building->Add<RenderComponent>();
@@ -486,7 +486,7 @@ void SpawnBuilding2(MeshResource::Sptr Mesh, Material::Sptr Material, std::strin
 		Building2->SetRotation(rot);
 		Building2->SetScale(scale);
 
-		//Building->Add<LevelMover>();
+		Building2->Add<LevelMover>();
 
 		// Create and attach a renderer for the Object
 		RenderComponent::Sptr renderer = Building2->Add<RenderComponent>();
@@ -516,7 +516,7 @@ void SpawnBuilding3(MeshResource::Sptr Mesh, Material::Sptr Material, std::strin
 		Building3->SetRotation(rot);
 		Building3->SetScale(scale);
 
-		//Building->Add<LevelMover>();
+		Building3->Add<LevelMover>();
 
 		// Create and attach a renderer for the Object
 		RenderComponent::Sptr renderer = Building3->Add<RenderComponent>();
@@ -546,7 +546,7 @@ void SpawnSmallWallJump(MeshResource::Sptr Mesh, Material::Sptr Material, std::s
 		SmallWallJump->SetRotation(rot);
 		SmallWallJump->SetScale(scale);
 
-		//Building->Add<LevelMover>();
+		SmallWallJump->Add<LevelMover>();
 
 		// Create and attach a renderer for the Object
 		RenderComponent::Sptr renderer = SmallWallJump->Add<RenderComponent>();
@@ -577,7 +577,7 @@ void SpawnSuperSmallWallJump(MeshResource::Sptr Mesh, Material::Sptr Material, s
 		SuperSmallWallJump->SetRotation(rot);
 		SuperSmallWallJump->SetScale(scale);
 
-		//Building->Add<LevelMover>();
+		SuperSmallWallJump->Add<LevelMover>();
 
 		// Create and attach a renderer for the Object
 		RenderComponent::Sptr renderer = SuperSmallWallJump->Add<RenderComponent>();
@@ -997,15 +997,15 @@ void CreateScene() {
 		GameObject::Sptr Block7 = scene->CreateGameObject("Block7");
 		GameObject::Sptr Block8 = scene->CreateGameObject("Block8");
 		{
-			Block1->Add<LevelMover>();
-			Block2->Add<LevelMover>();
-			Block3->Add<LevelMover>();
-			Block4->Add<LevelMover>();
-			Block5->Add<LevelMover>();
-			Block6->Add<LevelMover>();
-			Block7->Add<LevelMover>();
-			Block8->Add<LevelMover>();
-			TutorialBlock->Add<LevelMover>();
+		//Block1->Add<LevelMover>();
+		//Block2->Add<LevelMover>();
+		//Block3->Add<LevelMover>();
+		//Block4->Add<LevelMover>();
+		//Block5->Add<LevelMover>();
+		//Block6->Add<LevelMover>();
+		//Block7->Add<LevelMover>();
+		//Block8->Add<LevelMover>();
+		//TutorialBlock->Add<LevelMover>();
 
 			//These have rigid bodies so that our objects can move
 			auto rb1 = Block1->Add<RigidBody>();
