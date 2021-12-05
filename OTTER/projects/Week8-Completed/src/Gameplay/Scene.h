@@ -161,6 +161,8 @@ namespace Gameplay {
 		/// </summary>
 		void DrawAllGameObjectGUIs();
 
+		void CallLightUpdate();
+
 		void DrawSkybox();
 
 		/// <summary>
