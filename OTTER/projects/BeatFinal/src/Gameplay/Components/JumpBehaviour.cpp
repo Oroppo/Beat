@@ -16,11 +16,7 @@ void JumpBehaviour::RenderImGui() {
 	LABEL_LEFT(ImGui::DragFloat, "Impulse", &_impulse, 1.0f);
 }
 
-nlohmann::json JumpBehaviour::ToJson() const {
-	return {
-		{ "impulse", _impulse }
-	};
-}
+
 
 JumpBehaviour::JumpBehaviour() :
 	IComponent(),
@@ -28,7 +24,11 @@ JumpBehaviour::JumpBehaviour() :
 { }
 
 JumpBehaviour::~JumpBehaviour() = default;
-
+nlohmann::json JumpBehaviour::ToJson() const {
+	return {
+		{ "impulse", _impulse }
+	};
+}
 JumpBehaviour::Sptr JumpBehaviour::FromJson(const nlohmann::json& blob) {
 	JumpBehaviour::Sptr result = std::make_shared<JumpBehaviour>();
 	result->_impulse = blob["impulse"];

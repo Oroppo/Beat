@@ -4,6 +4,7 @@
 #include "Gameplay/Scene.h"
 #include "Utils/ImGuiHelper.h"
 #include <iostream>
+#include"BeatTimer.h"
 void CharacterController::Awake()
 {
     _body = GetComponent<Gameplay::Physics::RigidBody>();
@@ -41,14 +42,16 @@ CharacterController::Sptr CharacterController::FromJson(const nlohmann::json & b
 
 void CharacterController::OnTriggerVolumeEntered(const std::shared_ptr<Gameplay::Physics::RigidBody>&body) {
     LOG_INFO("Body has entered our trigger volume: {}", body->GetGameObject()->Name);
-
-    if (_platform != body->GetGameObject()->Name) {
+    if ((body->GetGameObject()->Name == "BeatGem") && (_GemJumpTimer>1.25)&&(_GemJumpTimer<1.6666)) {
+        _canJump = true;
+        std::cout << "jumper worked";
+    }
+    if ((_platform != body->GetGameObject()->Name )&&(body->GetGameObject()->Name != "BeatGem")){
         _canJump = true;
         _platform = body->GetGameObject()->Name;
     }
-    //"Half Circle Platform"  
     //make certain things fall when touched 
-    if ((_platform == "BeatGem") || (_platform == "Falling Platform")) {
+    if (_platform == "Falling Platform") {
         body->SetType(RigidBodyType::Dynamic);
     }
     //rotate half circle platforms
@@ -57,14 +60,18 @@ void CharacterController::OnTriggerVolumeEntered(const std::shared_ptr<Gameplay:
         body->GetGameObject()->SetRotation(body->GetGameObject()->GetRotationEuler() + glm::vec3(0.0f, -20 * _rotPlat.x, 0.0f));
         LOG_INFO(_rotPlat.x);
     }
-    if (_platform == "Vinyl") {
-        score += 1000;
+   
+    //add score
+    if ((_platform == "Vinyl")|| (_platform == "CD")) {
+        if (_platform == "Vinyl") {
+            score += 1000;
+        }
+        if (_platform == "CD") {
+            score += 100;
+        }
         body->GetGameObject()->SetPostion(glm::vec3(0.0f, -100.0f, 0.0f));
     }
-    if (_platform == "CD") {
-        score += 100;
-        body->GetGameObject()->SetPostion(glm::vec3(0.0f, -100.0f, 0.0f));
-    }
+  
 }
 void CharacterController::OnTriggerVolumeLeaving(const std::shared_ptr<Gameplay::Physics::RigidBody>&body) {
     LOG_INFO("Body has left our trigger volume: {}", body->GetGameObject()->Name);
@@ -81,11 +88,12 @@ void CharacterController::OnTriggerVolumeLeaving(const std::shared_ptr<Gameplay:
     }
 }
 void CharacterController::Update(float deltaTime) {
-    LOG_INFO(score);
+   // LOG_INFO(score);
     bool _A = glfwGetKey(GetGameObject()->GetScene()->Window, GLFW_KEY_A);
     bool _D = glfwGetKey(GetGameObject()->GetScene()->Window, GLFW_KEY_D);
     bool _W = glfwGetKey(GetGameObject()->GetScene()->Window, GLFW_KEY_SPACE);
-
+    _GemJumpTimer = GetGameObject()->GetScene()->FindObjectByName("GameManager")->Get<BeatTimer>()->GetBeatTime();
+    LOG_INFO(_GemJumpTimer);
     //   LOG_INFO(_canJump);
     if (_platform == "Wall Jump") {
         if (_body->GetLinearVelocity().z < 0) {

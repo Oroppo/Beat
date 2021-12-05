@@ -31,6 +31,7 @@ public:
 protected:
 	double xPos = 0, yPos = 0;
 	float _impulse2;
+	float _GemJumpTimer;
 	bool _canJump;
 	int score = 0;
 	std::string _platform;

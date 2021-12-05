@@ -16,27 +16,34 @@ void BeatTimer::RenderImGui() {
 
 BeatTimer::BeatTimer() :
 	IComponent(){
-	BeatTime = 0;
+	_BeatTime = 0;
 }
 
 
-
-
-
+BeatTimer::Sptr BeatTimer::FromJson(const nlohmann::json& blob) {
+	
+	BeatTimer::Sptr result = std::make_shared<BeatTimer>();
+	result->_BeatTime = blob["BeatTime"];
+	return result;
+}
+nlohmann::json BeatTimer::ToJson() const {
+	return {
+		{ "BeatTime", _BeatTime }
+	};
+}
 BeatTimer::~BeatTimer() = default;
 
 
 float BeatTimer::GetBeatTime() {
-	return BeatTime; 
+	return _BeatTime; 
 }
 
 void BeatTimer::Update(float deltaTime) {
-	
-	if (BeatTime > 1.66666) {
-		BeatTime -=1.66666;
+	_BeatTime += deltaTime;
+	//since music is in 100 bpm, there are 60 seconds in a munute so 100/60 is 1.666666 so bar resets once every 1.6666 seconds
+	//reseting timer so that it may be  passed to character controller and used for the beat gem logic
+	if (_BeatTime >= 1.66666) {
+		_BeatTime -=1.66666;
 	 }
-	else {
-		BeatTime += deltaTime;
-	}
 }
 
