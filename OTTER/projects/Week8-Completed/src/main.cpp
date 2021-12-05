@@ -1066,11 +1066,11 @@ void CreateScene() {
 		SpawnStartPlat(StartPlatform, StartPlatformMaterial, "EndPlatform Block5", glm::vec3(6.840f, 5.610f, -4.920f), glm::vec3(90.0f, 0.0f, 0.0f), glm::vec3(0.350f, 0.350f, 0.350f));
 		
 		// CDs for Block 5
-		SpawnCD(CD, CDMaterial, "CD Block5 1", glm::vec3(-6.040f, 5.610f, 2.340f), glm::vec3(90.000f, 0.0f, 90.000f), glm::vec3(1.000f, 1.000f, 1.000f));
-		SpawnCD(CD, CDMaterial, "CD Block5 2", glm::vec3(-6.040f, 5.610f, 5.170f), glm::vec3(90.000f, 0.0f, 90.000f), glm::vec3(1.000f, 1.000f, 1.000f));
-		SpawnCD(CD, CDMaterial, "CD Block5 3", glm::vec3(-0.630f, 5.610f, 0.460f), glm::vec3(90.000f, 0.0f, 90.000f), glm::vec3(1.000f, 1.000f, 1.000f));
-		SpawnCD(CD, CDMaterial, "CD Block5 4", glm::vec3(-0.640f, 5.610f, 2.710f), glm::vec3(90.000f, 0.0f, 90.000f), glm::vec3(1.000f, 1.000f, 1.000f));
-		SpawnCD(CD, CDMaterial, "CD Block5 5", glm::vec3(2.170f, 5.610f, -2.880f), glm::vec3(90.000f, 0.0f, 90.000f), glm::vec3(1.000f, 1.000f, 1.000f));
+		SpawnCD(CD, CDMaterial, "CD Block4 1", glm::vec3(-6.040f, 5.610f, 2.340f), glm::vec3(90.000f, 0.0f, 90.000f), glm::vec3(1.000f, 1.000f, 1.000f));
+		SpawnCD(CD, CDMaterial, "CD Block4 2", glm::vec3(-6.040f, 5.610f, 5.170f), glm::vec3(90.000f, 0.0f, 90.000f), glm::vec3(1.000f, 1.000f, 1.000f));
+		SpawnCD(CD, CDMaterial, "CD Block4 3", glm::vec3(-0.630f, 5.610f, 0.460f), glm::vec3(90.000f, 0.0f, 90.000f), glm::vec3(1.000f, 1.000f, 1.000f));
+		SpawnCD(CD, CDMaterial, "CD Block4 4", glm::vec3(-0.640f, 5.610f, 2.710f), glm::vec3(90.000f, 0.0f, 90.000f), glm::vec3(1.000f, 1.000f, 1.000f));
+		SpawnCD(CD, CDMaterial, "CD Block4 5", glm::vec3(2.170f, 5.610f, -2.880f), glm::vec3(90.000f, 0.0f, 90.000f), glm::vec3(1.000f, 1.000f, 1.000f));
 		*/
 
 		// 6th Block
@@ -1092,12 +1092,6 @@ void CreateScene() {
 		SpawnCollectable(Vinyl, VinylMaterial, "Vinyl Block6", glm::vec3(-1.890f, 5.610f, 5.390f), glm::vec3(90.000f, 0.0f, 90.000f), glm::vec3(1.000f, 1.000f, 1.000f));
 		SpawnStartPlat(StartPlatform, StartPlatformMaterial, "EndPlatform Block6", glm::vec3(6.840f, 5.610f, -4.920f), glm::vec3(90.0f, 0.0f, 0.0f), glm::vec3(0.350f, 0.350f, 0.350f));
 		
-		// CDs for Block 6
-		SpawnCD(CD, CDMaterial, "CD Block6 1", glm::vec3(-6.040f, 5.610f, 2.340f), glm::vec3(90.000f, 0.0f, 90.000f), glm::vec3(1.000f, 1.000f, 1.000f));
-		SpawnCD(CD, CDMaterial, "CD Block6 2", glm::vec3(-6.040f, 5.610f, 5.170f), glm::vec3(90.000f, 0.0f, 90.000f), glm::vec3(1.000f, 1.000f, 1.000f));
-		SpawnCD(CD, CDMaterial, "CD Block6 3", glm::vec3(-0.630f, 5.610f, 0.460f), glm::vec3(90.000f, 0.0f, 90.000f), glm::vec3(1.000f, 1.000f, 1.000f));
-		SpawnCD(CD, CDMaterial, "CD Block6 4", glm::vec3(-0.640f, 5.610f, 2.710f), glm::vec3(90.000f, 0.0f, 90.000f), glm::vec3(1.000f, 1.000f, 1.000f));
-		SpawnCD(CD, CDMaterial, "CD Block6 5", glm::vec3(2.170f, 5.610f, -2.880f), glm::vec3(90.000f, 0.0f, 90.000f), glm::vec3(1.000f, 1.000f, 1.000f));
 		
 		// 7th Block
 		/*

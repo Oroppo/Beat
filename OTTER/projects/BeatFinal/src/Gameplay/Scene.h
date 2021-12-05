@@ -160,8 +160,6 @@ namespace Gameplay {
 		/// Creates the shader and sets up all the lights
 		/// </summary>
 		void SetupShaderAndLights();
-		
-		void CallLightUpdate();
 
 		/// <summary>
 		/// Draws ImGui stuff for all gameobjects in the scene

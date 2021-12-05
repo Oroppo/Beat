@@ -49,7 +49,6 @@ void SeekBehaviour::Update(float deltaTime)
     _body->SetLinearVelocity(difference);
     LOG_INFO("update works");
 
-   
 }
 
 // Templated LERP function returns positon at current time for LERP
