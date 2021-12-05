@@ -77,6 +77,7 @@
 #include "Gameplay/Components/VinylAnim.h"
 #include "Gameplay/Components/ForeGroundMover.h"
 #include "Gameplay/Components/SeekBehaviour.h"
+#include "Gameplay/Components/BeatTimer.h"
 
 // Physics
 #include "Gameplay/Physics/RigidBody.h"
@@ -1250,7 +1251,8 @@ void CreateScene() {
 		GameObject::Sptr GameManager = scene->CreateGameObject("GameManager");
 		{
 			//Pos-Rot-Scale Doesn't matter
-
+			RigidBody::Sptr physics = GameManager->Add<RigidBody>(RigidBodyType::Kinematic);
+			GameManager->Add <BeatTimer>();
 			//ScoreComponent
 			//LevelSpawningComponent
 			//Scene Swapper
@@ -2013,6 +2015,7 @@ int main() {
 	ComponentManager::RegisterType<Camera>();
 	ComponentManager::RegisterType<RenderComponent>();
 	ComponentManager::RegisterType<RigidBody>();
+	ComponentManager::RegisterType<BeatTimer>();
 	ComponentManager::RegisterType<TriggerVolume>();
 	ComponentManager::RegisterType<MoveThings>();
 	//ComponentManager::RegisterType<MouseController>();
