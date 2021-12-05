@@ -57,6 +57,14 @@ void CharacterController::OnTriggerVolumeEntered(const std::shared_ptr<Gameplay:
         body->GetGameObject()->SetRotation(body->GetGameObject()->GetRotationEuler() + glm::vec3(0.0f, -20 * _rotPlat.x, 0.0f));
         LOG_INFO(_rotPlat.x);
     }
+    if (_platform == "Vinyl") {
+        score += 1000;
+        body->GetGameObject()->SetPostion(glm::vec3(0.0f, -100.0f, 0.0f));
+    }
+    if (_platform == "CD") {
+        score += 100;
+        body->GetGameObject()->SetPostion(glm::vec3(0.0f, -100.0f, 0.0f));
+    }
 }
 void CharacterController::OnTriggerVolumeLeaving(const std::shared_ptr<Gameplay::Physics::RigidBody>&body) {
     LOG_INFO("Body has left our trigger volume: {}", body->GetGameObject()->Name);
@@ -73,6 +81,7 @@ void CharacterController::OnTriggerVolumeLeaving(const std::shared_ptr<Gameplay:
     }
 }
 void CharacterController::Update(float deltaTime) {
+    LOG_INFO(score);
     bool _A = glfwGetKey(GetGameObject()->GetScene()->Window, GLFW_KEY_A);
     bool _D = glfwGetKey(GetGameObject()->GetScene()->Window, GLFW_KEY_D);
     bool _W = glfwGetKey(GetGameObject()->GetScene()->Window, GLFW_KEY_SPACE);
