@@ -803,6 +803,10 @@ void CreateScene() {
 		Texture2D::Sptr TexDimmedBG = ResourceManager::CreateAsset<Texture2D>("textures/GUI/DimBG.png");
 		Texture2D::Sptr TexScoreBreakdown = ResourceManager::CreateAsset<Texture2D>("textures/GUI/ScoreBreakdown.png");
 		Texture2D::Sptr TexGameOverText = ResourceManager::CreateAsset<Texture2D>("textures/GUI/GameOverText.png");
+		Texture2D::Sptr TexMovementTutorial = ResourceManager::CreateAsset<Texture2D>("textures/GUI/Movement.png");
+		Texture2D::Sptr TexWallJumpTutorial = ResourceManager::CreateAsset<Texture2D>("textures/GUI/WallJump.png");
+		Texture2D::Sptr TexBeatGemTutorial = ResourceManager::CreateAsset<Texture2D>("textures/GUI/BeatGems.png");
+		Texture2D::Sptr TexVinylsTutorial = ResourceManager::CreateAsset<Texture2D>("textures/GUI/Vinyls.png");
 
 		//Minification and Magnification
 		//leafTex->SetMinFilter(MinFilter::Nearest);
@@ -1610,7 +1614,90 @@ void CreateScene() {
 		}
 
 		*/
-		
+		/*
+		{//Tutorial Blocks
+
+				{//Movement
+					GameObject::Sptr button = scene->CreateGameObject("Movement Tutorial");
+
+					RectTransform::Sptr transform = button->Add<RectTransform>();
+					transform->SetPosition({ 0, 0 });
+					transform->SetRotationDeg(0);
+					transform->SetSize({ 700 *0.75, 500 * 0.75 });
+					transform->SetMin({ 0, 0 });
+					transform->SetMax({ 700 * 0.75, 500 * 0.75 });
+
+					GuiPanel::Sptr panel = button->Add<GuiPanel>();
+					panel->SetTexture(TexMovementTutorial);
+					panel->SetColor(glm::vec4(1.0f, 1.0f, 1.0f, 1.0f));
+					panel->SetBorderRadius(0);
+
+
+					transform->SetPosition({ (float)windowSize.x * 0.2, (float)windowSize.y * 0.2 });
+
+				}
+
+				{//Wall Jump
+					GameObject::Sptr button = scene->CreateGameObject("Wall Jump Tutorial");
+
+					RectTransform::Sptr transform = button->Add<RectTransform>();
+					transform->SetPosition({ 0, 0 });
+					transform->SetRotationDeg(0);
+					transform->SetSize({ 700 * 0.75, 500 * 0.75 });
+					transform->SetMin({ 0, 0 });
+					transform->SetMax({ 700 * 0.75, 500 * 0.75 });
+
+					GuiPanel::Sptr panel = button->Add<GuiPanel>();
+					panel->SetTexture(TexWallJumpTutorial);
+					panel->SetColor(glm::vec4(1.0f, 1.0f, 1.0f, 1.0f));
+					panel->SetBorderRadius(0);
+
+
+					transform->SetPosition({ (float)windowSize.x * 0.2, (float)windowSize.y * 0.6 });
+
+				}
+
+				{//Beat Gem
+					GameObject::Sptr button = scene->CreateGameObject("Beat Gem Tutorial");
+
+					RectTransform::Sptr transform = button->Add<RectTransform>();
+					transform->SetPosition({ 0, 0 });
+					transform->SetRotationDeg(0);
+					transform->SetSize({ 700 * 0.75, 500 * 0.75 });
+					transform->SetMin({ 0, 0 });
+					transform->SetMax({ 700 * 0.75, 500 * 0.75 });
+
+					GuiPanel::Sptr panel = button->Add<GuiPanel>();
+					panel->SetTexture(TexBeatGemTutorial);
+					panel->SetColor(glm::vec4(1.0f, 1.0f, 1.0f, 1.0f));
+					panel->SetBorderRadius(0);
+
+
+					transform->SetPosition({ (float)windowSize.x * 0.6, (float)windowSize.y * 0.2 });
+
+				}
+
+				{//Vinyls
+					GameObject::Sptr button = scene->CreateGameObject("Vinyl Tutorial");
+
+					RectTransform::Sptr transform = button->Add<RectTransform>();
+					transform->SetPosition({ 0, 0 });
+					transform->SetRotationDeg(0);
+					transform->SetSize({ 700 * 0.75, 500 * 0.75 });
+					transform->SetMin({ 0, 0 });
+					transform->SetMax({ 700 * 0.75, 500 * 0.75 });
+
+					GuiPanel::Sptr panel = button->Add<GuiPanel>();
+					panel->SetTexture(TexVinylsTutorial);
+					panel->SetColor(glm::vec4(1.0f, 1.0f, 1.0f, 1.0f));
+					panel->SetBorderRadius(0);
+
+
+					transform->SetPosition({ (float)windowSize.x * 0.6, (float)windowSize.y * 0.6 });
+
+				}
+		}
+		*/
 	
 		GuiBatcher::SetDefaultTexture(ResourceManager::CreateAsset<Texture2D>("textures/ui-sprite.png"));
 		GuiBatcher::SetDefaultBorderRadius(8);
