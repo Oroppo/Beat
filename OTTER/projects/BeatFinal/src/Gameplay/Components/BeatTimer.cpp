@@ -15,7 +15,9 @@ void BeatTimer::RenderImGui() {
 
 
 BeatTimer::BeatTimer() :
-	IComponent(){}
+	IComponent(){
+	BeatTime = 0;
+}
 
 
 
@@ -24,9 +26,17 @@ BeatTimer::BeatTimer() :
 BeatTimer::~BeatTimer() = default;
 
 
+float BeatTimer::GetBeatTime() {
+	return BeatTime; 
+}
 
 void BeatTimer::Update(float deltaTime) {
-
-
+	
+	if (BeatTime > 1.66666) {
+		BeatTime -=1.66666;
+	 }
+	else {
+		BeatTime += deltaTime;
+	}
 }
 
