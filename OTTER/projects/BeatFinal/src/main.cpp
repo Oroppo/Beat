@@ -394,8 +394,8 @@ void SpawnCD(MeshResource::Sptr Mesh, Material::Sptr Material, std::string ObjNa
 		Startplatform->SetScale(scale);
 
 		//Add Components
-	//	Startplatform->Add<LevelMover>();
-		
+	//    Startplatform->Add<LevelMover>();
+
 		Startplatform->Add<RotatingBehaviourCD>();
 
 		// Create and attach a renderer for the Object
@@ -403,6 +403,8 @@ void SpawnCD(MeshResource::Sptr Mesh, Material::Sptr Material, std::string ObjNa
 		renderer->SetMesh(Mesh);
 		renderer->SetMaterial(Material);
 
+		RigidBody::Sptr physics = Startplatform->Add<RigidBody>(RigidBodyType::Kinematic);
+		physics->AddCollider(BoxCollider::Create(glm::vec3(0.5f, 0.5f, 0.5f)));
 		if (parent != nullptr) {
 			parent->AddChild(Startplatform);
 		}
@@ -466,8 +468,8 @@ void SpawnBuilding(MeshResource::Sptr Mesh, Material::Sptr Material, std::string
 		// Add a dynamic rigid body to this object
 		RigidBody::Sptr physics = Building->Add<RigidBody>(RigidBodyType::Kinematic);
 		// For Wall Jump Colliders, X = Left/Right Y = towards/away, z = Up/Down
-		ICollider::Sptr CollectCollider = physics->AddCollider(BoxCollider::Create(glm::vec3(1.000f, 3.350f, 1.000f)));
-		CollectCollider->SetPosition(glm::vec3(0.020f, 3.660f, -0.060f));
+		ICollider::Sptr CollectCollider = physics->AddCollider(BoxCollider::Create(glm::vec3(1.590f, 5.000f, 2.000f)));
+		CollectCollider->SetPosition(glm::vec3(0.020f, 1.280f, -0.080f));
 
 		if (parent != nullptr) {
 			parent->AddChild(Building);
@@ -496,8 +498,8 @@ void SpawnBuilding2(MeshResource::Sptr Mesh, Material::Sptr Material, std::strin
 		// Add a dynamic rigid body to this object
 		RigidBody::Sptr physics = Building2->Add<RigidBody>(RigidBodyType::Kinematic);
 		// For Wall Jump Colliders, X = Left/Right Y = towards/away, z = Up/Down
-		ICollider::Sptr CollectCollider = physics->AddCollider(BoxCollider::Create(glm::vec3(1.700f, 3.500f, 1.000f)));
-		CollectCollider->SetPosition(glm::vec3(-0.050f, 3.290f, 0.0f));
+		ICollider::Sptr CollectCollider = physics->AddCollider(BoxCollider::Create(glm::vec3(1.700f, 3.500f, 2.000f)));
+		CollectCollider->SetPosition(glm::vec3(0.570f, -3.230f, 1.150f));
 
 		if (parent != nullptr) {
 			parent->AddChild(Building2);
@@ -526,8 +528,8 @@ void SpawnBuilding3(MeshResource::Sptr Mesh, Material::Sptr Material, std::strin
 		// Add a dynamic rigid body to this object
 		RigidBody::Sptr physics = Building3->Add<RigidBody>(RigidBodyType::Kinematic);
 		// For Wall Jump Colliders, X = Left/Right Y = towards/away, z = Up/Down
-		ICollider::Sptr CollectCollider = physics->AddCollider(BoxCollider::Create(glm::vec3(1.700f, 4.900f, 1.700f)));
-		CollectCollider->SetPosition(glm::vec3(-0.030f, 5.030f, 0.240f));
+		ICollider::Sptr CollectCollider = physics->AddCollider(BoxCollider::Create(glm::vec3(1.500f, 4.800f, 1.700f)));
+		CollectCollider->SetPosition(glm::vec3(-0.040f, -0.990f, 0.000f));
 
 		if (parent != nullptr) {
 			parent->AddChild(Building3);
@@ -753,10 +755,7 @@ void CreateScene() {
 		MeshResource::Sptr BeatGem = ResourceManager::CreateAsset<MeshResource>("Gem.obj");
 		MeshResource::Sptr Vinyl = ResourceManager::CreateAsset<MeshResource>("VinylV2.obj");
 		MeshResource::Sptr CD = ResourceManager::CreateAsset<MeshResource>("CDwithUnwrap.obj");
-	//	MeshResource::Sptr TutorialSign = ResourceManager::CreateAsset<MeshResource>("TutorialSign.obj");
 		MeshResource::Sptr Building = ResourceManager::CreateAsset<MeshResource>("RBuilding.obj");
-		MeshResource::Sptr Building2 = ResourceManager::CreateAsset<MeshResource>("Building2.obj");
-		MeshResource::Sptr Building3 = ResourceManager::CreateAsset<MeshResource>("Building3.obj");
 		MeshResource::Sptr KBuilding1Mesh = ResourceManager::CreateAsset<MeshResource>("KBuilding.obj");
 		MeshResource::Sptr KBuilding2Mesh = ResourceManager::CreateAsset<MeshResource>("KBuilding2.obj");
 		MeshResource::Sptr KBuilding3Mesh = ResourceManager::CreateAsset<MeshResource>("KBuilding3.obj");
@@ -770,6 +769,8 @@ void CreateScene() {
 		MeshResource::Sptr SuperSmallWallJump = ResourceManager::CreateAsset<MeshResource>("SuperSmallWallJump.obj");
 		MeshResource::Sptr FallingPlat = ResourceManager::CreateAsset<MeshResource>("pianoplatform.obj");
 		MeshResource::Sptr HalfCirclePlat = ResourceManager::CreateAsset<MeshResource>("HalfCriclePlat.obj");
+		MeshResource::Sptr StairsRight = ResourceManager::CreateAsset<MeshResource>("StairCaseR.obj");
+		MeshResource::Sptr StairsLeft = ResourceManager::CreateAsset<MeshResource>("StairCaseL.obj");
 
 		//Textures
 		Texture2D::Sptr StartTex = ResourceManager::CreateAsset<Texture2D>("textures/DiscoBuildingTex.png"); 
@@ -777,7 +778,6 @@ void CreateScene() {
 		Texture2D::Sptr VinylTex = ResourceManager::CreateAsset<Texture2D>("textures/VinylTex.png");
 		Texture2D::Sptr CDTex = ResourceManager::CreateAsset<Texture2D>("textures/CDTex.png");
 		Texture2D::Sptr GemTex = ResourceManager::CreateAsset<Texture2D>("textures/Gem.png"); 
-	//	Texture2D::Sptr TutorialSignTex = ResourceManager::CreateAsset<Texture2D>("textures/TutorialSign.png"); 
 		Texture2D::Sptr CharacterTex = ResourceManager::CreateAsset<Texture2D>("textures/shirt.png");
 		Texture2D::Sptr LoseScreenTex = ResourceManager::CreateAsset<Texture2D>("textures/Game_Over_Screen.png");
 		Texture2D::Sptr SmallWallJumpTex = ResourceManager::CreateAsset<Texture2D>("textures/SmallWallJumpTexBlue.png");
@@ -1246,9 +1246,7 @@ void CreateScene() {
 		SpawnStartPlat(StartPlatform, StartPlatformMaterial, "StartPlatform Block8", glm::vec3(-9.820f, 5.610f, -4.450), glm::vec3(90.0f, 0.0f, 0.0f), glm::vec3(0.350f, 0.350f, 0.350f), Block8);
 		SpawnObj(SmallPlatform, SmallPlatformMaterial, "Small Platform Block8 1", glm::vec3(-6.640f, 5.610f, -4.140f), glm::vec3(180.0f, 0.0f, 180.0f), glm::vec3(0.350f, 0.350f, 0.350f), Block8);
 		SpawnObj(SmallPlatform, SmallPlatformMaterial, "Small Platform Block8 2", glm::vec3(-4.430f, 5.610f, -3.310f), glm::vec3(180.0f, 0.0f, 180.0f), glm::vec3(0.350f, 0.350f, 0.350f), Block8);
-		//SpawnObj(SmallPlatform, SmallPlatformMaterial, "Small Platform Block8 3", glm::vec3(-0.540f, 5.610f, -6.090f), glm::vec3(180.0f, 0.0f, 180.0f), glm::vec3(0.350f, 0.350f, 0.350f), Block8);
 		SpawnObj(SmallPlatform, SmallPlatformMaterial, "Small Platform Block8 4", glm::vec3(1.540f, 5.610f, -5.310f), glm::vec3(180.0f, 0.0f, 180.0f), glm::vec3(0.350f, 0.350f, 0.350f), Block8);
-		//SpawnObj(SmallPlatform, SmallPlatformMaterial, "Small Platform Block8 5", glm::vec3(4.320f, 5.610f, 0.860f), glm::vec3(180.0f, 0.0f, 180.0f), glm::vec3(0.350f, 0.350f, 0.350f), Block8);
 		SpawnBuilding(Building, BuildingMaterial, "Building Block8 1", glm::vec3(4.570f, 5.610f, -6.630f), glm::vec3(90.0f, 0.0f, 0.0f), glm::vec3(0.310f, 0.310f, 0.310f), Block8);
 		SpawnBuilding2(Building, BuildingMaterial, "Building Block8 1", glm::vec3(-4.500f, 5.610f, 7.810f), glm::vec3(90.0f, 0.0f, 0.0f), glm::vec3(0.350f, 0.350f, 0.350f), Block8);
 		SpawnBuilding3(Building, BuildingMaterial, "Building Block8 1", glm::vec3(-1.350f, 5.610f, 5.180f), glm::vec3(90.0f, 0.0f, 0.0f), glm::vec3(0.290f, 0.290f, 0.290f), Block8);
