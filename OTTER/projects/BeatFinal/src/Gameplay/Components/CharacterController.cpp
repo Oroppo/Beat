@@ -48,8 +48,9 @@ CharacterController::Sptr CharacterController::FromJson(const nlohmann::json & b
 
 //for collectibles
 void CharacterController::OnEnteredTrigger(const std::shared_ptr<Gameplay::Physics::TriggerVolume>& trigger) {
-
-    if ((trigger->GetGameObject()->Name == "BeatGem") && (_GemJumpTimer > 1.80) && (_GemJumpTimer < 2.4)) {
+ 
+    LOG_INFO("Body has entered our trigger: {}", trigger->GetGameObject()->Name);
+    if ((trigger->GetGameObject()->Name == "BeatGem") && (_GemJumpTimer > 1.8) && (_GemJumpTimer < 2.4)) {
         _canJump = true;
         std::cout << "jumper worked";
 
@@ -77,7 +78,6 @@ void CharacterController::OnEnteredTrigger(const std::shared_ptr<Gameplay::Physi
 //for physical platforms
 void CharacterController::OnTriggerVolumeEntered(const std::shared_ptr<Gameplay::Physics::RigidBody>&body) {
     LOG_INFO("Body has entered our trigger volume: {}", body->GetGameObject()->Name);
-
     if ((_platform != body->GetGameObject()->Name )&&(body->GetGameObject()->Name != "BeatGem")){
         _canJump = true;
         _platform = body->GetGameObject()->Name;
@@ -115,7 +115,7 @@ void CharacterController::Update(float deltaTime) {
     bool _D = glfwGetKey(GetGameObject()->GetScene()->Window, GLFW_KEY_D);
     bool _W = glfwGetKey(GetGameObject()->GetScene()->Window, GLFW_KEY_SPACE);
     _GemJumpTimer = GetGameObject()->GetScene()->FindObjectByName("GameManager")->Get<BeatTimer>()->GetBeatTime();
-
+    std::cout << " Beat Gem timer " << _GemJumpTimer<<std::endl;
     if (_platform == "Wall Jump") {
         if (_body->GetLinearVelocity().z < 0) {
             _body->ApplyForce(glm::vec3(0.0f, 0.0f, 20.0f));
