@@ -39,7 +39,7 @@ protected:
 	bool _canJump;
 	int score = 0, _VinylScore = 0, _CDScore=0, _BeatGemHits=0;
 	std::string _platform;
-	glm::vec3 _impulse = glm::vec3(0, 0, 13.0);
+	glm::vec3 _impulse = glm::vec3(0, 0, 12.0);
 	Gameplay::Physics::RigidBody::Sptr _body;
 	Gameplay::Physics::RigidBody::Sptr _curvePlatform;
 	bool _onCurvePlatform;

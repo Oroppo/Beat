@@ -50,7 +50,7 @@ CharacterController::Sptr CharacterController::FromJson(const nlohmann::json & b
 void CharacterController::OnEnteredTrigger(const std::shared_ptr<Gameplay::Physics::TriggerVolume>& trigger) {
  
     LOG_INFO("Body has entered our trigger: {}", trigger->GetGameObject()->Name);
-    if ((trigger->GetGameObject()->Name == "BeatGem") && (_GemJumpTimer > 0) && (_GemJumpTimer < 2.4)) {
+    if ((trigger->GetGameObject()->Name == "BeatGem") && (_GemJumpTimer > 1.8) && (_GemJumpTimer < 2.4)) {
         _canJump = true;
         std::cout << "jumper worked";
 
