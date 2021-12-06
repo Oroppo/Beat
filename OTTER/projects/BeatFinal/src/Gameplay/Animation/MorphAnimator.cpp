@@ -49,8 +49,7 @@ void Morphanimator::RenderImGui()
 
 void Morphanimator::Update(float deltaTime)
 {
-	// TODO: Complete this function
-		//lerp? between frames
+
 	if (m_data->frameTime > 0)
 	{
 		m_timer += deltaTime;
@@ -65,10 +64,10 @@ void Morphanimator::Update(float deltaTime)
 		if (m_segmentIndex >= m_data->frames.size())
 			m_segmentIndex = 0;
 		float t = m_timer / m_data->frameTime;
-		//lerp
+		
 		if (m_data->frames.size() < 2)
 		{
-			//set frame 0?
+		
 			return;
 		}
 		size_t p0_index, p1_index;
@@ -77,7 +76,7 @@ void Morphanimator::Update(float deltaTime)
 		p0_index = (p1_index == 0) ? m_data->frames.size() - 1 : p1_index - 1;
 
 		float garb;
-
+		Lerp(p0_index, p1_index, t);
 		GetGameObject()->Get<MorphMeshRenderer>()->UpdateData(m_data->frames[p0_index], m_data->frames[p1_index], glm::modf(t, garb));
 
 	}
@@ -112,7 +111,11 @@ nlohmann::json Morphanimator::ToJson() const {
 	};
 	return {};
 }
-
+template <typename T>
+T Morphanimator::Lerp(const T& p0, const T& p1, float t)
+{
+	return (1.0f - t) * p0 + t * p1;
+}
 Morphanimator::Sptr Morphanimator::FromJson(const nlohmann::json & blob) {
 	Morphanimator::Sptr result = std::make_shared<Morphanimator>();
 

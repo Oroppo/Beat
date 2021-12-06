@@ -1104,7 +1104,13 @@ int main() {
 	MeshResource::Sptr DiscoBotMesh7 = ResourceManager::CreateAsset<MeshResource>("CharacterAnims/run7.obj");
 	MeshResource::Sptr DiscoBotMesh8 = ResourceManager::CreateAsset<MeshResource>("CharacterAnims/run8.obj");
 	MeshResource::Sptr DiscoBotMesh9 = ResourceManager::CreateAsset<MeshResource>("CharacterAnims/run9.obj");
-
+	MeshResource::Sptr BotJump1= ResourceManager::CreateAsset<MeshResource>("CharacterAnims/jump1.obj");
+	MeshResource::Sptr BotJump2 = ResourceManager::CreateAsset<MeshResource>("CharacterAnims/jump2.obj");
+	MeshResource::Sptr BotJump3 = ResourceManager::CreateAsset<MeshResource>("CharacterAnims/jump3.obj");
+	MeshResource::Sptr BotJump4 = ResourceManager::CreateAsset<MeshResource>("CharacterAnims/jump4.obj");
+	MeshResource::Sptr BotJump5 = ResourceManager::CreateAsset<MeshResource>("CharacterAnims/jump5.obj");
+	MeshResource::Sptr BotJump6 = ResourceManager::CreateAsset<MeshResource>("CharacterAnims/jump6.obj");
+	MeshResource::Sptr BotJump7 = ResourceManager::CreateAsset<MeshResource>("CharacterAnims/jump7.obj");
 	//Textures
 	Texture2D::Sptr StartTex = ResourceManager::CreateAsset<Texture2D>("textures/LStartPlatformTex.png");
 	Texture2D::Sptr SmallTex = ResourceManager::CreateAsset<Texture2D>("textures/DanceFloorTex2.png");
@@ -1543,10 +1549,10 @@ int main() {
 
 			MorphMeshRenderer::Sptr morph1 = character->Add<MorphMeshRenderer>();
 			morph1->SetMorphMeshRenderer(DiscoBotMesh1, CharacterMaterial);
-			Morphanimator::Sptr morph2 = character->Add<Morphanimator>();
+			Morphanimator::Sptr RunAnim = character->Add<Morphanimator>();
 
 			std::vector<MeshResource::Sptr> KeyFrames;
-
+			std::vector<MeshResource::Sptr> KeyFrames2;
 			KeyFrames.push_back(DiscoBotMesh2);
 			KeyFrames.push_back(DiscoBotMesh3);
 			KeyFrames.push_back(DiscoBotMesh4);
@@ -1556,9 +1562,17 @@ int main() {
 			KeyFrames.push_back(DiscoBotMesh8);
 			KeyFrames.push_back(DiscoBotMesh9);
 
-			morph2->SetInitial();
-			morph2->SetFrameTime(0.1f);
-			morph2->SetFrames(KeyFrames);
+			KeyFrames2.push_back(DiscoBotMesh2);
+			KeyFrames2.push_back(DiscoBotMesh3);
+			KeyFrames2.push_back(DiscoBotMesh4);
+			KeyFrames2.push_back(DiscoBotMesh5);
+			KeyFrames2.push_back(DiscoBotMesh6);
+			KeyFrames2.push_back(DiscoBotMesh7);
+		
+
+			RunAnim->SetInitial();
+			RunAnim->SetFrameTime(0.1f);
+			RunAnim->SetFrames(KeyFrames);
 		}
 		
 		GameObject::Sptr DiscoBall = scene->CreateGameObject("DiscoBall");

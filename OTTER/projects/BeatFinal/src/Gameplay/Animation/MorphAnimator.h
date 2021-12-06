@@ -20,7 +20,8 @@ using namespace Gameplay;
 class Morphanimator : public Gameplay::IComponent {
 
 public:
-
+	template <typename T>
+	T Lerp(const T& p0, const T& p1, float t);
 	typedef std::shared_ptr<Morphanimator> Sptr;
 	Morphanimator();
 	virtual ~Morphanimator();
