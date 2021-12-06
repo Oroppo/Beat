@@ -76,6 +76,7 @@ void CharacterController::OnTriggerVolumeEntered(const std::shared_ptr<Gameplay:
     }
   
 }
+
 void CharacterController::OnTriggerVolumeLeaving(const std::shared_ptr<Gameplay::Physics::RigidBody>&body) {
     LOG_INFO("Body has left our trigger volume: {}", body->GetGameObject()->Name);
 
@@ -91,13 +92,12 @@ void CharacterController::OnTriggerVolumeLeaving(const std::shared_ptr<Gameplay:
     }
 }
 void CharacterController::Update(float deltaTime) {
-   // LOG_INFO(score);
+
     bool _A = glfwGetKey(GetGameObject()->GetScene()->Window, GLFW_KEY_A);
     bool _D = glfwGetKey(GetGameObject()->GetScene()->Window, GLFW_KEY_D);
     bool _W = glfwGetKey(GetGameObject()->GetScene()->Window, GLFW_KEY_SPACE);
     _GemJumpTimer = GetGameObject()->GetScene()->FindObjectByName("GameManager")->Get<BeatTimer>()->GetBeatTime();
-    LOG_INFO(_GemJumpTimer);
-    //   LOG_INFO(_canJump);
+
     if (_platform == "Wall Jump") {
         if (_body->GetLinearVelocity().z < 0) {
             _body->ApplyForce(glm::vec3(0.0f, 0.0f, 20.0f));

@@ -3,6 +3,7 @@
 #include "Gameplay/GameObject.h"
 #include "Gameplay/Scene.h"
 #include "Utils/ImGuiHelper.h"
+#include "BeatTimer.h"
 
 void BuildingAnim::Awake()
 {
@@ -75,6 +76,10 @@ void BuildingAnim::Update(float deltaTime)
 
     _timer += deltaTime;
 
+    //Make this sync with beat Exactly for sem 2
+    // problems: timer resets, so it also resets our lerp t value :(
+    //_timer = GetGameObject()->GetScene()->FindObjectByName("GameManager")->Get<BeatTimer>()->GetBeatTime();
+    
     // Distance moved equals elapsed time times speed..
     float distCovered = (_timer - _startTime - _timeStored) * _speed;
 

@@ -2,6 +2,10 @@
 #include "IComponent.h"
 #include "Gameplay/Physics/RigidBody.h"
 #include "GLFW/glfw3.h"
+#include "Gameplay/Physics/TriggerVolume.h"
+#include "Utils/ResourceManager/ResourceManager.h"
+#include "Utils/ResourceManager/IResource.h"
+#include "Utils/TypeHelpers.h"
 
 /// <summary>
 /// A simple behaviour that applies an impulse along the Z axis to the 
@@ -16,14 +20,13 @@ public:
 
 	virtual void Awake() override;
 	virtual void Update(float deltaTime) override;
-
+	//virtual void OnEnteredTrigger(const std::shared_ptr<Gameplay::Physics::TriggerVolume>& trigger);
 public:
 	virtual void RenderImGui() override;
 	MAKE_TYPENAME(CharacterController);
 	virtual nlohmann::json ToJson() const override;
 	static CharacterController::Sptr FromJson(const nlohmann::json& blob);
-	//void OnTriggerEnter(const Gameplay::Physics::TriggerVolume::Sptr& trigger);
-	//void OnTriggerExit(const Gameplay::Physics::TriggerVolume::Sptr& trigger);
+
 	virtual void OnTriggerVolumeEntered(const std::shared_ptr<Gameplay::Physics::RigidBody>& body);
 	virtual void OnTriggerVolumeLeaving(const std::shared_ptr<Gameplay::Physics::RigidBody>& body);
 

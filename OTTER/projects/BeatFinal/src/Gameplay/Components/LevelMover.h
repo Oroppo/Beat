@@ -13,8 +13,8 @@ public:
 
 	LevelMover();
 	virtual ~LevelMover();
+	virtual void OnLoad() override;
 
-	virtual void Awake() override;
 	virtual void Update(float deltaTime) override;
 	template<typename T>
 	T Lerp(const T& p0, const T& p1, float t);
@@ -47,8 +47,5 @@ protected:
 	float ObjY;
 	float ObjZ;
 	float ObjX;
-
-	Gameplay::Physics::RigidBody::Sptr _body;
-	Gameplay::Physics::RigidBody::Sptr parent;
 
 };

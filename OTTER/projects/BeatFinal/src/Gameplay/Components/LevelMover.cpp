@@ -4,19 +4,13 @@
 #include "Gameplay/Scene.h"
 #include "Utils/ImGuiHelper.h"
 
-void LevelMover::Awake()
-{
-    _body = GetComponent<Gameplay::Physics::RigidBody>();
-   
-    if (_body == nullptr) {
-        IsEnabled = false;
-    }
+
+void LevelMover::OnLoad() {
+
     keypoints.push_back(GetGameObject()->GetPosition().x);
-    keypoints.push_back(GetGameObject()->GetPosition().x - 20);
-   // keypoints.push_back(GetGameObject()->GetPosition().x);
-
+    keypoints.push_back(GetGameObject()->GetPosition().x - 40);
+    
     _journeyLength = std::abs(keypoints[keyframe] - keypoints[keyframe + 1]);
-
 }
 
 void LevelMover::RenderImGui() {
@@ -35,10 +29,10 @@ LevelMover::LevelMover() :
     _startTime(0.f),
     _timeStored(0.f),
     keyframe(0.f),
-    _speed(1.f),
+    _speed(1.0f),
     _journeyLength(0.f),
 
-    _timer(1.0f),
+    _timer(1.2f),
     ObjY(0.0f),
     ObjZ(0.0f),
     ObjX(0.0f),
@@ -62,7 +56,6 @@ void LevelMover::Update(float deltaTime)
     ObjZ = GetGameObject()->GetPosition().z;
 
     _timer += deltaTime;
-
     // Distance moved equals elapsed time times speed..
     float distCovered = (_timer - _startTime - _timeStored) * _speed;
 
@@ -87,7 +80,7 @@ void LevelMover::Update(float deltaTime)
     }
 
     Gameplay::GameObject::Sptr context = GetGameObject()->SelfRef();
-    if (GetGameObject()->GetPosition().x <= -20.f) {
+    if (GetGameObject()->GetPosition().x <= -25.f) {
         GetGameObject()->GetScene()->RemoveGameObject(context);
     }
 }

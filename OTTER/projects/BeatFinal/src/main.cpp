@@ -260,7 +260,7 @@ void SpawnObj(MeshResource::Sptr Mesh, Material::Sptr Material, std::string ObjN
 		Startplatform->SetRotation(rot);
 		Startplatform->SetScale(scale);
 
-		//Startplatform->Add<LevelMover>();
+		Startplatform->Add<LevelMover>();
 
 		// Create and attach a renderer for the monkey
 		RenderComponent::Sptr renderer = Startplatform->Add<RenderComponent>();
@@ -294,7 +294,7 @@ void SpawnStartPlat(MeshResource::Sptr Mesh, Material::Sptr Material, std::strin
 		Startplatform->SetRotation(rot);
 		Startplatform->SetScale(scale);
 
-		//Startplatform->Add<LevelMover>();
+		Startplatform->Add<LevelMover>();
 
 		// Create and attach a renderer for the Object
 		RenderComponent::Sptr renderer = Startplatform->Add<RenderComponent>();
@@ -323,7 +323,7 @@ void SpawnGem(MeshResource::Sptr Mesh, Material::Sptr Material, std::string ObjN
 		Startplatform->SetScale(scale);
 
 		//Add Components
-		//Startplatform->Add<LevelMover>();
+		Startplatform->Add<LevelMover>();
 		Startplatform->Add<RotatingBehaviour>();
 		
 		// Create and attach a renderer for the Object
@@ -396,7 +396,7 @@ void SpawnCD(MeshResource::Sptr Mesh, Material::Sptr Material, std::string ObjNa
 		Startplatform->SetScale(scale);
 
 		//Add Components
-	//    Startplatform->Add<LevelMover>();
+	    Startplatform->Add<LevelMover>();
 
 		Startplatform->Add<RotatingBehaviourCD>();
 
@@ -405,8 +405,12 @@ void SpawnCD(MeshResource::Sptr Mesh, Material::Sptr Material, std::string ObjNa
 		renderer->SetMesh(Mesh);
 		renderer->SetMaterial(Material);
 
-		RigidBody::Sptr physics = Startplatform->Add<RigidBody>(RigidBodyType::Kinematic);
-		physics->AddCollider(BoxCollider::Create(glm::vec3(0.5f, 0.5f, 0.5f)));
+		//RigidBody::Sptr physics = Startplatform->Add<RigidBody>(RigidBodyType::Kinematic);
+		//physics->AddCollider(BoxCollider::Create(glm::vec3(0.5f, 0.5f, 0.5f)));
+
+		//TriggerVolume::Sptr volume = Startplatform->Add<TriggerVolume>();
+		//volume->AddCollider(BoxCollider::Create(glm::vec3(0.5f, 0.5f, 0.5f)));
+
 		if (parent != nullptr) {
 			parent->AddChild(Startplatform);
 		}
@@ -430,7 +434,7 @@ void SpawnWallJump(MeshResource::Sptr Mesh, Material::Sptr Material, std::string
 		Startplatform->SetRotation(rot);
 		Startplatform->SetScale(scale);
 
-		//Startplatform->Add<LevelMover>();
+		Startplatform->Add<LevelMover>();
 
 		// Create and attach a renderer for the Object
 		RenderComponent::Sptr renderer = Startplatform->Add<RenderComponent>();
@@ -460,7 +464,7 @@ void SpawnBuilding(MeshResource::Sptr Mesh, Material::Sptr Material, std::string
 		Building->SetRotation(rot);
 		Building->SetScale(scale);
 
-		//Building->Add<LevelMover>();
+		Building->Add<LevelMover>();
 
 		// Create and attach a renderer for the Object
 		RenderComponent::Sptr renderer = Building->Add<RenderComponent>();
@@ -490,7 +494,7 @@ void SpawnBuilding2(MeshResource::Sptr Mesh, Material::Sptr Material, std::strin
 		Building2->SetRotation(rot);
 		Building2->SetScale(scale);
 
-		//Building->Add<LevelMover>();
+		Building2->Add<LevelMover>();
 
 		// Create and attach a renderer for the Object
 		RenderComponent::Sptr renderer = Building2->Add<RenderComponent>();
@@ -520,7 +524,7 @@ void SpawnBuilding3(MeshResource::Sptr Mesh, Material::Sptr Material, std::strin
 		Building3->SetRotation(rot);
 		Building3->SetScale(scale);
 
-		//Building->Add<LevelMover>();
+		Building3->Add<LevelMover>();
 
 		// Create and attach a renderer for the Object
 		RenderComponent::Sptr renderer = Building3->Add<RenderComponent>();
@@ -550,7 +554,7 @@ void SpawnSmallWallJump(MeshResource::Sptr Mesh, Material::Sptr Material, std::s
 		SmallWallJump->SetRotation(rot);
 		SmallWallJump->SetScale(scale);
 
-		//Building->Add<LevelMover>();
+		SmallWallJump->Add<LevelMover>();
 
 		// Create and attach a renderer for the Object
 		RenderComponent::Sptr renderer = SmallWallJump->Add<RenderComponent>();
@@ -581,7 +585,7 @@ void SpawnSuperSmallWallJump(MeshResource::Sptr Mesh, Material::Sptr Material, s
 		SuperSmallWallJump->SetRotation(rot);
 		SuperSmallWallJump->SetScale(scale);
 
-		//Building->Add<LevelMover>();
+		SuperSmallWallJump->Add<LevelMover>();
 
 		// Create and attach a renderer for the Object
 		RenderComponent::Sptr renderer = SuperSmallWallJump->Add<RenderComponent>();
@@ -612,7 +616,7 @@ void SpawnStairsRight(MeshResource::Sptr Mesh, Material::Sptr Material, std::str
 		SuperSmallWallJump->SetRotation(rot);
 		SuperSmallWallJump->SetScale(scale);
 
-		//Building->Add<LevelMover>();
+		SuperSmallWallJump->Add<LevelMover>();
 
 		// Create and attach a renderer for the Object
 		RenderComponent::Sptr renderer = SuperSmallWallJump->Add<RenderComponent>();
@@ -645,7 +649,7 @@ void SpawnStairsLeft(MeshResource::Sptr Mesh, Material::Sptr Material, std::stri
 		SuperSmallWallJump->SetRotation(rot);
 		SuperSmallWallJump->SetScale(scale);
 
-		//Building->Add<LevelMover>();
+		SuperSmallWallJump->Add<LevelMover>();
 
 		// Create and attach a renderer for the Object
 		RenderComponent::Sptr renderer = SuperSmallWallJump->Add<RenderComponent>();
@@ -678,7 +682,7 @@ void SpawnSpeaker(MeshResource::Sptr Mesh, Material::Sptr Material, std::string 
 		SuperSmallWallJump->SetRotation(rot);
 		SuperSmallWallJump->SetScale(scale);
 
-		//Building->Add<LevelMover>();
+		SuperSmallWallJump->Add<LevelMover>();
 
 		// Create and attach a renderer for the Object
 		RenderComponent::Sptr renderer = SuperSmallWallJump->Add<RenderComponent>();
@@ -703,7 +707,7 @@ void SpawnSquarePlat(MeshResource::Sptr Mesh, Material::Sptr Material, std::stri
 		SuperSmallWallJump->SetRotation(rot);
 		SuperSmallWallJump->SetScale(scale);
 
-		//Building->Add<LevelMover>();
+		SuperSmallWallJump->Add<LevelMover>();
 
 		// Create and attach a renderer for the Object
 		RenderComponent::Sptr renderer = SuperSmallWallJump->Add<RenderComponent>();
@@ -734,7 +738,7 @@ void SpawnFloatingLights(MeshResource::Sptr Mesh, Material::Sptr Material, std::
 		SuperSmallWallJump->SetRotation(rot);
 		SuperSmallWallJump->SetScale(scale);
 
-		//Building->Add<LevelMover>();
+		SuperSmallWallJump->Add<LevelMover>();
 
 		// Create and attach a renderer for the Object
 		RenderComponent::Sptr renderer = SuperSmallWallJump->Add<RenderComponent>();
@@ -982,6 +986,322 @@ int main() {
 	
 	//CreateScene();
 
+			// This time we'll have 2 different shaders, and share data between both of them using the UBO
+		// This shader will handle reflective materials 
+	Shader::Sptr reflectiveShader = ResourceManager::CreateAsset<Shader>(std::unordered_map<ShaderPartType, std::string>{
+		{ ShaderPartType::Vertex, "shaders/vertex_shaders/basic.glsl" },
+		{ ShaderPartType::Fragment, "shaders/fragment_shaders/frag_environment_reflective.glsl" }
+	});
+
+	// This shader handles our basic materials without reflections (cause they expensive)
+	Shader::Sptr basicShader = ResourceManager::CreateAsset<Shader>(std::unordered_map<ShaderPartType, std::string>{
+		{ ShaderPartType::Vertex, "shaders/vertex_shaders/basic.glsl" },
+		{ ShaderPartType::Fragment, "shaders/fragment_shaders/frag_blinn_phong_textured.glsl" }
+	});
+
+	// This shader handles our basic materials without reflections (cause they expensive)
+	//Shader::Sptr specShader = ResourceManager::CreateAsset<Shader>(std::unordered_map<ShaderPartType, std::string>{
+	//	{ ShaderPartType::Vertex, "shaders/vertex_shaders/water-vert.glsl" },
+	//	{ ShaderPartType::Fragment, "shaders/fragment_shaders/water-frag.glsl" }
+	//});
+
+
+	///////////////////// NEW SHADERS ////////////////////////////////////////////
+
+	// This shader handles our foliage vertex shader example
+	Shader::Sptr foliageShader = ResourceManager::CreateAsset<Shader>(std::unordered_map<ShaderPartType, std::string>{
+		{ ShaderPartType::Vertex, "shaders/vertex_shaders/foliage.glsl" },
+		{ ShaderPartType::Fragment, "shaders/fragment_shaders/screendoor_transparency.glsl" }
+	});
+
+	// This shader handles our cel shading example
+	Shader::Sptr toonShader = ResourceManager::CreateAsset<Shader>(std::unordered_map<ShaderPartType, std::string>{
+		{ ShaderPartType::Vertex, "shaders/vertex_shaders/basic.glsl" },
+		{ ShaderPartType::Fragment, "shaders/fragment_shaders/toon_shading.glsl" }
+	});
+
+	//Meshes
+	MeshResource::Sptr SmallPlatform = ResourceManager::CreateAsset<MeshResource>("SmallSpeakerPlatformV5.obj");
+	MeshResource::Sptr WallJump = ResourceManager::CreateAsset<MeshResource>("WallJumpV6.obj");
+	MeshResource::Sptr BeatGem = ResourceManager::CreateAsset<MeshResource>("Gem.obj");
+	MeshResource::Sptr Vinyl = ResourceManager::CreateAsset<MeshResource>("VinylV2.obj");
+	MeshResource::Sptr CD = ResourceManager::CreateAsset<MeshResource>("CDwithUnwrap.obj");
+	MeshResource::Sptr Building = ResourceManager::CreateAsset<MeshResource>("RBuilding.obj");
+	MeshResource::Sptr KBuilding1Mesh = ResourceManager::CreateAsset<MeshResource>("KBuilding.obj");
+	MeshResource::Sptr KBuilding2Mesh = ResourceManager::CreateAsset<MeshResource>("KBuilding2.obj");
+	MeshResource::Sptr KBuilding3Mesh = ResourceManager::CreateAsset<MeshResource>("KBuilding3.obj");
+	MeshResource::Sptr OvalBuilding = ResourceManager::CreateAsset<MeshResource>("OvalBuilding.obj");
+	MeshResource::Sptr CharacterMesh = ResourceManager::CreateAsset<MeshResource>("dudeCharacter.obj");
+	MeshResource::Sptr DiscoBallMesh = ResourceManager::CreateAsset<MeshResource>("DiscoBall2.obj");
+	MeshResource::Sptr StartPlatform = ResourceManager::CreateAsset<MeshResource>("LStartPlatform.obj");
+	MeshResource::Sptr Car1Mesh = ResourceManager::CreateAsset<MeshResource>("FutureCar1.obj");
+	MeshResource::Sptr SemiTruckMesh = ResourceManager::CreateAsset<MeshResource>("Semitruck.obj");
+	MeshResource::Sptr PickupTruckMesh = ResourceManager::CreateAsset<MeshResource>("FuturePickup.obj");
+	MeshResource::Sptr SmallWallJump = ResourceManager::CreateAsset<MeshResource>("SmallWallJump.obj");
+	MeshResource::Sptr SuperSmallWallJump = ResourceManager::CreateAsset<MeshResource>("SuperSmallWallJump.obj");
+	MeshResource::Sptr FallingPlat = ResourceManager::CreateAsset<MeshResource>("pianoplatform.obj");
+	MeshResource::Sptr HalfCirclePlat = ResourceManager::CreateAsset<MeshResource>("HalfCriclePlat.obj");
+	MeshResource::Sptr StairsRight = ResourceManager::CreateAsset<MeshResource>("StairCaseR.obj");
+	MeshResource::Sptr StairsLeft = ResourceManager::CreateAsset<MeshResource>("StairCaseL.obj");
+	MeshResource::Sptr Speaker = ResourceManager::CreateAsset<MeshResource>("speaker.obj");
+	MeshResource::Sptr SquarePlat = ResourceManager::CreateAsset<MeshResource>("SquarePlatform.obj");
+	MeshResource::Sptr FloatingLight = ResourceManager::CreateAsset<MeshResource>("FloatingStreetLight.obj");
+
+	//Textures
+	Texture2D::Sptr StartTex = ResourceManager::CreateAsset<Texture2D>("textures/LStartPlatformTex.png");
+	Texture2D::Sptr SmallTex = ResourceManager::CreateAsset<Texture2D>("textures/DanceFloorTex2.png");
+	Texture2D::Sptr VinylTex = ResourceManager::CreateAsset<Texture2D>("textures/VinylTex.png");
+	Texture2D::Sptr CDTex = ResourceManager::CreateAsset<Texture2D>("textures/CDTex.png");
+	Texture2D::Sptr GemTex = ResourceManager::CreateAsset<Texture2D>("textures/Gem.png");
+	Texture2D::Sptr CharacterTex = ResourceManager::CreateAsset<Texture2D>("textures/shirt.png");
+	Texture2D::Sptr LoseScreenTex = ResourceManager::CreateAsset<Texture2D>("textures/Game_Over_Screen.png");
+	Texture2D::Sptr SmallWallJumpTex = ResourceManager::CreateAsset<Texture2D>("textures/SmallWallJumpTexBlue.png");
+	Texture2D::Sptr SuperSmallWallJumpTex = ResourceManager::CreateAsset<Texture2D>("textures/SmallWallJumpTexRed.png");
+	Texture2D::Sptr WallJumpTex = ResourceManager::CreateAsset<Texture2D>("textures/WallJumpTex.png");
+	Texture2D::Sptr Car1Tex = ResourceManager::CreateAsset<Texture2D>("textures/FutureCarTex.png");
+	Texture2D::Sptr SemiTruckTex = ResourceManager::CreateAsset<Texture2D>("textures/SemiTruckTexV2.png");
+	Texture2D::Sptr PickupTruckTex = ResourceManager::CreateAsset<Texture2D>("textures/PickupTruckTex.png");
+	Texture2D::Sptr KBuilding1Tex = ResourceManager::CreateAsset<Texture2D>("textures/KBuildingTex.png");
+	Texture2D::Sptr KBuilding2Tex = ResourceManager::CreateAsset<Texture2D>("textures/KBuilding2Tex.png");
+	Texture2D::Sptr KBuilding3Tex = ResourceManager::CreateAsset<Texture2D>("textures/KBuilding3Tex.png");
+	Texture2D::Sptr BuildingTex = ResourceManager::CreateAsset<Texture2D>("textures/RBuildingTex.png");
+	Texture2D::Sptr OvalBuildingTex = ResourceManager::CreateAsset<Texture2D>("textures/OvalBuildingTex.png");
+	Texture2D::Sptr DiscoBallTex = ResourceManager::CreateAsset<Texture2D>("textures/DiscoBallTexV2.png");
+	Texture2D::Sptr FallingPlatTex = ResourceManager::CreateAsset<Texture2D>("textures/pianotex.png");
+	Texture2D::Sptr HalfCirclePlatTex = ResourceManager::CreateAsset<Texture2D>("textures/halfCircleTex.png");
+	Texture2D::Sptr TexBeatLogo = ResourceManager::CreateAsset<Texture2D>("textures/GUI/BeatLogo.png");
+	Texture2D::Sptr TexPlayButton = ResourceManager::CreateAsset<Texture2D>("textures/GUI/BPlay.png");
+	Texture2D::Sptr TexOptionsButton = ResourceManager::CreateAsset<Texture2D>("textures/GUI/BOptions.png");
+	Texture2D::Sptr TexMusicButton = ResourceManager::CreateAsset<Texture2D>("textures/GUI/BMusic.png");
+	Texture2D::Sptr TexCreditsButton = ResourceManager::CreateAsset<Texture2D>("textures/GUI/BCredits.png");
+	Texture2D::Sptr TexQuitButton = ResourceManager::CreateAsset<Texture2D>("textures/GUI/BQuit.png");
+	Texture2D::Sptr TexResumeButton = ResourceManager::CreateAsset<Texture2D>("textures/GUI/BResume.png");
+	Texture2D::Sptr TexResyncButton = ResourceManager::CreateAsset<Texture2D>("textures/GUI/BResync.png");
+	Texture2D::Sptr TexContinueButton = ResourceManager::CreateAsset<Texture2D>("textures/GUI/BContinue.png");
+	Texture2D::Sptr TexPauseMenu = ResourceManager::CreateAsset<Texture2D>("textures/GUI/PauseMenuBG.png");
+	Texture2D::Sptr TexDimmedBG = ResourceManager::CreateAsset<Texture2D>("textures/GUI/DimBG.png");
+	Texture2D::Sptr TexScoreBreakdown = ResourceManager::CreateAsset<Texture2D>("textures/GUI/ScoreBreakdown.png");
+	Texture2D::Sptr TexGameOverText = ResourceManager::CreateAsset<Texture2D>("textures/GUI/GameOverText.png");
+	Texture2D::Sptr TexMovementTutorial = ResourceManager::CreateAsset<Texture2D>("textures/GUI/Movement.png");
+	Texture2D::Sptr TexWallJumpTutorial = ResourceManager::CreateAsset<Texture2D>("textures/GUI/WallJump.png");
+	Texture2D::Sptr TexBeatGemTutorial = ResourceManager::CreateAsset<Texture2D>("textures/GUI/BeatGems.png");
+	Texture2D::Sptr TexVinylsTutorial = ResourceManager::CreateAsset<Texture2D>("textures/GUI/Vinyls.png");
+	Texture2D::Sptr StairsRightTex = ResourceManager::CreateAsset<Texture2D>("textures/StairCaseRTex.png");
+	Texture2D::Sptr StairsLeftTex = ResourceManager::CreateAsset<Texture2D>("textures/StarTexL.png");
+	Texture2D::Sptr SpeakerTex = ResourceManager::CreateAsset<Texture2D>("textures/speakertex.png");
+	Texture2D::Sptr SquarePlatTex = ResourceManager::CreateAsset<Texture2D>("textures/SquarePlatformTex.png");
+	Texture2D::Sptr FloatingLightTex = ResourceManager::CreateAsset<Texture2D>("textures/StreetLightTex.png");
+
+	//Minification and Magnification
+	//leafTex->SetMinFilter(MinFilter::Nearest);
+	//leafTex->SetMagFilter(MagFilter::Nearest);
+
+	// Here we'll load in the cubemap, as well as a special shader to handle drawing the skybox
+	TextureCube::Sptr testCubemap = ResourceManager::CreateAsset<TextureCube>("cubemaps/space/space.png");
+	Shader::Sptr      skyboxShader = ResourceManager::CreateAsset<Shader>(std::unordered_map<ShaderPartType, std::string>{
+		{ ShaderPartType::Vertex, "shaders/vertex_shaders/skybox_vert.glsl" },
+		{ ShaderPartType::Fragment, "shaders/fragment_shaders/skybox_frag.glsl" }
+	});
+
+	// Create an empty scene
+	scene = std::make_shared<Scene>();
+
+	// Setting up our enviroment map
+	scene->SetSkyboxTexture(testCubemap);
+	scene->SetSkyboxShader(skyboxShader);
+	// Since the skybox I used was for Y-up, we need to rotate it 90 deg around the X-axis to convert it to z-up
+	scene->SetSkyboxRotation(glm::rotate(MAT4_IDENTITY, glm::half_pi<float>(), glm::vec3(1.0f, 0.0f, 0.0f)));
+
+	// Create our materials
+	Material::Sptr StartPlatformMaterial = ResourceManager::CreateAsset<Material>(basicShader);
+	{
+		StartPlatformMaterial->Name = "StartPlatform";
+		StartPlatformMaterial->Set("u_Material.Diffuse", StartTex);
+		StartPlatformMaterial->Set("u_Material.Shininess", 0.1f);
+	}
+
+	Material::Sptr UIMat = ResourceManager::CreateAsset<Material>(basicShader);
+	{
+		UIMat->Name = "UIButton";
+		UIMat->Set("u_Material.Diffuse", StartTex);
+		UIMat->Set("u_Material.Shininess", 0.1f);
+	}
+
+	Material::Sptr SmallPlatformMaterial = ResourceManager::CreateAsset<Material>(basicShader);
+	{
+		SmallPlatformMaterial->Name = "SmallPlatform";
+		SmallPlatformMaterial->Set("u_Material.Diffuse", SmallTex);
+		SmallPlatformMaterial->Set("u_Material.Shininess", 0.1f);
+	}
+
+	Material::Sptr WallJumpMaterial = ResourceManager::CreateAsset<Material>(basicShader);
+	{
+		WallJumpMaterial->Name = "WallJump";
+		WallJumpMaterial->Set("u_Material.Diffuse", WallJumpTex);
+		WallJumpMaterial->Set("u_Material.Shininess", 0.1f);
+	}
+
+	Material::Sptr BeatGemMaterial = ResourceManager::CreateAsset<Material>(reflectiveShader);
+	{
+		BeatGemMaterial->Name = "BeatGem";
+		BeatGemMaterial->Set("u_Material.Diffuse", GemTex);
+		BeatGemMaterial->Set("u_Material.Shininess", 1.0f);
+	}
+
+	Material::Sptr VinylMaterial = ResourceManager::CreateAsset<Material>(basicShader);
+	{
+		VinylMaterial->Name = "Vinyl";
+		VinylMaterial->Set("u_Material.Diffuse", VinylTex);
+		VinylMaterial->Set("u_Material.Shininess", 0.1f);
+	}
+
+	Material::Sptr CDMaterial = ResourceManager::CreateAsset<Material>(basicShader);
+	{
+		CDMaterial->Name = "CD";
+		CDMaterial->Set("u_Material.Diffuse", CDTex);
+		CDMaterial->Set("u_Material.Shininess", 0.1f);
+	}
+
+	Material::Sptr CharacterMaterial = ResourceManager::CreateAsset<Material>(basicShader);
+	{
+		CharacterMaterial->Name = "Character";
+		CharacterMaterial->Set("u_Material.Diffuse", CharacterTex);
+		CharacterMaterial->Set("u_Material.Shininess", 0.1f);
+	}
+
+	Material::Sptr DiscoBallMaterial = ResourceManager::CreateAsset<Material>(reflectiveShader);
+	{
+		DiscoBallMaterial->Name = "DiscoBall";
+		DiscoBallMaterial->Set("u_Material.Diffuse", DiscoBallTex);
+		DiscoBallMaterial->Set("u_Material.Shininess", -0.4f);
+	}
+
+	Material::Sptr LoseScreenMaterial = ResourceManager::CreateAsset<Material>(basicShader);
+	{
+		LoseScreenMaterial->Name = "Lose Screen";
+		LoseScreenMaterial->Set("u_Material.Diffuse", LoseScreenTex);
+		LoseScreenMaterial->Set("u_Material.Shininess", 0.1f);
+	}
+
+	Material::Sptr Car1Material = ResourceManager::CreateAsset<Material>(basicShader);
+	{
+		Car1Material->Name = "Car1";
+		Car1Material->Set("u_Material.Diffuse", Car1Tex);
+		Car1Material->Set("u_Material.Shininess", 0.1f);
+	}
+
+	Material::Sptr SemiTruckMaterial = ResourceManager::CreateAsset<Material>(basicShader);
+	{
+		SemiTruckMaterial->Name = "Semi1";
+		SemiTruckMaterial->Set("u_Material.Diffuse", SemiTruckTex);
+		SemiTruckMaterial->Set("u_Material.Shininess", 0.1f);
+	}
+
+	Material::Sptr PickupTruckMaterial = ResourceManager::CreateAsset<Material>(basicShader);
+	{
+		PickupTruckMaterial->Name = "Pickup1";
+		PickupTruckMaterial->Set("u_Material.Diffuse", PickupTruckTex);
+		PickupTruckMaterial->Set("u_Material.Shininess", 0.1f);
+	}
+
+	Material::Sptr BuildingMaterial = ResourceManager::CreateAsset<Material>(basicShader);
+	{
+		BuildingMaterial->Name = "Building";
+		BuildingMaterial->Set("u_Material.Diffuse", BuildingTex);
+		BuildingMaterial->Set("u_Material.Shininess", 0.1f);
+	}
+
+	Material::Sptr KBuildingMaterial = ResourceManager::CreateAsset<Material>(basicShader);
+	{
+		KBuildingMaterial->Name = "KBuilding";
+		KBuildingMaterial->Set("u_Material.Diffuse", KBuilding1Tex);
+		KBuildingMaterial->Set("u_Material.Shininess", 0.1f);
+	}
+
+	Material::Sptr KBuilding2Material = ResourceManager::CreateAsset<Material>(basicShader);
+	{
+		KBuilding2Material->Name = "KBuilding2";
+		KBuilding2Material->Set("u_Material.Diffuse", KBuilding2Tex);
+		KBuilding2Material->Set("u_Material.Shininess", 0.1f);
+	}
+
+	Material::Sptr KBuilding3Material = ResourceManager::CreateAsset<Material>(basicShader);
+	{
+		KBuilding3Material->Name = "KBuilding3";
+		KBuilding3Material->Set("u_Material.Diffuse", KBuilding3Tex);
+		KBuilding3Material->Set("u_Material.Shininess", 0.1f);
+	}
+
+	Material::Sptr SmallWallJumpMaterial = ResourceManager::CreateAsset<Material>(basicShader);
+	{
+		SmallWallJumpMaterial->Name = "Small Wall Jump";
+		SmallWallJumpMaterial->Set("u_Material.Diffuse", SmallWallJumpTex);
+		SmallWallJumpMaterial->Set("u_Material.Shininess", 0.1f);
+	}
+
+	Material::Sptr SuperSmallWallJumpMaterial = ResourceManager::CreateAsset<Material>(basicShader);
+	{
+		SuperSmallWallJumpMaterial->Name = "Super Small Wall Jump";
+		SuperSmallWallJumpMaterial->Set("u_Material.Diffuse", SuperSmallWallJumpTex);
+		SuperSmallWallJumpMaterial->Set("u_Material.Shininess", 0.1f);
+	}
+
+	Material::Sptr PianoMaterial = ResourceManager::CreateAsset<Material>(basicShader);
+	{
+		PianoMaterial->Name = "Piano";
+		PianoMaterial->Set("u_Material.Diffuse", FallingPlatTex);
+		PianoMaterial->Set("u_Material.Shininess", 0.1f);
+	}
+
+	Material::Sptr HalfCirclePlatMaterial = ResourceManager::CreateAsset<Material>(basicShader);
+	{
+		HalfCirclePlatMaterial->Name = "Half Circle Plat";
+		HalfCirclePlatMaterial->Set("u_Material.Diffuse", HalfCirclePlatTex);
+		HalfCirclePlatMaterial->Set("u_Material.Shininess", 0.1f);
+	}
+
+	Material::Sptr StairsRightMaterial = ResourceManager::CreateAsset<Material>(basicShader);
+	{
+		StairsRightMaterial->Name = "Stairs Right";
+		StairsRightMaterial->Set("u_Material.Diffuse", StairsRightTex);
+		StairsRightMaterial->Set("u_Material.Shininess", 0.1f);
+	}
+
+	Material::Sptr StairsLeftMaterial = ResourceManager::CreateAsset<Material>(basicShader);
+	{
+		StairsLeftMaterial->Name = "Stairs Left";
+		StairsLeftMaterial->Set("u_Material.Diffuse", StairsLeftTex);
+		StairsLeftMaterial->Set("u_Material.Shininess", 0.1f);
+	}
+
+	Material::Sptr SpeakerMaterial = ResourceManager::CreateAsset<Material>(basicShader);
+	{
+		SpeakerMaterial->Name = "Speaker Material";
+		SpeakerMaterial->Set("u_Material.Diffuse", SpeakerTex);
+		SpeakerMaterial->Set("u_Material.Shininess", 0.1f);
+	}
+
+	Material::Sptr SquarePlatMaterial = ResourceManager::CreateAsset<Material>(basicShader);
+	{
+		SquarePlatMaterial->Name = "Square Platform";
+		SquarePlatMaterial->Set("u_Material.Diffuse", SquarePlatTex);
+		SquarePlatMaterial->Set("u_Material.Shininess", 0.1f);
+	}
+
+	Material::Sptr FloatingLightMaterial = ResourceManager::CreateAsset<Material>(basicShader);
+	{
+		FloatingLightMaterial->Name = "FLoating Light";
+		FloatingLightMaterial->Set("u_Material.Diffuse", FloatingLightTex);
+		FloatingLightMaterial->Set("u_Material.Shininess", 0.1f);
+	}
+
+	Material::Sptr OvalBuildingMaterial = ResourceManager::CreateAsset<Material>(basicShader);
+	{
+		OvalBuildingMaterial->Name = "Oval Building";
+		OvalBuildingMaterial->Set("u_Material.Diffuse", OvalBuildingTex);
+		OvalBuildingMaterial->Set("u_Material.Shininess", 0.1f);
+	}
+
 	bool loadScene = false;
 
 	// For now we can use a toggle to generate our scene vs load from file
@@ -994,321 +1314,7 @@ int main() {
 		scene->Awake();
 	}
 	else {
-		// This time we'll have 2 different shaders, and share data between both of them using the UBO
-		// This shader will handle reflective materials 
-		Shader::Sptr reflectiveShader = ResourceManager::CreateAsset<Shader>(std::unordered_map<ShaderPartType, std::string>{
-			{ ShaderPartType::Vertex, "shaders/vertex_shaders/basic.glsl" },
-			{ ShaderPartType::Fragment, "shaders/fragment_shaders/frag_environment_reflective.glsl" }
-		});
 
-		// This shader handles our basic materials without reflections (cause they expensive)
-		Shader::Sptr basicShader = ResourceManager::CreateAsset<Shader>(std::unordered_map<ShaderPartType, std::string>{
-			{ ShaderPartType::Vertex, "shaders/vertex_shaders/basic.glsl" },
-			{ ShaderPartType::Fragment, "shaders/fragment_shaders/frag_blinn_phong_textured.glsl" }
-		});
-
-		// This shader handles our basic materials without reflections (cause they expensive)
-		//Shader::Sptr specShader = ResourceManager::CreateAsset<Shader>(std::unordered_map<ShaderPartType, std::string>{
-		//	{ ShaderPartType::Vertex, "shaders/vertex_shaders/water-vert.glsl" },
-		//	{ ShaderPartType::Fragment, "shaders/fragment_shaders/water-frag.glsl" }
-		//});
-
-
-		///////////////////// NEW SHADERS ////////////////////////////////////////////
-
-		// This shader handles our foliage vertex shader example
-		Shader::Sptr foliageShader = ResourceManager::CreateAsset<Shader>(std::unordered_map<ShaderPartType, std::string>{
-			{ ShaderPartType::Vertex, "shaders/vertex_shaders/foliage.glsl" },
-			{ ShaderPartType::Fragment, "shaders/fragment_shaders/screendoor_transparency.glsl" }
-		});
-
-		// This shader handles our cel shading example
-		Shader::Sptr toonShader = ResourceManager::CreateAsset<Shader>(std::unordered_map<ShaderPartType, std::string>{
-			{ ShaderPartType::Vertex, "shaders/vertex_shaders/basic.glsl" },
-			{ ShaderPartType::Fragment, "shaders/fragment_shaders/toon_shading.glsl" }
-		});
-
-		//Meshes
-		MeshResource::Sptr SmallPlatform = ResourceManager::CreateAsset<MeshResource>("SmallSpeakerPlatformV5.obj");
-		MeshResource::Sptr WallJump = ResourceManager::CreateAsset<MeshResource>("WallJumpV6.obj");
-		MeshResource::Sptr BeatGem = ResourceManager::CreateAsset<MeshResource>("Gem.obj");
-		MeshResource::Sptr Vinyl = ResourceManager::CreateAsset<MeshResource>("VinylV2.obj");
-		MeshResource::Sptr CD = ResourceManager::CreateAsset<MeshResource>("CDwithUnwrap.obj");
-		MeshResource::Sptr Building = ResourceManager::CreateAsset<MeshResource>("RBuilding.obj");
-		MeshResource::Sptr KBuilding1Mesh = ResourceManager::CreateAsset<MeshResource>("KBuilding.obj");
-		MeshResource::Sptr KBuilding2Mesh = ResourceManager::CreateAsset<MeshResource>("KBuilding2.obj");
-		MeshResource::Sptr KBuilding3Mesh = ResourceManager::CreateAsset<MeshResource>("KBuilding3.obj");
-		MeshResource::Sptr OvalBuilding = ResourceManager::CreateAsset<MeshResource>("OvalBuilding.obj");
-		MeshResource::Sptr CharacterMesh = ResourceManager::CreateAsset<MeshResource>("dudeCharacter.obj");
-		MeshResource::Sptr DiscoBallMesh = ResourceManager::CreateAsset<MeshResource>("DiscoBall2.obj");
-		MeshResource::Sptr StartPlatform = ResourceManager::CreateAsset<MeshResource>("LStartPlatform.obj");
-		MeshResource::Sptr Car1Mesh = ResourceManager::CreateAsset<MeshResource>("FutureCar1.obj");
-		MeshResource::Sptr SemiTruckMesh = ResourceManager::CreateAsset<MeshResource>("Semitruck.obj");
-		MeshResource::Sptr PickupTruckMesh = ResourceManager::CreateAsset<MeshResource>("FuturePickup.obj");
-		MeshResource::Sptr SmallWallJump = ResourceManager::CreateAsset<MeshResource>("SmallWallJump.obj");
-		MeshResource::Sptr SuperSmallWallJump = ResourceManager::CreateAsset<MeshResource>("SuperSmallWallJump.obj");
-		MeshResource::Sptr FallingPlat = ResourceManager::CreateAsset<MeshResource>("pianoplatform.obj");
-		MeshResource::Sptr HalfCirclePlat = ResourceManager::CreateAsset<MeshResource>("HalfCriclePlat.obj");
-		MeshResource::Sptr StairsRight = ResourceManager::CreateAsset<MeshResource>("StairCaseR.obj");
-		MeshResource::Sptr StairsLeft = ResourceManager::CreateAsset<MeshResource>("StairCaseL.obj");
-		MeshResource::Sptr Speaker = ResourceManager::CreateAsset<MeshResource>("speaker.obj");
-		MeshResource::Sptr SquarePlat = ResourceManager::CreateAsset<MeshResource>("SquarePlatform.obj");
-		MeshResource::Sptr FloatingLight = ResourceManager::CreateAsset<MeshResource>("FloatingStreetLight.obj");
-
-		//Textures
-		Texture2D::Sptr StartTex = ResourceManager::CreateAsset<Texture2D>("textures/LStartPlatformTex.png"); 
-		Texture2D::Sptr SmallTex = ResourceManager::CreateAsset<Texture2D>("textures/DanceFloorTex2.png"); 
-		Texture2D::Sptr VinylTex = ResourceManager::CreateAsset<Texture2D>("textures/VinylTex.png");
-		Texture2D::Sptr CDTex = ResourceManager::CreateAsset<Texture2D>("textures/CDTex.png");
-		Texture2D::Sptr GemTex = ResourceManager::CreateAsset<Texture2D>("textures/Gem.png");
-		Texture2D::Sptr CharacterTex = ResourceManager::CreateAsset<Texture2D>("textures/shirt.png");
-		Texture2D::Sptr LoseScreenTex = ResourceManager::CreateAsset<Texture2D>("textures/Game_Over_Screen.png");
-		Texture2D::Sptr SmallWallJumpTex = ResourceManager::CreateAsset<Texture2D>("textures/SmallWallJumpTexBlue.png");
-		Texture2D::Sptr SuperSmallWallJumpTex = ResourceManager::CreateAsset<Texture2D>("textures/SmallWallJumpTexRed.png");
-		Texture2D::Sptr WallJumpTex = ResourceManager::CreateAsset<Texture2D>("textures/WallJumpTex.png");
-		Texture2D::Sptr Car1Tex = ResourceManager::CreateAsset<Texture2D>("textures/FutureCarTex.png");
-		Texture2D::Sptr SemiTruckTex = ResourceManager::CreateAsset<Texture2D>("textures/SemiTruckTexV2.png");
-		Texture2D::Sptr PickupTruckTex = ResourceManager::CreateAsset<Texture2D>("textures/PickupTruckTex.png");
-		Texture2D::Sptr KBuilding1Tex = ResourceManager::CreateAsset<Texture2D>("textures/KBuildingTex.png");
-		Texture2D::Sptr KBuilding2Tex = ResourceManager::CreateAsset<Texture2D>("textures/KBuilding2Tex.png");
-		Texture2D::Sptr KBuilding3Tex = ResourceManager::CreateAsset<Texture2D>("textures/KBuilding3Tex.png");
-		Texture2D::Sptr BuildingTex = ResourceManager::CreateAsset<Texture2D>("textures/RBuildingTex.png");
-		Texture2D::Sptr OvalBuildingTex = ResourceManager::CreateAsset<Texture2D>("textures/OvalBuildingTex.png");
-		Texture2D::Sptr DiscoBallTex = ResourceManager::CreateAsset<Texture2D>("textures/DiscoBallTexV2.png");
-		Texture2D::Sptr FallingPlatTex = ResourceManager::CreateAsset<Texture2D>("textures/pianotex.png");
-		Texture2D::Sptr HalfCirclePlatTex = ResourceManager::CreateAsset<Texture2D>("textures/halfCircleTex.png");
-		Texture2D::Sptr TexBeatLogo = ResourceManager::CreateAsset<Texture2D>("textures/GUI/BeatLogo.png");
-		Texture2D::Sptr TexPlayButton = ResourceManager::CreateAsset<Texture2D>("textures/GUI/BPlay.png");
-		Texture2D::Sptr TexOptionsButton = ResourceManager::CreateAsset<Texture2D>("textures/GUI/BOptions.png");
-		Texture2D::Sptr TexMusicButton = ResourceManager::CreateAsset<Texture2D>("textures/GUI/BMusic.png");
-		Texture2D::Sptr TexCreditsButton = ResourceManager::CreateAsset<Texture2D>("textures/GUI/BCredits.png");
-		Texture2D::Sptr TexQuitButton = ResourceManager::CreateAsset<Texture2D>("textures/GUI/BQuit.png");
-		Texture2D::Sptr TexResumeButton = ResourceManager::CreateAsset<Texture2D>("textures/GUI/BResume.png");
-		Texture2D::Sptr TexResyncButton = ResourceManager::CreateAsset<Texture2D>("textures/GUI/BResync.png");
-		Texture2D::Sptr TexContinueButton = ResourceManager::CreateAsset<Texture2D>("textures/GUI/BContinue.png");
-		Texture2D::Sptr TexPauseMenu = ResourceManager::CreateAsset<Texture2D>("textures/GUI/PauseMenuBG.png");
-		Texture2D::Sptr TexDimmedBG = ResourceManager::CreateAsset<Texture2D>("textures/GUI/DimBG.png");
-		Texture2D::Sptr TexScoreBreakdown = ResourceManager::CreateAsset<Texture2D>("textures/GUI/ScoreBreakdown.png");
-		Texture2D::Sptr TexGameOverText = ResourceManager::CreateAsset<Texture2D>("textures/GUI/GameOverText.png");
-		Texture2D::Sptr TexMovementTutorial = ResourceManager::CreateAsset<Texture2D>("textures/GUI/Movement.png");
-		Texture2D::Sptr TexWallJumpTutorial = ResourceManager::CreateAsset<Texture2D>("textures/GUI/WallJump.png");
-		Texture2D::Sptr TexBeatGemTutorial = ResourceManager::CreateAsset<Texture2D>("textures/GUI/BeatGems.png");
-		Texture2D::Sptr TexVinylsTutorial = ResourceManager::CreateAsset<Texture2D>("textures/GUI/Vinyls.png");
-		Texture2D::Sptr StairsRightTex = ResourceManager::CreateAsset<Texture2D>("textures/StairCaseRTex.png");
-		Texture2D::Sptr StairsLeftTex = ResourceManager::CreateAsset<Texture2D>("textures/StarTexL.png");
-		Texture2D::Sptr SpeakerTex = ResourceManager::CreateAsset<Texture2D>("textures/speakertex.png");
-		Texture2D::Sptr SquarePlatTex = ResourceManager::CreateAsset<Texture2D>("textures/SquarePlatformTex.png");
-		Texture2D::Sptr FloatingLightTex = ResourceManager::CreateAsset<Texture2D>("textures/StreetLightTex.png");
-
-		//Minification and Magnification
-		//leafTex->SetMinFilter(MinFilter::Nearest);
-		//leafTex->SetMagFilter(MagFilter::Nearest);
-
-		// Here we'll load in the cubemap, as well as a special shader to handle drawing the skybox
-		TextureCube::Sptr testCubemap = ResourceManager::CreateAsset<TextureCube>("cubemaps/space/space.png");
-		Shader::Sptr      skyboxShader = ResourceManager::CreateAsset<Shader>(std::unordered_map<ShaderPartType, std::string>{
-			{ ShaderPartType::Vertex, "shaders/vertex_shaders/skybox_vert.glsl" },
-			{ ShaderPartType::Fragment, "shaders/fragment_shaders/skybox_frag.glsl" }
-		});
-
-		// Create an empty scene
-		scene = std::make_shared<Scene>();
-
-		// Setting up our enviroment map
-		scene->SetSkyboxTexture(testCubemap);
-		scene->SetSkyboxShader(skyboxShader);
-		// Since the skybox I used was for Y-up, we need to rotate it 90 deg around the X-axis to convert it to z-up
-		scene->SetSkyboxRotation(glm::rotate(MAT4_IDENTITY, glm::half_pi<float>(), glm::vec3(1.0f, 0.0f, 0.0f)));
-
-		// Create our materials
-		Material::Sptr StartPlatformMaterial = ResourceManager::CreateAsset<Material>(basicShader);
-		{
-			StartPlatformMaterial->Name = "StartPlatform";
-			StartPlatformMaterial->Set("u_Material.Diffuse", StartTex);
-			StartPlatformMaterial->Set("u_Material.Shininess", 0.1f);
-		}
-
-		Material::Sptr UIMat = ResourceManager::CreateAsset<Material>(basicShader);
-		{
-			UIMat->Name = "UIButton";
-			UIMat->Set("u_Material.Diffuse", StartTex);
-			UIMat->Set("u_Material.Shininess", 0.1f);
-		}
-
-		Material::Sptr SmallPlatformMaterial = ResourceManager::CreateAsset<Material>(basicShader);
-		{
-			SmallPlatformMaterial->Name = "SmallPlatform";
-			SmallPlatformMaterial->Set("u_Material.Diffuse", SmallTex);
-			SmallPlatformMaterial->Set("u_Material.Shininess", 0.1f);
-		}
-
-		Material::Sptr WallJumpMaterial = ResourceManager::CreateAsset<Material>(basicShader);
-		{
-			WallJumpMaterial->Name = "WallJump";
-			WallJumpMaterial->Set("u_Material.Diffuse", WallJumpTex);
-			WallJumpMaterial->Set("u_Material.Shininess", 0.1f);
-		}
-
-		Material::Sptr BeatGemMaterial = ResourceManager::CreateAsset<Material>(reflectiveShader);
-		{
-			BeatGemMaterial->Name = "BeatGem";
-			BeatGemMaterial->Set("u_Material.Diffuse", GemTex);
-			BeatGemMaterial->Set("u_Material.Shininess", 1.0f);
-		}
-
-		Material::Sptr VinylMaterial = ResourceManager::CreateAsset<Material>(basicShader);
-		{
-			VinylMaterial->Name = "Vinyl";
-			VinylMaterial->Set("u_Material.Diffuse", VinylTex);
-			VinylMaterial->Set("u_Material.Shininess", 0.1f);
-		}
-
-		Material::Sptr CDMaterial = ResourceManager::CreateAsset<Material>(basicShader);
-		{
-			CDMaterial->Name = "CD";
-			CDMaterial->Set("u_Material.Diffuse", CDTex);
-			CDMaterial->Set("u_Material.Shininess", 0.1f);
-		}
-
-		Material::Sptr CharacterMaterial = ResourceManager::CreateAsset<Material>(basicShader);
-		{
-			CharacterMaterial->Name = "Character";
-			CharacterMaterial->Set("u_Material.Diffuse", CharacterTex);
-			CharacterMaterial->Set("u_Material.Shininess", 0.1f);
-		}
-
-		Material::Sptr DiscoBallMaterial = ResourceManager::CreateAsset<Material>(reflectiveShader);
-		{
-			DiscoBallMaterial->Name = "DiscoBall";
-			DiscoBallMaterial->Set("u_Material.Diffuse", DiscoBallTex);
-			DiscoBallMaterial->Set("u_Material.Shininess", -0.4f);
-		}
-
-		Material::Sptr LoseScreenMaterial = ResourceManager::CreateAsset<Material>(basicShader);
-		{
-			LoseScreenMaterial->Name = "Lose Screen";
-			LoseScreenMaterial->Set("u_Material.Diffuse", LoseScreenTex);
-			LoseScreenMaterial->Set("u_Material.Shininess", 0.1f);
-		}
-
-		Material::Sptr Car1Material = ResourceManager::CreateAsset<Material>(basicShader);
-		{
-			Car1Material->Name = "Car1";
-			Car1Material->Set("u_Material.Diffuse", Car1Tex);
-			Car1Material->Set("u_Material.Shininess", 0.1f);
-		}
-
-		Material::Sptr SemiTruckMaterial = ResourceManager::CreateAsset<Material>(basicShader);
-		{
-			SemiTruckMaterial->Name = "Semi1";
-			SemiTruckMaterial->Set("u_Material.Diffuse", SemiTruckTex);
-			SemiTruckMaterial->Set("u_Material.Shininess", 0.1f);
-		}
-
-		Material::Sptr PickupTruckMaterial = ResourceManager::CreateAsset<Material>(basicShader);
-		{
-			PickupTruckMaterial->Name = "Pickup1";
-			PickupTruckMaterial->Set("u_Material.Diffuse", PickupTruckTex);
-			PickupTruckMaterial->Set("u_Material.Shininess", 0.1f);
-		}
-
-		Material::Sptr BuildingMaterial = ResourceManager::CreateAsset<Material>(basicShader);
-		{
-			BuildingMaterial->Name = "Building";
-			BuildingMaterial->Set("u_Material.Diffuse", BuildingTex);
-			BuildingMaterial->Set("u_Material.Shininess", 0.1f);
-		}
-
-		Material::Sptr KBuildingMaterial = ResourceManager::CreateAsset<Material>(basicShader);
-		{
-			KBuildingMaterial->Name = "KBuilding";
-			KBuildingMaterial->Set("u_Material.Diffuse", KBuilding1Tex);
-			KBuildingMaterial->Set("u_Material.Shininess", 0.1f);
-		}
-
-		Material::Sptr KBuilding2Material = ResourceManager::CreateAsset<Material>(basicShader);
-		{
-			KBuilding2Material->Name = "KBuilding2";
-			KBuilding2Material->Set("u_Material.Diffuse", KBuilding2Tex);
-			KBuilding2Material->Set("u_Material.Shininess", 0.1f);
-		}
-
-		Material::Sptr KBuilding3Material = ResourceManager::CreateAsset<Material>(basicShader);
-		{
-			KBuilding3Material->Name = "KBuilding3";
-			KBuilding3Material->Set("u_Material.Diffuse", KBuilding3Tex);
-			KBuilding3Material->Set("u_Material.Shininess", 0.1f);
-		}
-
-		Material::Sptr SmallWallJumpMaterial = ResourceManager::CreateAsset<Material>(basicShader);
-		{
-			SmallWallJumpMaterial->Name = "Small Wall Jump";
-			SmallWallJumpMaterial->Set("u_Material.Diffuse", SmallWallJumpTex);
-			SmallWallJumpMaterial->Set("u_Material.Shininess", 0.1f);
-		}
-
-		Material::Sptr SuperSmallWallJumpMaterial = ResourceManager::CreateAsset<Material>(basicShader);
-		{
-			SuperSmallWallJumpMaterial->Name = "Super Small Wall Jump";
-			SuperSmallWallJumpMaterial->Set("u_Material.Diffuse", SuperSmallWallJumpTex);
-			SuperSmallWallJumpMaterial->Set("u_Material.Shininess", 0.1f);
-		}
-
-		Material::Sptr PianoMaterial = ResourceManager::CreateAsset<Material>(basicShader);
-		{
-			PianoMaterial->Name = "Piano";
-			PianoMaterial->Set("u_Material.Diffuse", FallingPlatTex);
-			PianoMaterial->Set("u_Material.Shininess", 0.1f);
-		}
-
-		Material::Sptr HalfCirclePlatMaterial = ResourceManager::CreateAsset<Material>(basicShader);
-		{
-			HalfCirclePlatMaterial->Name = "Half Circle Plat";
-			HalfCirclePlatMaterial->Set("u_Material.Diffuse", HalfCirclePlatTex);
-			HalfCirclePlatMaterial->Set("u_Material.Shininess", 0.1f);
-		}
-
-		Material::Sptr StairsRightMaterial = ResourceManager::CreateAsset<Material>(basicShader);
-		{
-			StairsRightMaterial->Name = "Stairs Right";
-			StairsRightMaterial->Set("u_Material.Diffuse", StairsRightTex);
-			StairsRightMaterial->Set("u_Material.Shininess", 0.1f);
-		}
-
-		Material::Sptr StairsLeftMaterial = ResourceManager::CreateAsset<Material>(basicShader);
-		{
-			StairsLeftMaterial->Name = "Stairs Left";
-			StairsLeftMaterial->Set("u_Material.Diffuse", StairsLeftTex);
-			StairsLeftMaterial->Set("u_Material.Shininess", 0.1f);
-		}
-
-		Material::Sptr SpeakerMaterial = ResourceManager::CreateAsset<Material>(basicShader);
-		{
-			SpeakerMaterial->Name = "Speaker Material";
-			SpeakerMaterial->Set("u_Material.Diffuse", SpeakerTex);
-			SpeakerMaterial->Set("u_Material.Shininess", 0.1f);
-		}
-
-		Material::Sptr SquarePlatMaterial = ResourceManager::CreateAsset<Material>(basicShader);
-		{
-			SquarePlatMaterial->Name = "Square Platform";
-			SquarePlatMaterial->Set("u_Material.Diffuse", SquarePlatTex);
-			SquarePlatMaterial->Set("u_Material.Shininess", 0.1f);
-		}
-
-		Material::Sptr FloatingLightMaterial = ResourceManager::CreateAsset<Material>(basicShader);
-		{
-			FloatingLightMaterial->Name = "FLoating Light";
-			FloatingLightMaterial->Set("u_Material.Diffuse", FloatingLightTex);
-			FloatingLightMaterial->Set("u_Material.Shininess", 0.1f);
-		}
-
-		Material::Sptr OvalBuildingMaterial = ResourceManager::CreateAsset<Material>(basicShader);
-		{
-			OvalBuildingMaterial->Name = "Oval Building";
-			OvalBuildingMaterial->Set("u_Material.Diffuse", OvalBuildingTex);
-			OvalBuildingMaterial->Set("u_Material.Shininess", 0.1f);
-		}
 
 		// Create some lights for our scene
 		scene->Lights.resize(2);
@@ -1351,7 +1357,7 @@ int main() {
 		}
 
 
-		// Tutorial
+		float const distanceFromBlock = 20.f;
 
 		// Background and forground vehicles\\
 		Give these Parents for Foreground/Background Blocks if we have enough objects to do that with!
@@ -1364,201 +1370,39 @@ int main() {
 		SpawnBackGroundBuilding(KBuilding3Mesh, KBuilding3Material, "KBuilding3", glm::vec3(-30.530f, 21.880f, -46.040f), glm::vec3(90.0f, 0.0f, 0.0f), glm::vec3(0.780f, 1.470f, 1.0f));
 		SpawnBackGroundBuilding(OvalBuilding, OvalBuildingMaterial, "OvalBuilding", glm::vec3(-29.320f, 25.970f, -12.360f), glm::vec3(90.0f, 0.0f, 0.0f), glm::vec3(0.780f, 1.470f, 1.0f));
 
-		/*
+		// Tutorial
+		
 		SpawnStartPlat(StartPlatform, StartPlatformMaterial, "StartPlatform", glm::vec3(-9.820f, 5.610f, -9.10f), glm::vec3(90.0f, 0.0f, 0.0f), glm::vec3(0.350f, 0.350f, 0.350f));
-		SpawnObj(SmallPlatform, SmallPlatformMaterial, "Small Platform", glm::vec3(-6.070f, 5.610f, -4.150f), glm::vec3(180.0f, 0.0f, 180.0f), glm::vec3(0.350f, 0.350f, 0.350f);
+		SpawnObj(SmallPlatform, SmallPlatformMaterial, "Small Platform", glm::vec3(-6.070f, 5.610f, -4.150f), glm::vec3(180.0f, 0.0f, 180.0f), glm::vec3(0.350f, 0.350f, 0.350f));
 		SpawnObj(SmallPlatform, SmallPlatformMaterial, "Small Platform", glm::vec3(-3.320f, 5.610f, -2.200f), glm::vec3(180.0f, 0.0f, 180.0f), glm::vec3(0.350f, 0.350f, 0.350f));
 		SpawnObj(SmallPlatform, SmallPlatformMaterial, "Small Platform", glm::vec3(-0.400f, 5.610f, -4.040f), glm::vec3(180.0f, 0.0f, 180.0f), glm::vec3(0.350f, 0.350f, 0.350f));
-		SpawnObj(SmallPlatform, SmallPlatformMaterial, "Small Platform", glm::vec3(-0.060f, 5.610f, 4.450f),  glm::vec3(180.0f, 0.0f, 180.0f), glm::vec3(0.350f, 0.350f, 0.350f);
+		SpawnObj(SmallPlatform, SmallPlatformMaterial, "Small Platform", glm::vec3(-0.060f, 5.610f, 4.450f),  glm::vec3(180.0f, 0.0f, 180.0f), glm::vec3(0.350f, 0.350f, 0.350f));
 		SpawnWallJump(WallJump, WallJumpMaterial, "Wall Jump", glm::vec3(1.680f, 5.610f, 2.610f), glm::vec3(180.0f, 0.0f, 180.0f), glm::vec3(0.500f, 0.210f, 1.500f));
 		SpawnWallJump(WallJump, WallJumpMaterial, "Wall Jump", glm::vec3(4.350f, 5.610f, 3.930f), glm::vec3(180.0f, 0.0f, 180.0f), glm::vec3(0.500f, 0.210f, 1.500f));
-		SpawnGem(BeatGem, BeatGemMaterial, "BeatGem", glm::vec3(2.410f, 5.610f, -3.160f), glm::vec3(90.0f, 0.0f, 180.0f), glm::vec3(0.500f, 0.500f, 0.500f);
+		SpawnGem(BeatGem, BeatGemMaterial, "BeatGem", glm::vec3(2.410f, 5.610f, -3.160f), glm::vec3(90.0f, 0.0f, 180.0f), glm::vec3(0.500f, 0.500f, 0.500f));
 		SpawnCollectable(Vinyl, VinylMaterial, "Vinyl", glm::vec3(-0.040f, 5.610f, 5.120f), glm::vec3(90.000f, 0.0f, 90.000f), glm::vec3(1.000f, 1.000f, 1.000f));
-		SpawnStartPlat(StartPlatform, StartPlatformMaterial, "EndPlatform", glm::vec3(6.360f, 5.610f, -9.10f), glm::vec3(90.0f, 0.0f, 0.0f), glm::vec3(0.350f, 0.350f, 0.350f);
+		SpawnStartPlat(StartPlatform, StartPlatformMaterial, "EndPlatform", glm::vec3(6.360f, 5.610f, -9.10f), glm::vec3(90.0f, 0.0f, 0.0f), glm::vec3(0.350f, 0.350f, 0.350f));
 		SpawnBackGroundCar(Car1Mesh, Car1Material, "Car1", glm::vec3(14.870f, 9.80f, 2.7f), glm::vec3(90.0f, 0.0f, -90.0f), glm::vec3(0.250f, 0.250f, 0.250f));
 		SpawnBackGroundCar(SemiTruckMesh, SemiTruckMaterial, "Semi1", glm::vec3(28.870f, 9.80f, 2.7f), glm::vec3(90.0f, 0.0f, -90.0f), glm::vec3(0.250f, 0.250f, 0.250f));
 		SpawnForeGroundCar(Car1Mesh, Car1Material, "Car2", glm::vec3(-9.970f, 0.470f, -1.90f), glm::vec3(90.0f, 0.0f, 90.0f), glm::vec3(0.250f, 0.250f, 0.250f));
 		SpawnForeGroundCar(PickupTruckMesh, PickupTruckMaterial, "Pickup1", glm::vec3(-18.970f, 0.470f, -1.90f), glm::vec3(90.0f, 0.0f, 90.0f), glm::vec3(0.250f, 0.250f, 0.250f));
-		*/
+		
 
-		// 1st Block
-		/*
-		SpawnStartPlat(StartPlatform, StartPlatformMaterial, "StartPlatform", glm::vec3(-9.820f, 5.610f, -9.10f), glm::vec3(90.0f, 0.0f, 0.0f), glm::vec3(0.350f, 0.350f, 0.350f));
-		SpawnObj(SmallPlatform, SmallPlatformMaterial, "Small Platform", glm::vec3(-6.070f, 5.610f, -4.150f), glm::vec3(180.0f, 0.0f, 180.0f), glm::vec3(0.350f, 0.350f, 0.350f));
-		SpawnObj(SmallPlatform, SmallPlatformMaterial, "Small Platform", glm::vec3(-2.840f, 5.610f, -4.150f), glm::vec3(180.0f, 0.0f, 180.0f), glm::vec3(0.350f, 0.350f, 0.350f));
-		SpawnObj(SmallPlatform, SmallPlatformMaterial, "Small Platform", glm::vec3(2.760f, 5.610f, -1.770f), glm::vec3(180.0f, 0.0f, 180.0f), glm::vec3(0.350f, 0.350f, 0.350f));
-		SpawnGem(BeatGem, BeatGemMaterial, "BeatGem", glm::vec3(0.120f, 5.610f, -3.160f), glm::vec3(90.0f, 0.0f, 180.0f), glm::vec3(0.500f, 0.500f, 0.500f));
-		SpawnCollectable(Vinyl, VinylMaterial, "Vinyl", glm::vec3(5.640f, 5.610f, 0.080f), glm::vec3(90.000f, 0.0f, 90.000f), glm::vec3(1.000f, 1.000f, 1.000f));
-		SpawnStartPlat(StartPlatform, StartPlatformMaterial, "EndPlatform", glm::vec3(6.360f, 5.610f, -9.10f), glm::vec3(90.0f, 0.0f, 0.0f), glm::vec3(0.350f, 0.350f, 0.350f));
+		// 1st Block		
+		SpawnStartPlat(StartPlatform, StartPlatformMaterial, "StartPlatform", glm::vec3(-9.820f + distanceFromBlock, 5.610f, -9.10f), glm::vec3(90.0f, 0.0f, 0.0f), glm::vec3(0.350f, 0.350f, 0.350f));
+		SpawnObj(SmallPlatform, SmallPlatformMaterial, "Small Platform", glm::vec3(-6.070f + distanceFromBlock, 5.610f, -4.150f), glm::vec3(180.0f, 0.0f, 180.0f), glm::vec3(0.350f, 0.350f, 0.350f));
+		SpawnObj(SmallPlatform, SmallPlatformMaterial, "Small Platform", glm::vec3(-2.840f + distanceFromBlock, 5.610f, -4.150f), glm::vec3(180.0f, 0.0f, 180.0f), glm::vec3(0.350f, 0.350f, 0.350f));
+		SpawnObj(SmallPlatform, SmallPlatformMaterial, "Small Platform", glm::vec3(2.760f + distanceFromBlock, 5.610f, -1.770f), glm::vec3(180.0f, 0.0f, 180.0f), glm::vec3(0.350f, 0.350f, 0.350f));
+		SpawnGem(BeatGem, BeatGemMaterial, "BeatGem", glm::vec3(0.120f + distanceFromBlock, 5.610f, -3.160f), glm::vec3(90.0f, 0.0f, 180.0f), glm::vec3(0.500f, 0.500f, 0.500f));
+		SpawnCollectable(Vinyl, VinylMaterial, "Vinyl", glm::vec3(5.640f + distanceFromBlock, 5.610f, 0.080f), glm::vec3(90.000f, 0.0f, 90.000f), glm::vec3(1.000f, 1.000f, 1.000f));
+		SpawnStartPlat(StartPlatform, StartPlatformMaterial, "EndPlatform", glm::vec3(6.360f + distanceFromBlock, 5.610f, -9.10f), glm::vec3(90.0f, 0.0f, 0.0f), glm::vec3(0.350f, 0.350f, 0.350f));
 
 		// CDs for Block 1
-		SpawnCD(CD, CDMaterial, "CD", glm::vec3(-6.030f, 5.610f, -3.220f), glm::vec3(90.000f, 0.0f, 90.000f), glm::vec3(1.000f, 1.000f, 1.000f));
-		SpawnCD(CD, CDMaterial, "CD", glm::vec3(-2.710f, 5.610f, -3.190f), glm::vec3(90.000f, 0.0f, 90.000f), glm::vec3(1.000f, 1.000f, 1.000f));
-		SpawnCD(CD, CDMaterial, "CD", glm::vec3(0.170f, 5.610f, -2.380f), glm::vec3(90.000f, 0.0f, 90.000f), glm::vec3(1.000f, 1.000f, 1.000f));
-		SpawnCD(CD, CDMaterial, "CD", glm::vec3(2.640f, 5.610f, -0.770f), glm::vec3(90.000f, 0.0f, 90.000f), glm::vec3(1.000f, 1.000f, 1.000f));
-		*/
-
-		// 2nd Block
-		/*
-		SpawnStartPlat(StartPlatform, StartPlatformMaterial, "StartPlatform", glm::vec3(-9.820f, 5.610f, -9.10f), glm::vec3(90.0f, 0.0f, 0.0f), glm::vec3(0.350f, 0.350f, 0.350f));
-		SpawnWallJump(WallJump, WallJumpMaterial, "Wall Jump", glm::vec3(-8.590f, 5.610f, 3.210f), glm::vec3(180.0f, 0.0f, 180.0f), glm::vec3(0.500f, 0.040f, 1.500f));
-		SpawnWallJump(WallJump, WallJumpMaterial, "Wall Jump", glm::vec3(-6.660f, 5.610f, 2.000f), glm::vec3(180.0f, 0.0f, 180.0f), glm::vec3(0.500f, 0.040f, 1.500f));
-		SpawnObj(SmallPlatform, SmallPlatformMaterial, "Small Platform", glm::vec3(-4.400f, 5.610f, 4.000f), glm::vec3(180.0f, 0.0f, 180.0f), glm::vec3(0.350f, 0.350f, 0.350f));
-		SpawnObj(SmallPlatform, SmallPlatformMaterial, "Small Platform", glm::vec3(1.940f, 5.610f, -4.150f), glm::vec3(180.0f, 0.0f, 180.0f), glm::vec3(0.350f, 0.350f, 0.350f));
-		SpawnGem(BeatGem, BeatGemMaterial, "BeatGem", glm::vec3(-1.340f, 5.610f, 0.500f), glm::vec3(90.0f, 0.0f, 180.0f), glm::vec3(0.500f, 0.500f, 0.500f));
-		SpawnStartPlat(StartPlatform, StartPlatformMaterial, "EndPlatform", glm::vec3(6.360f, 5.610f, -9.10f), glm::vec3(90.0f, 0.0f, 0.0f), glm::vec3(0.350f, 0.350f, 0.350f));
-
-		// CDs for Block 2
-		SpawnCD(CD, CDMaterial, "CD", glm::vec3(-7.720f, 5.610f, -0.030f), glm::vec3(90.000f, 0.0f, 90.000f), glm::vec3(1.000f, 1.000f, 1.000f));
-		SpawnCD(CD, CDMaterial, "CD", glm::vec3(-7.720f, 5.610f, 2.130f), glm::vec3(90.000f, 0.0f, 90.000f), glm::vec3(1.000f, 1.000f, 1.000f));
-		SpawnCD(CD, CDMaterial, "CD", glm::vec3(-7.720f, 5.610f, 4.610f), glm::vec3(90.000f, 0.0f, 90.000f), glm::vec3(1.000f, 1.000f, 1.000f));
-		SpawnCD(CD, CDMaterial, "CD", glm::vec3(-4.420f, 5.610f, 4.750f), glm::vec3(90.000f, 0.0f, 90.000f), glm::vec3(1.000f, 1.000f, 1.000f));
-		SpawnCD(CD, CDMaterial, "CD", glm::vec3(-1.340f, 5.610f, 0.810f), glm::vec3(90.000f, 0.0f, 90.000f), glm::vec3(1.000f, 1.000f, 1.000f));
-		SpawnCD(CD, CDMaterial, "CD", glm::vec3(1.920f, 5.610f, -3.610f), glm::vec3(90.000f, 0.0f, 90.000f), glm::vec3(1.000f, 1.000f, 1.000f));
-		*/
-
-		// 3rd Block
-		/*
-		SpawnStartPlat(StartPlatform, StartPlatformMaterial, "StartPlatform", glm::vec3(-9.820f, 5.610f, -9.10f), glm::vec3(90.0f, 0.0f, 0.0f), glm::vec3(0.350f, 0.350f, 0.350f));
-		SpawnObj(SmallPlatform, SmallPlatformMaterial, "Small Platform", glm::vec3(-4.360f, 5.610f, -0.290f), glm::vec3(180.0f, 0.0f, 180.0f), glm::vec3(0.350f, 0.350f, 0.350f));
-		SpawnObj(SmallPlatform, SmallPlatformMaterial, "Small Platform", glm::vec3(0.350f, 5.610f, -0.290f), glm::vec3(180.0f, 0.0f, 180.0f), glm::vec3(0.350f, 0.350f, 0.350f));
-		SpawnObj(FallingPlat, PianoMaterial, "Falling", glm::vec3(0.390f, 5.610f, -4.150f), glm::vec3(180.0f, 0.0f, 0.0f), glm::vec3(0.350f, 0.350f, 0.350f));
-		SpawnObj(SmallPlatform, SmallPlatformMaterial, "Small Platform", glm::vec3(3.220f, 5.610f, -4.150f), glm::vec3(180.0f, 0.0f, 180.0f), glm::vec3(0.350f, 0.350f, 0.350f));
-		SpawnGem(BeatGem, BeatGemMaterial, "BeatGem", glm::vec3(-6.870f, 5.610f, -1.970f), glm::vec3(90.0f, 0.0f, 180.0f), glm::vec3(0.500f, 0.500f, 0.500f));
-		SpawnGem(BeatGem, BeatGemMaterial, "BeatGem", glm::vec3(-1.870f, 5.610f, -1.970f), glm::vec3(90.0f, 0.0f, 180.0f), glm::vec3(0.500f, 0.500f, 0.500f));
-		SpawnCollectable(Vinyl, VinylMaterial, "Vinyl", glm::vec3(0.370f, 5.610f, -2.830f), glm::vec3(90.000f, 0.0f, 90.000f), glm::vec3(1.000f, 1.000f, 1.000f));
-		SpawnStartPlat(StartPlatform, StartPlatformMaterial, "EndPlatform", glm::vec3(6.360f, 5.610f, -9.10f), glm::vec3(90.0f, 0.0f, 0.0f), glm::vec3(0.350f, 0.350f, 0.350f));
-
-		// CDs for Block 3
-		SpawnCD(CD, CDMaterial, "CD", glm::vec3(-4.390f, 5.610f, 0.440f), glm::vec3(90.000f, 0.0f, 90.000f), glm::vec3(1.000f, 1.000f, 1.000f));
-		SpawnCD(CD, CDMaterial, "CD", glm::vec3(0.350f, 5.610f, 0.290f), glm::vec3(90.000f, 0.0f, 90.000f), glm::vec3(1.000f, 1.000f, 1.000f));
-		SpawnCD(CD, CDMaterial, "CD", glm::vec3(3.260f, 5.610f, -3.210f), glm::vec3(90.000f, 0.0f, 90.000f), glm::vec3(1.000f, 1.000f, 1.000f));
-		SpawnCD(CD, CDMaterial, "CD", glm::vec3(-6.690f, 5.610f, -1.180f), glm::vec3(90.000f, 0.0f, 90.000f), glm::vec3(1.000f, 1.000f, 1.000f));
-		*/
-
-		// 4th Block
-		/*
-		SpawnStartPlat(StartPlatform, StartPlatformMaterial, "StartPlatform", glm::vec3(-9.820f, 5.610f, -9.10f), glm::vec3(90.0f, 0.0f, 0.0f), glm::vec3(0.350f, 0.350f, 0.350f));
-		SpawnObj(SmallPlatform, SmallPlatformMaterial, "Small Platform", glm::vec3(-6.540f, 5.610f, -4.220f),  glm::vec3(180.0f, 0.0f, 180.0f), glm::vec3(0.350f, 0.350f, 0.350f));
-		SpawnObj(SmallPlatform, SmallPlatformMaterial, "Small Platform", glm::vec3(-3.640f, 5.610f, -4.220f), glm::vec3(180.0f, 0.0f, 180.0f), glm::vec3(0.350f, 0.350f, 0.350f));
-		SpawnObj(SmallPlatform, SmallPlatformMaterial, "Small Platform", glm::vec3(2.290f, 5.610f, 4.700f), glm::vec3(180.0f, 0.0f, 180.0f), glm::vec3(0.350f, 0.350f, 0.350f));
-		SpawnSpeaker(Speaker, SpeakerMaterial, "Speaker", glm::vec3(3.400f, 6.410f, -0.090f), glm::vec3(90.0f, 0.0f, -32.000f), glm::vec3(0.500f, 0.500f, 0.500f));
-		SpawnObj(HalfCirclePlat, HalfCirclePlatMaterial, "Half Circle Platform", glm::vec3(-0.720f, 5.610f, -4.220f), glm::vec3(-90.000f, 0.0f, 180.0f), glm::vec3(0.500f, 0.500f, 0.500f));
-		SpawnBuilding(Building, BuildingMaterial, "Building", glm::vec3(4.150f, 5.610f, -7.110f), glm::vec3(90.0f, 0.0f, 0.0f), glm::vec3(0.350f, 0.350f, 0.350f));
-		SpawnWallJump(WallJump, WallJumpMaterial, "Wall Jump", glm::vec3(-1.590f, 5.610f, 2.650f), glm::vec3(180.0f, 0.0f, 180.0f), glm::vec3(0.500f, 0.210f, 1.500f));
-		SpawnWallJump(WallJump, WallJumpMaterial, "Wall Jump", glm::vec3(0.460f, 5.610f, 1.610), glm::vec3(180.0f, 0.0f, 180.0f), glm::vec3(0.500f, 0.210f, 1.500f));
-		SpawnGem(BeatGem, BeatGemMaterial, "BeatGem", glm::vec3(1.770f, 5.610f, -3.520f), glm::vec3(90.0f, 0.0f, 180.0f), glm::vec3(0.500f, 0.500f, 0.500f));
-		SpawnCollectable(Vinyl, VinylMaterial, "Vinyl", glm::vec3(2.190f, 5.610f, 5.390f), glm::vec3(90.000f, 0.0f, 90.000f), glm::vec3(1.000f, 1.000f, 1.000f));
-		SpawnStartPlat(StartPlatform, StartPlatformMaterial, "EndPlatform", glm::vec3(8.700f, 5.610f, -9.10f), glm::vec3(90.0f, 0.0f, 0.0f), glm::vec3(0.350f, 0.350f, 0.350f));
-
-		// CDs for Block 4
-		SpawnCD(CD, CDMaterial, "CD", glm::vec3(-6.330f, 5.610f, -3.310f), glm::vec3(90.000f, 0.0f, 90.000f), glm::vec3(1.000f, 1.000f, 1.000f));
-		SpawnCD(CD, CDMaterial, "CD", glm::vec3(-3.570f, 5.610f, -3.160f), glm::vec3(90.000f, 0.0f, 90.000f), glm::vec3(1.000f, 1.000f, 1.000f));
-		SpawnCD(CD, CDMaterial, "CD", glm::vec3(-0.630f, 5.610f, -0.520f), glm::vec3(90.000f, 0.0f, 90.000f), glm::vec3(1.000f, 1.000f, 1.000f));
-		SpawnCD(CD, CDMaterial, "CD", glm::vec3(-0.640f, 5.610f, 2.130f), glm::vec3(90.000f, 0.0f, 90.000f), glm::vec3(1.000f, 1.000f, 1.000f));
-		SpawnCD(CD, CDMaterial, "CD", glm::vec3(-0.640f, 5.610f, 4.770f), glm::vec3(90.000f, 0.0f, 90.000f), glm::vec3(1.000f, 1.000f, 1.000f));
-		SpawnCD(CD, CDMaterial, "CD", glm::vec3(1.770f, 5.610f, -1.180f), glm::vec3(90.000f, 0.0f, 90.000f), glm::vec3(1.000f, 1.000f, 1.000f));
-		*/
-
-		// 5th Block
-		/*
-		SpawnStartPlat(StartPlatform, StartPlatformMaterial, "StartPlatform", glm::vec3(-9.820f, 5.610f, -9.10f), glm::vec3(90.0f, 0.0f, 0.0f), glm::vec3(0.350f, 0.350f, 0.350f));
-		SpawnObj(SmallPlatform, SmallPlatformMaterial, "Small Platform", glm::vec3(-6.540f, 5.610f, -4.220f), glm::vec3(180.0f, 0.0f, 180.0f), glm::vec3(0.350f, 0.350f, 0.350f));
-		SpawnObj(SmallPlatform, SmallPlatformMaterial, "Small Platform", glm::vec3(-5.000f, 5.610f, -2.830f), glm::vec3(180.0f, 0.0f, 180.0f), glm::vec3(0.350f, 0.350f, 0.350f));
-		SpawnObj(SmallPlatform, SmallPlatformMaterial, "Small Platform", glm::vec3(-3.550f, 5.610f, -1.410f), glm::vec3(180.0f, 0.0f, 180.0f), glm::vec3(0.350f, 0.350f, 0.350f));
-		SpawnObj(SmallPlatform, SmallPlatformMaterial, "Small Platform", glm::vec3(-3.330f, 5.610f, 5.950f), glm::vec3(180.0f, 0.0f, 180.0f), glm::vec3(0.350f, 0.350f, 0.350f));
-		SpawnObj(SmallPlatform, SmallPlatformMaterial, "Small Platform", glm::vec3(2.280f, 5.610f, 4.180f), glm::vec3(180.0f, 0.0f, 180.0f), glm::vec3(0.350f, 0.350f, 0.350f));
-		SpawnObj(SmallPlatform, SmallPlatformMaterial, "Small Platform", glm::vec3(2.280f, 5.610f, -4.010f), glm::vec3(180.0f, 0.0f, 180.0f), glm::vec3(0.350f, 0.350f, 0.350f));
-		SpawnSquarePlat(SquarePlat, SquarePlatMaterial, "Square Platform", glm::vec3(-6.210f, 5.610f, -0.010f), glm::vec3(90.0f, 0.0f, 180.0f), glm::vec3(0.350f, 0.350f, 0.350f));
-		SpawnSmallWallJump(SmallWallJump, SmallWallJumpMaterial, "Small Wall Jump", glm::vec3(-6.730f, 5.610f, 4.460f), glm::vec3(180.0f, 0.0f, 180.0f), glm::vec3(0.500f, 0.210f, 1.500f));
-		SpawnSmallWallJump(SmallWallJump, SmallWallJumpMaterial, "Small Wall Jump", glm::vec3(-5.030f, 5.610f, 4.110f), glm::vec3(180.0f, 0.0f, 180.0f), glm::vec3(0.500f, 0.210f, 1.500f));
-		SpawnSmallWallJump(SmallWallJump, SmallWallJumpMaterial, "Small Wall Jump", glm::vec3(-1.590f, 5.610f, 2.650f), glm::vec3(180.0f, 0.0f, 180.0f), glm::vec3(0.500f, 0.210f, 1.500f));
-		SpawnSmallWallJump(SmallWallJump, SmallWallJumpMaterial, "Small Wall Jump", glm::vec3(0.460f, 5.610f, 1.610f), glm::vec3(180.0f, 0.0f, 180.0f), glm::vec3(0.500f, 0.210f, 1.500f));
-		SpawnGem(BeatGem, BeatGemMaterial, "BeatGem", glm::vec3(-0.580f, 5.610f, -1.970f), glm::vec3(90.0f, 0.0f, 180.0f), glm::vec3(0.500f, 0.500f, 0.500f));
-		SpawnCollectable(Vinyl, VinylMaterial, "Vinyl", glm::vec3(2.190f, 5.610f, 5.390f), glm::vec3(90.000f, 0.0f, 90.000f), glm::vec3(1.000f, 1.000f, 1.000f));
-		SpawnStartPlat(StartPlatform, StartPlatformMaterial, "EndPlatform", glm::vec3(6.840f, 5.610f, -9.10f), glm::vec3(90.0f, 0.0f, 0.0f), glm::vec3(0.350f, 0.350f, 0.350f));
-
-		// CDs for Block 5
-		SpawnCD(CD, CDMaterial, "CD", glm::vec3(-6.040f, 5.610f, 2.340f), glm::vec3(90.000f, 0.0f, 90.000f), glm::vec3(1.000f, 1.000f, 1.000f));
-		SpawnCD(CD, CDMaterial, "CD", glm::vec3(-6.040f, 5.610f, 5.170f), glm::vec3(90.000f, 0.0f, 90.000f), glm::vec3(1.000f, 1.000f, 1.000f));
-		SpawnCD(CD, CDMaterial, "CD", glm::vec3(-0.630f, 5.610f, 0.460f), glm::vec3(90.000f, 0.0f, 90.000f), glm::vec3(1.000f, 1.000f, 1.000f));
-		SpawnCD(CD, CDMaterial, "CD", glm::vec3(-0.640f, 5.610f, 2.710f), glm::vec3(90.000f, 0.0f, 90.000f), glm::vec3(1.000f, 1.000f, 1.000f));
-		SpawnCD(CD, CDMaterial, "CD", glm::vec3(2.170f, 5.610f, -2.880f), glm::vec3(90.000f, 0.0f, 90.000f), glm::vec3(1.000f, 1.000f, 1.000f));
-		*/
-
-		// 6th Block
-		/*
-		SpawnStartPlat(StartPlatform, StartPlatformMaterial, "StartPlatform", glm::vec3(-9.820f, 5.610f, -9.10f), glm::vec3(90.0f, 0.0f, 0.0f), glm::vec3(0.350f, 0.350f, 0.350f));
-		SpawnObj(SmallPlatform, SmallPlatformMaterial, "Small Platform", glm::vec3(-6.540f, 5.610f, -4.220f), glm::vec3(180.0f, 0.0f, 180.0f), glm::vec3(0.350f, 0.350f, 0.350f));
-		SpawnObj(SmallPlatform, SmallPlatformMaterial, "Small Platform", glm::vec3(-5.000f, 5.610f, -2.830f), glm::vec3(180.0f, 0.0f, 180.0f), glm::vec3(0.350f, 0.350f, 0.350f));
-		SpawnObj(SmallPlatform, SmallPlatformMaterial, "Small Platform", glm::vec3(-3.550f, 5.610f, -1.410f), glm::vec3(180.0f, 0.0f, 180.0f), glm::vec3(0.350f, 0.350f, 0.350f));
-		SpawnObj(SmallPlatform, SmallPlatformMaterial, "Small Platform", glm::vec3(4.650f, 5.610f, 2.020f), glm::vec3(180.0f, 0.0f, 180.0f), glm::vec3(0.350f, 0.350f, 0.350f));
-		SpawnObj(SmallPlatform, SmallPlatformMaterial, "Small Platform", glm::vec3(7.500f, 5.610f, 0.720f), glm::vec3(180.0f, 0.0f, 180.0f), glm::vec3(0.350f, 0.350f, 0.350f));
-		SpawnObj(SmallPlatform, SmallPlatformMaterial, "Small Platform", glm::vec3(4.650f, 5.610f, -1.110f), glm::vec3(180.0f, 0.0f, 180.0f), glm::vec3(0.350f, 0.350f, 0.350f));
-		SpawnObj(SmallPlatform, SmallPlatformMaterial, "Small Platform", glm::vec3(7.500f, 5.610f, -2.630f), glm::vec3(180.0f, 0.0f, 180.0f), glm::vec3(0.350f, 0.350f, 0.350f));
-		SpawnSpeaker(Speaker, SpeakerMaterial, "Speaker", glm::vec3(0.840f, 6.410f, 2.360f), glm::vec3(90.0f, 0.0f, -32.000f), glm::vec3(0.500f, 0.500f, 0.500f));
-		SpawnSmallWallJump(SmallWallJump, SmallWallJumpMaterial, "Small Wall Jump", glm::vec3(-2.600f, 5.610f, 5.940f), glm::vec3(180.0f, 0.0f, 180.0f), glm::vec3(0.500f, 0.210f, 1.500f));
-		SpawnSmallWallJump(SmallWallJump, SmallWallJumpMaterial, "Small Wall Jump", glm::vec3(-1.170f, 5.610f, 6.950f), glm::vec3(180.0f, 0.0f, 180.0f), glm::vec3(0.500f, 0.210f, 1.500f));
-		SpawnBuilding(Building, BuildingMaterial, "Building Block6 1", glm::vec3(-1.010f, 5.610f, -4.960f), glm::vec3(90.0f, 0.0f, 0.0f), glm::vec3(0.310f, 0.310f, 0.310f));
-		SpawnBuilding(Building, BuildingMaterial, "Building Block6 2", glm::vec3(2.070f, 5.610f, -3.810f), glm::vec3(90.0f, 0.0f, 0.0f), glm::vec3(0.310f, 0.310f, 0.310f));
-		SpawnCollectable(Vinyl, VinylMaterial, "Vinyl", glm::vec3(-1.890f, 5.610f, 5.390f), glm::vec3(90.000f, 0.0f, 90.000f), glm::vec3(1.000f, 1.000f, 1.000f));
-		SpawnStartPlat(StartPlatform, StartPlatformMaterial, "EndPlatform", glm::vec3(6.840f, 5.610f, -9.10f), glm::vec3(90.0f, 0.0f, 0.0f), glm::vec3(0.350f, 0.350f, 0.350f));
-
-		// CDs for Block 6
-		SpawnCD(CD, CDMaterial, "CD", glm::vec3(-6.510f, 5.610f, -3.190f), glm::vec3(90.000f, 0.0f, 90.000f), glm::vec3(1.000f, 1.000f, 1.000f));
-		SpawnCD(CD, CDMaterial, "CD", glm::vec3(-3.500f, 5.610f, -0.740f), glm::vec3(90.000f, 0.0f, 90.000f), glm::vec3(1.000f, 1.000f, 1.000f));
-		SpawnCD(CD, CDMaterial, "CD", glm::vec3(-1.190f, 5.610f, 1.590f), glm::vec3(90.000f, 0.0f, 90.000f), glm::vec3(1.000f, 1.000f, 1.000f));
-		SpawnCD(CD, CDMaterial, "CD", glm::vec3(4.650f, 5.610f, 2.630f), glm::vec3(90.000f, 0.0f, 90.000f), glm::vec3(1.000f, 1.000f, 1.000f));
-		SpawnCD(CD, CDMaterial, "CD", glm::vec3(7.420f, 5.610f, 1.290f), glm::vec3(90.000f, 0.0f, 90.000f), glm::vec3(1.000f, 1.000f, 1.000f));
-		SpawnCD(CD, CDMaterial, "CD", glm::vec3(4.650f, 5.610f, -0.480f), glm::vec3(90.000f, 0.0f, 90.000f), glm::vec3(1.000f, 1.000f, 1.000f));
-		SpawnCD(CD, CDMaterial, "CD", glm::vec3(7.420f, 5.610f, -1.980f), glm::vec3(90.000f, 0.0f, 90.000f), glm::vec3(1.000f, 1.000f, 1.000f));
-		*/
-
-		// 7th Block
-		/*
-		SpawnStartPlat(StartPlatform, StartPlatformMaterial, "StartPlatform", glm::vec3(-9.820f, 5.610f, -9.10f), glm::vec3(90.0f, 0.0f, 0.0f), glm::vec3(0.350f, 0.350f, 0.350f));
-		SpawnObj(SmallPlatform, SmallPlatformMaterial, "Small Platform", glm::vec3(-4.170f, 5.610f, 2.210f), glm::vec3(180.0f, 0.0f, 180.0f), glm::vec3(0.350f, 0.350f, 0.350f));
-		SpawnObj(SmallPlatform, SmallPlatformMaterial, "Small Platform", glm::vec3(-0.810f, 5.610f, 2.270f), glm::vec3(180.0f, 0.0f, 180.0f), glm::vec3(0.350f, 0.350f, 0.350f));
-		SpawnObj(SmallPlatform, SmallPlatformMaterial, "Small Platform", glm::vec3(-0.100f, 5.610f, -1.110f), glm::vec3(180.0f, 0.0f, 180.0f), glm::vec3(0.350f, 0.350f, 0.350f));
-		SpawnSpeaker(Speaker, SpeakerMaterial, "Speaker", glm::vec3(3.400f, 6.410f, 2.560f), glm::vec3(90.0f, 0.0f, -32.000f), glm::vec3(0.500f, 0.500f, 0.500f));
-		SpawnStairsLeft(StairsLeft, StairsLeftMaterial, "Stairs Left", glm::vec3(-1.250f, 5.610f, -0.920f), glm::vec3(90.0f, 0.0f, 90.0f), glm::vec3(0.350f, 0.350f, 0.350f));
-		SpawnSmallWallJump(SmallWallJump, SmallWallJumpMaterial, "Small Wall Jump", glm::vec3(-8.210f, 5.610f, 2.050f), glm::vec3(180.0f, 0.0f, 180.0f), glm::vec3(0.500f, 0.210f, 1.500f));
-		SpawnSmallWallJump(SmallWallJump, SmallWallJumpMaterial, "Small Wall Jump", glm::vec3(-5.780f, 5.610f, 0.380f), glm::vec3(180.0f, 0.0f, 180.0f), glm::vec3(0.500f, 0.210f, 1.500f));
-		SpawnBuilding(Building, BuildingMaterial, "Building", glm::vec3(4.130f, 5.610f, -3.610f), glm::vec3(90.0f, 0.0f, 0.0f), glm::vec3(0.310f, 0.310f, 0.310f));
-		SpawnGem(BeatGem, BeatGemMaterial, "BeatGem", glm::vec3(1.350f, 5.610f, 1.180f), glm::vec3(90.0f, 0.0f, 180.0f), glm::vec3(0.500f, 0.500f, 0.500f));
-		SpawnCollectable(Vinyl, VinylMaterial, "Vinyl", glm::vec3(-0.180f, 5.610f, -0.330f), glm::vec3(90.000f, 0.0f, 90.000f), glm::vec3(1.000f, 1.000f, 1.000f));
-		SpawnStartPlat(StartPlatform, StartPlatformMaterial, "EndPlatform", glm::vec3(6.840f, 5.610f, -9.10f), glm::vec3(90.0f, 0.0f, 0.0f), glm::vec3(0.350f, 0.350f, 0.350f));
-
-		// CDs for Block 7
-		SpawnCD(CD, CDMaterial, "CD", glm::vec3(-6.980f, 5.610f, -0.950f), glm::vec3(90.000f, 0.0f, 90.000f), glm::vec3(1.000f, 1.000f, 1.000f));
-		SpawnCD(CD, CDMaterial, "CD", glm::vec3(-6.990f, 5.610f, 2.340f), glm::vec3(90.000f, 0.0f, 90.000f), glm::vec3(1.000f, 1.000f, 1.000f));
-		SpawnCD(CD, CDMaterial, "CD", glm::vec3(-4.230f, 5.610f, 2.760f), glm::vec3(90.000f, 0.0f, 90.000f), glm::vec3(1.000f, 1.000f, 1.000f));
-		SpawnCD(CD, CDMaterial, "CD", glm::vec3(-0.720f, 5.610f, 2.760f), glm::vec3(90.000f, 0.0f, 90.000f), glm::vec3(1.000f, 1.000f, 1.000f));
-		*/
-
-		// 8th Block
+		SpawnCD(CD, CDMaterial, "CD", glm::vec3(-6.030f + distanceFromBlock, 5.610f, -3.220f), glm::vec3(90.000f, 0.0f, 90.000f), glm::vec3(1.000f, 1.000f, 1.000f));
+		SpawnCD(CD, CDMaterial, "CD", glm::vec3(-2.710f + distanceFromBlock, 5.610f, -3.190f), glm::vec3(90.000f, 0.0f, 90.000f), glm::vec3(1.000f, 1.000f, 1.000f));
+		SpawnCD(CD, CDMaterial, "CD", glm::vec3(0.170f + distanceFromBlock, 5.610f, -2.380f), glm::vec3(90.000f, 0.0f, 90.000f), glm::vec3(1.000f, 1.000f, 1.000f));
+		SpawnCD(CD, CDMaterial, "CD", glm::vec3(2.640f + distanceFromBlock, 5.610f, -0.770f), glm::vec3(90.000f, 0.0f, 90.000f), glm::vec3(1.000f, 1.000f, 1.000f));
 		
-		SpawnStartPlat(StartPlatform, StartPlatformMaterial, "StartPlatform", glm::vec3(-9.820f, 5.610f, -9.10f), glm::vec3(90.0f, 0.0f, 0.0f), glm::vec3(0.350f, 0.350f, 0.350f));
-		SpawnObj(SmallPlatform, SmallPlatformMaterial, "Small Platform", glm::vec3(-6.640f, 5.610f, -4.140f), glm::vec3(180.0f, 0.0f, 180.0f), glm::vec3(0.350f, 0.350f, 0.350f));
-		SpawnObj(SmallPlatform, SmallPlatformMaterial, "Small Platform", glm::vec3(-4.430f, 5.610f, -3.310f), glm::vec3(180.0f, 0.0f, 180.0f), glm::vec3(0.350f, 0.350f, 0.350f));
-		SpawnStairsRight(StairsRight, StairsRightMaterial, "Stairs Right", glm::vec3(-0.320f, 5.610f, -5.570f), glm::vec3(90.0f, 0.0f, 90.0f), glm::vec3(0.350f, 0.350f, 0.350f));
-		SpawnSpeaker(Speaker, SpeakerMaterial, "Speaker", glm::vec3(3.410f, 6.410f, -0.350f), glm::vec3(90.0f, 0.0f, -32.000f), glm::vec3(0.500f, 0.500f, 0.500f));
-		SpawnBuilding(Building, BuildingMaterial, "Building", glm::vec3(4.570f, 5.610f, -6.630f), glm::vec3(90.0f, 0.0f, 0.0f), glm::vec3(0.310f, 0.310f, 0.310f));
-		SpawnBuilding2(Building, BuildingMaterial, "Building", glm::vec3(-4.500f, 5.610f, 7.810f), glm::vec3(90.0f, 0.0f, 0.0f), glm::vec3(0.350f, 0.350f, 0.350f));
-		SpawnBuilding3(Building, BuildingMaterial, "Building", glm::vec3(-1.350f, 5.610f, 5.180f), glm::vec3(90.0f, 0.0f, 0.0f), glm::vec3(0.290f, 0.290f, 0.290f));
-		SpawnGem(BeatGem, BeatGemMaterial, "BeatGem", glm::vec3(-2.630f, 5.610f, -4.550f), glm::vec3(90.0f, 0.0f, 180.0f), glm::vec3(0.500f, 0.500f, 0.500f));
-		SpawnSuperSmallWallJump(SuperSmallWallJump, SuperSmallWallJumpMaterial, "Super Small Wall Jump", glm::vec3(2.400f, 5.610f, -3.180f), glm::vec3(180.0f, 0.0f, 180.0f), glm::vec3(0.500f, 0.210f, 1.500f));
-		SpawnSuperSmallWallJump(SuperSmallWallJump, SuperSmallWallJumpMaterial, "Super Small Wall Jump", glm::vec3(0.700f, 5.610f, -1.510f), glm::vec3(180.0f, 0.0f, 180.0f), glm::vec3(0.500f, 0.210f, 1.500f));
-		SpawnSuperSmallWallJump(SuperSmallWallJump, SuperSmallWallJumpMaterial, "Super Small Wall Jump", glm::vec3(2.400f, 5.610f, -0.590f), glm::vec3(180.0f, 0.0f, 180.0f), glm::vec3(0.500f, 0.210f, 1.500f));
-		SpawnSuperSmallWallJump(SuperSmallWallJump, SuperSmallWallJumpMaterial, "Super Small Wall Jump", glm::vec3(0.700f, 5.610f, 0.700f), glm::vec3(180.0f, 0.0f, 180.0f), glm::vec3(0.500f, 0.210f, 1.500f));
-		SpawnStartPlat(StartPlatform, StartPlatformMaterial, "EndPlatform", glm::vec3(8.870f, 5.610f, -9.10f), glm::vec3(90.0f, 0.0f, 0.0f), glm::vec3(0.350f, 0.350f, 0.350f));
-
-		// CDs for Block 8
-		SpawnCD(CD, CDMaterial, "CD", glm::vec3(-6.540f, 5.610f, -3.410f), glm::vec3(90.000f, 0.0f, 90.000f), glm::vec3(1.000f, 1.000f, 1.000f));
-		SpawnCD(CD, CDMaterial, "CD", glm::vec3(-4.320f, 5.610f, -2.620f), glm::vec3(90.000f, 0.0f, 90.000f), glm::vec3(1.000f, 1.000f, 1.000f));
-		SpawnCD(CD, CDMaterial, "CD", glm::vec3(1.540f, 5.610f, -0.020f), glm::vec3(90.000f, 0.0f, 90.000f), glm::vec3(1.000f, 1.000f, 1.000f));
-		SpawnCD(CD, CDMaterial, "CD", glm::vec3(1.500f, 5.610f, -4.260f), glm::vec3(90.000f, 0.0f, 90.000f), glm::vec3(1.000f, 1.000f, 1.000f));
-		SpawnCD(CD, CDMaterial, "CD", glm::vec3(4.170f, 5.610f, 0.400f), glm::vec3(90.000f, 0.0f, 90.000f), glm::vec3(1.000f, 1.000f, 1.000f));
 		
 
 		// Player:
@@ -1567,7 +1411,7 @@ int main() {
 			// Set position in the scene
 			character->SetPostion(glm::vec3(-10.270f, 5.710f, -3.800f));
 			character->SetRotation(glm::vec3(90.0f, 0.0f, 90.0f));
-			character->SetScale(glm::vec3(1.0f, 1.0f, 1.0f));
+			character->SetScale(glm::vec3(0.7f, 0.7f, 0.7f));
 
 			// Add some behaviour that relies on the physics body
 			//character->Add<JumpBehaviour>();
@@ -1580,8 +1424,8 @@ int main() {
 
 			// Add a kinematic rigid body to the paddle
 			RigidBody::Sptr physics = character->Add<RigidBody>(RigidBodyType::Dynamic);
-			physics->AddCollider(ConvexMeshCollider::Create());
-			// world grav changed in scene.cpp
+			auto rb = physics->AddCollider(BoxCollider::Create(glm::vec3(0.2, 0.85, 0.15)));
+			rb->SetPosition(glm::vec3(0.0, 0.75, 0.0));
 
 			TriggerVolume::Sptr volume = character->Add<TriggerVolume>();
 			volume->SetFlags(TriggerTypeFlags::Statics | TriggerTypeFlags::Kinematics);
@@ -2099,14 +1943,21 @@ int main() {
 	ToneFire::StudioSound test;
 	test.LoadEvent("event:/Music");
 	test.SetEventPosition("event:/Music", FMOD_VECTOR{ -10.270f, 5.710f, -3.800f });
-	test.PlayEvent("event:/Music");
-	//test.SetEventParameter("event:/Music", "Volume", 0.5f);
 	
+	//test.SetEventParameter("event:/Music", "Volume", 0.5f);
+	float SpawnTimer = 0;
 	///// Game loop /////
 	while (!glfwWindowShouldClose(window)) {
 		glfwPollEvents();
 		ImGuiHelper::StartFrame();
 		studio.Update();
+
+		//Idk wtf is going on here it shouldn't be checking if not true but it DOES work so I'm leaving it alone
+		if (!scene->IsPlaying) {
+			
+			test.PlayEvent("event:/Music");
+		}
+
 
 		glm::vec3 playerPos = scene->FindObjectByName("DiscoBall")->GetPosition();
 		float playerPosX = playerPos.x;
@@ -2133,6 +1984,10 @@ int main() {
 		double thisFrame = glfwGetTime();
 		float dt = static_cast<float>(thisFrame - lastFrame);
 
+		if (scene->IsPlaying) {
+
+			SpawnTimer += dt;
+		}
 		// Draw our material properties window!
 		DrawMaterialsWindow();
 
@@ -2141,6 +1996,8 @@ int main() {
 
 		// Showcasing how to use the imGui library!
 		bool isDebugWindowOpen = ImGui::Begin("Debugging");
+		//isDebugWindowOpen = false;
+		//scene->IsPlaying = true;
 		if (isDebugWindowOpen) {
 			// Draws a button to control whether or not the game is currently playing
 			static char buttonLabel[64];
@@ -2213,6 +2070,214 @@ int main() {
 			}
 			// Split lights from the objects in ImGui
 			ImGui::Separator();
+		}
+		
+		
+		float const distanceFromBlock = 32.f;
+		LOG_INFO(SpawnTimer);
+
+		if (SpawnTimer >= 13.f) {
+			SpawnTimer -= 13.f;
+
+			srand(time(0));
+			int blockToSpawn = rand() % 8;
+			LOG_INFO(blockToSpawn);
+			switch (blockToSpawn) {
+			case 0:
+				// 1st Block
+				SpawnStartPlat(StartPlatform, StartPlatformMaterial, "StartPlatform", glm::vec3(-9.820f + distanceFromBlock, 5.610f, -4.450), glm::vec3(90.0f, 0.0f, 0.0f), glm::vec3(0.350f, 0.350f, 0.350f));
+				SpawnObj(SmallPlatform, SmallPlatformMaterial, "Small Platform", glm::vec3(-6.070f + distanceFromBlock, 5.610f, -4.150f), glm::vec3(180.0f, 0.0f, 180.0f), glm::vec3(0.350f, 0.350f, 0.350f));
+				SpawnObj(SmallPlatform, SmallPlatformMaterial, "Small Platform", glm::vec3(-2.840f + distanceFromBlock, 5.610f, -4.150f), glm::vec3(180.0f, 0.0f, 180.0f), glm::vec3(0.350f, 0.350f, 0.350f));
+				SpawnObj(SmallPlatform, SmallPlatformMaterial, "Small Platform", glm::vec3(2.760f + distanceFromBlock, 5.610f, -1.770f), glm::vec3(180.0f, 0.0f, 180.0f), glm::vec3(0.350f, 0.350f, 0.350f));
+				SpawnGem(BeatGem, BeatGemMaterial, "BeatGem", glm::vec3(0.120f + distanceFromBlock, 5.610f, -3.160f), glm::vec3(90.0f, 0.0f, 180.0f), glm::vec3(0.500f, 0.500f, 0.500f));
+				SpawnCollectable(Vinyl, VinylMaterial, "Vinyl", glm::vec3(5.640f + distanceFromBlock, 5.610f, 0.080f), glm::vec3(90.000f, 0.0f, 90.000f), glm::vec3(1.000f, 1.000f, 1.000f));
+				SpawnStartPlat(StartPlatform, StartPlatformMaterial, "EndPlatform", glm::vec3(6.360f + distanceFromBlock, 5.610f, -4.920f), glm::vec3(90.0f, 0.0f, 0.0f), glm::vec3(0.350f, 0.350f, 0.350f));
+
+				// CDs for Block 1
+				SpawnCD(CD, CDMaterial, "CD", glm::vec3(-6.030f + distanceFromBlock, 5.610f, -3.220f), glm::vec3(90.000f, 0.0f, 90.000f), glm::vec3(1.000f, 1.000f, 1.000f));
+				SpawnCD(CD, CDMaterial, "CD", glm::vec3(-2.710f + distanceFromBlock, 5.610f, -3.190f), glm::vec3(90.000f, 0.0f, 90.000f), glm::vec3(1.000f, 1.000f, 1.000f));
+				SpawnCD(CD, CDMaterial, "CD", glm::vec3(0.170f + distanceFromBlock, 5.610f, -2.380f), glm::vec3(90.000f, 0.0f, 90.000f), glm::vec3(1.000f, 1.000f, 1.000f));
+				SpawnCD(CD, CDMaterial, "CD", glm::vec3(2.640f + distanceFromBlock, 5.610f, -0.770f), glm::vec3(90.000f, 0.0f, 90.000f), glm::vec3(1.000f, 1.000f, 1.000f));
+
+				break;
+			case 1:
+				//spawn block 2
+				SpawnStartPlat(StartPlatform, StartPlatformMaterial, "StartPlatform", glm::vec3(-9.820f + distanceFromBlock, 5.610f, -9.10f), glm::vec3(90.0f, 0.0f, 0.0f), glm::vec3(0.350f, 0.350f, 0.350f));
+				SpawnWallJump(WallJump, WallJumpMaterial, "Wall Jump", glm::vec3(-8.590f + distanceFromBlock, 5.610f, 3.210f), glm::vec3(180.0f, 0.0f, 180.0f), glm::vec3(0.500f, 0.040f, 1.500f));
+				SpawnWallJump(WallJump, WallJumpMaterial, "Wall Jump", glm::vec3(-6.660f + distanceFromBlock, 5.610f, 2.000f), glm::vec3(180.0f, 0.0f, 180.0f), glm::vec3(0.500f, 0.040f, 1.500f));
+				SpawnObj(SmallPlatform, SmallPlatformMaterial, "Small Platform", glm::vec3(-4.400f + distanceFromBlock, 5.610f, 4.000f), glm::vec3(180.0f, 0.0f, 180.0f), glm::vec3(0.350f, 0.350f, 0.350f));
+				SpawnObj(SmallPlatform, SmallPlatformMaterial, "Small Platform", glm::vec3(1.940f + distanceFromBlock, 5.610f, -4.150f), glm::vec3(180.0f, 0.0f, 180.0f), glm::vec3(0.350f, 0.350f, 0.350f));
+				SpawnGem(BeatGem, BeatGemMaterial, "BeatGem", glm::vec3(-1.340f + distanceFromBlock, 5.610f, 0.500f), glm::vec3(90.0f, 0.0f, 180.0f), glm::vec3(0.500f, 0.500f, 0.500f));
+				SpawnStartPlat(StartPlatform, StartPlatformMaterial, "EndPlatform", glm::vec3(6.360f + distanceFromBlock, 5.610f, -9.10f), glm::vec3(90.0f, 0.0f, 0.0f), glm::vec3(0.350f, 0.350f, 0.350f));
+
+				// CDs for Block 2
+				SpawnCD(CD, CDMaterial, "CD", glm::vec3(-7.720f + distanceFromBlock, 5.610f, -0.030f), glm::vec3(90.000f, 0.0f, 90.000f), glm::vec3(1.000f, 1.000f, 1.000f));
+				SpawnCD(CD, CDMaterial, "CD", glm::vec3(-7.720f + distanceFromBlock, 5.610f, 2.130f), glm::vec3(90.000f, 0.0f, 90.000f), glm::vec3(1.000f, 1.000f, 1.000f));
+				SpawnCD(CD, CDMaterial, "CD", glm::vec3(-7.720f + distanceFromBlock, 5.610f, 4.610f), glm::vec3(90.000f, 0.0f, 90.000f), glm::vec3(1.000f, 1.000f, 1.000f));
+				SpawnCD(CD, CDMaterial, "CD", glm::vec3(-4.420f + distanceFromBlock, 5.610f, 4.750f), glm::vec3(90.000f, 0.0f, 90.000f), glm::vec3(1.000f, 1.000f, 1.000f));
+				SpawnCD(CD, CDMaterial, "CD", glm::vec3(-1.340f + distanceFromBlock, 5.610f, 0.810f), glm::vec3(90.000f, 0.0f, 90.000f), glm::vec3(1.000f, 1.000f, 1.000f));
+				SpawnCD(CD, CDMaterial, "CD", glm::vec3(1.920f + distanceFromBlock, 5.610f, -3.610f), glm::vec3(90.000f, 0.0f, 90.000f), glm::vec3(1.000f, 1.000f, 1.000f));
+				break;
+			case 2:
+				//spawn block 3
+				SpawnStartPlat(StartPlatform, StartPlatformMaterial, "StartPlatform", glm::vec3(-9.820f + distanceFromBlock, 5.610f, -9.10f), glm::vec3(90.0f, 0.0f, 0.0f), glm::vec3(0.350f, 0.350f, 0.350f));
+				SpawnObj(SmallPlatform, SmallPlatformMaterial, "Small Platform", glm::vec3(-4.360f + distanceFromBlock, 5.610f, -0.290f), glm::vec3(180.0f, 0.0f, 180.0f), glm::vec3(0.350f, 0.350f, 0.350f));
+				SpawnObj(SmallPlatform, SmallPlatformMaterial, "Small Platform", glm::vec3(0.350f + distanceFromBlock, 5.610f, -0.290f), glm::vec3(180.0f, 0.0f, 180.0f), glm::vec3(0.350f, 0.350f, 0.350f));
+				SpawnObj(FallingPlat, PianoMaterial, "Falling", glm::vec3(0.390f + distanceFromBlock, 5.610f, -4.150f), glm::vec3(180.0f, 0.0f, 0.0f), glm::vec3(0.350f, 0.350f, 0.350f));
+				SpawnObj(SmallPlatform, SmallPlatformMaterial, "Small Platform", glm::vec3(3.220f + distanceFromBlock, 5.610f, -4.150f), glm::vec3(180.0f, 0.0f, 180.0f), glm::vec3(0.350f, 0.350f, 0.350f));
+				SpawnGem(BeatGem, BeatGemMaterial, "BeatGem", glm::vec3(-6.870f + distanceFromBlock, 5.610f, -1.970f), glm::vec3(90.0f, 0.0f, 180.0f), glm::vec3(0.500f, 0.500f, 0.500f));
+				SpawnGem(BeatGem, BeatGemMaterial, "BeatGem", glm::vec3(-1.870f + distanceFromBlock, 5.610f, -1.970f), glm::vec3(90.0f, 0.0f, 180.0f), glm::vec3(0.500f, 0.500f, 0.500f));
+				SpawnCollectable(Vinyl, VinylMaterial, "Vinyl", glm::vec3(0.370f + distanceFromBlock, 5.610f, -2.830f), glm::vec3(90.000f, 0.0f, 90.000f), glm::vec3(1.000f, 1.000f, 1.000f));
+				SpawnStartPlat(StartPlatform, StartPlatformMaterial, "EndPlatform", glm::vec3(6.360f + distanceFromBlock, 5.610f, -9.10f), glm::vec3(90.0f, 0.0f, 0.0f), glm::vec3(0.350f, 0.350f, 0.350f));
+
+				// CDs for Block 3
+				SpawnCD(CD, CDMaterial, "CD", glm::vec3(-4.390f + distanceFromBlock, 5.610f, 0.440f), glm::vec3(90.000f, 0.0f, 90.000f), glm::vec3(1.000f, 1.000f, 1.000f));
+				SpawnCD(CD, CDMaterial, "CD", glm::vec3(0.350f + distanceFromBlock, 5.610f, 0.290f), glm::vec3(90.000f, 0.0f, 90.000f), glm::vec3(1.000f, 1.000f, 1.000f));
+				SpawnCD(CD, CDMaterial, "CD", glm::vec3(3.260f + distanceFromBlock, 5.610f, -3.210f), glm::vec3(90.000f, 0.0f, 90.000f), glm::vec3(1.000f, 1.000f, 1.000f));
+				SpawnCD(CD, CDMaterial, "CD", glm::vec3(-6.690f + distanceFromBlock, 5.610f, -1.180f), glm::vec3(90.000f, 0.0f, 90.000f), glm::vec3(1.000f, 1.000f, 1.000f));
+				break;
+			case 3:
+				//spawn block 4
+				SpawnStartPlat(StartPlatform, StartPlatformMaterial, "StartPlatform", glm::vec3(-9.820f + distanceFromBlock, 5.610f, -9.10f), glm::vec3(90.0f, 0.0f, 0.0f), glm::vec3(0.350f, 0.350f, 0.350f));
+				SpawnObj(SmallPlatform, SmallPlatformMaterial, "Small Platform", glm::vec3(-6.540f + distanceFromBlock, 5.610f, -4.220f), glm::vec3(180.0f, 0.0f, 180.0f), glm::vec3(0.350f, 0.350f, 0.350f));
+				SpawnObj(SmallPlatform, SmallPlatformMaterial, "Small Platform", glm::vec3(-3.640f + distanceFromBlock, 5.610f, -4.220f), glm::vec3(180.0f, 0.0f, 180.0f), glm::vec3(0.350f, 0.350f, 0.350f));
+				SpawnObj(SmallPlatform, SmallPlatformMaterial, "Small Platform", glm::vec3(2.290f + distanceFromBlock, 5.610f, 4.700f), glm::vec3(180.0f, 0.0f, 180.0f), glm::vec3(0.350f, 0.350f, 0.350f));
+				SpawnSpeaker(Speaker, SpeakerMaterial, "Speaker", glm::vec3(3.400f + distanceFromBlock, 6.410f, -0.090f), glm::vec3(90.0f, 0.0f, -32.000f), glm::vec3(0.500f, 0.500f, 0.500f));
+				SpawnObj(HalfCirclePlat, HalfCirclePlatMaterial, "Half Circle Platform", glm::vec3(-0.720f + distanceFromBlock, 5.610f, -4.220f), glm::vec3(-90.000f, 0.0f, 180.0f), glm::vec3(0.500f, 0.500f, 0.500f));
+				SpawnBuilding(Building, BuildingMaterial, "Building", glm::vec3(4.150f + distanceFromBlock, 5.610f, -7.110f), glm::vec3(90.0f, 0.0f, 0.0f), glm::vec3(0.350f, 0.350f, 0.350f));
+				SpawnWallJump(WallJump, WallJumpMaterial, "Wall Jump", glm::vec3(-1.590f + distanceFromBlock, 5.610f, 2.650f), glm::vec3(180.0f, 0.0f, 180.0f), glm::vec3(0.500f, 0.210f, 1.500f));
+				SpawnWallJump(WallJump, WallJumpMaterial, "Wall Jump", glm::vec3(0.460f + distanceFromBlock, 5.610f, 1.610), glm::vec3(180.0f, 0.0f, 180.0f), glm::vec3(0.500f, 0.210f, 1.500f));
+				SpawnGem(BeatGem, BeatGemMaterial, "BeatGem", glm::vec3(1.770f + distanceFromBlock, 5.610f, -3.520f), glm::vec3(90.0f, 0.0f, 180.0f), glm::vec3(0.500f, 0.500f, 0.500f));
+				SpawnCollectable(Vinyl, VinylMaterial, "Vinyl", glm::vec3(2.190f + distanceFromBlock, 5.610f, 5.390f), glm::vec3(90.000f, 0.0f, 90.000f), glm::vec3(1.000f, 1.000f, 1.000f));
+				SpawnStartPlat(StartPlatform, StartPlatformMaterial, "EndPlatform", glm::vec3(8.700f + distanceFromBlock, 5.610f, -9.10f), glm::vec3(90.0f, 0.0f, 0.0f), glm::vec3(0.350f, 0.350f, 0.350f));
+
+				// CDs for Block 4
+				SpawnCD(CD, CDMaterial, "CD", glm::vec3(-6.330f + distanceFromBlock, 5.610f, -3.310f), glm::vec3(90.000f, 0.0f, 90.000f), glm::vec3(1.000f, 1.000f, 1.000f));
+				SpawnCD(CD, CDMaterial, "CD", glm::vec3(-3.570f + distanceFromBlock, 5.610f, -3.160f), glm::vec3(90.000f, 0.0f, 90.000f), glm::vec3(1.000f, 1.000f, 1.000f));
+				SpawnCD(CD, CDMaterial, "CD", glm::vec3(-0.630f + distanceFromBlock, 5.610f, -0.520f), glm::vec3(90.000f, 0.0f, 90.000f), glm::vec3(1.000f, 1.000f, 1.000f));
+				SpawnCD(CD, CDMaterial, "CD", glm::vec3(-0.640f + distanceFromBlock, 5.610f, 2.130f), glm::vec3(90.000f, 0.0f, 90.000f), glm::vec3(1.000f, 1.000f, 1.000f));
+				SpawnCD(CD, CDMaterial, "CD", glm::vec3(-0.640f + distanceFromBlock, 5.610f, 4.770f), glm::vec3(90.000f, 0.0f, 90.000f), glm::vec3(1.000f, 1.000f, 1.000f));
+				SpawnCD(CD, CDMaterial, "CD", glm::vec3(1.770f + distanceFromBlock, 5.610f, -1.180f), glm::vec3(90.000f, 0.0f, 90.000f), glm::vec3(1.000f, 1.000f, 1.000f));
+				break;
+			case 4:
+				//spawn block 5
+				SpawnStartPlat(StartPlatform, StartPlatformMaterial, "StartPlatform", glm::vec3(-9.820f + distanceFromBlock, 5.610f, -9.10f), glm::vec3(90.0f, 0.0f, 0.0f), glm::vec3(0.350f, 0.350f, 0.350f));
+				SpawnObj(SmallPlatform, SmallPlatformMaterial, "Small Platform", glm::vec3(-6.540f + distanceFromBlock, 5.610f, -4.220f), glm::vec3(180.0f, 0.0f, 180.0f), glm::vec3(0.350f, 0.350f, 0.350f));
+				SpawnObj(SmallPlatform, SmallPlatformMaterial, "Small Platform", glm::vec3(-5.000f + distanceFromBlock, 5.610f, -2.830f), glm::vec3(180.0f, 0.0f, 180.0f), glm::vec3(0.350f, 0.350f, 0.350f));
+				SpawnObj(SmallPlatform, SmallPlatformMaterial, "Small Platform", glm::vec3(-3.550f + distanceFromBlock, 5.610f, -1.410f), glm::vec3(180.0f, 0.0f, 180.0f), glm::vec3(0.350f, 0.350f, 0.350f));
+				SpawnObj(SmallPlatform, SmallPlatformMaterial, "Small Platform", glm::vec3(-3.330f + distanceFromBlock, 5.610f, 5.950f), glm::vec3(180.0f, 0.0f, 180.0f), glm::vec3(0.350f, 0.350f, 0.350f));
+				SpawnObj(SmallPlatform, SmallPlatformMaterial, "Small Platform", glm::vec3(2.280f + distanceFromBlock, 5.610f, 4.180f), glm::vec3(180.0f, 0.0f, 180.0f), glm::vec3(0.350f, 0.350f, 0.350f));
+				SpawnObj(SmallPlatform, SmallPlatformMaterial, "Small Platform", glm::vec3(2.280f + distanceFromBlock, 5.610f, -4.010f), glm::vec3(180.0f, 0.0f, 180.0f), glm::vec3(0.350f, 0.350f, 0.350f));
+				SpawnSquarePlat(SquarePlat, SquarePlatMaterial, "Square Platform", glm::vec3(-6.210f + distanceFromBlock, 5.610f, -0.010f), glm::vec3(90.0f, 0.0f, 180.0f), glm::vec3(0.350f, 0.350f, 0.350f));
+				SpawnSmallWallJump(SmallWallJump, SmallWallJumpMaterial, "Small Wall Jump", glm::vec3(-6.730f + distanceFromBlock, 5.610f, 4.460f), glm::vec3(180.0f, 0.0f, 180.0f), glm::vec3(0.500f, 0.210f, 1.500f));
+				SpawnSmallWallJump(SmallWallJump, SmallWallJumpMaterial, "Small Wall Jump", glm::vec3(-5.030f + distanceFromBlock, 5.610f, 4.110f), glm::vec3(180.0f, 0.0f, 180.0f), glm::vec3(0.500f, 0.210f, 1.500f));
+				SpawnSmallWallJump(SmallWallJump, SmallWallJumpMaterial, "Small Wall Jump", glm::vec3(-1.590f + distanceFromBlock, 5.610f, 2.650f), glm::vec3(180.0f, 0.0f, 180.0f), glm::vec3(0.500f, 0.210f, 1.500f));
+				SpawnSmallWallJump(SmallWallJump, SmallWallJumpMaterial, "Small Wall Jump", glm::vec3(0.460f + distanceFromBlock, 5.610f, 1.610f), glm::vec3(180.0f, 0.0f, 180.0f), glm::vec3(0.500f, 0.210f, 1.500f));
+				SpawnGem(BeatGem, BeatGemMaterial, "BeatGem", glm::vec3(-0.580f + distanceFromBlock, 5.610f, -1.970f), glm::vec3(90.0f, 0.0f, 180.0f), glm::vec3(0.500f, 0.500f, 0.500f));
+				SpawnCollectable(Vinyl, VinylMaterial, "Vinyl", glm::vec3(2.190f + distanceFromBlock, 5.610f, 5.390f), glm::vec3(90.000f, 0.0f, 90.000f), glm::vec3(1.000f, 1.000f, 1.000f));
+				SpawnStartPlat(StartPlatform, StartPlatformMaterial, "EndPlatform", glm::vec3(6.840f + distanceFromBlock, 5.610f, -9.10f), glm::vec3(90.0f, 0.0f, 0.0f), glm::vec3(0.350f, 0.350f, 0.350f));
+
+				// CDs for Block 5
+				SpawnCD(CD, CDMaterial, "CD", glm::vec3(-6.040f + distanceFromBlock, 5.610f, 2.340f), glm::vec3(90.000f, 0.0f, 90.000f), glm::vec3(1.000f, 1.000f, 1.000f));
+				SpawnCD(CD, CDMaterial, "CD", glm::vec3(-6.040f + distanceFromBlock, 5.610f, 5.170f), glm::vec3(90.000f, 0.0f, 90.000f), glm::vec3(1.000f, 1.000f, 1.000f));
+				SpawnCD(CD, CDMaterial, "CD", glm::vec3(-0.630f + distanceFromBlock, 5.610f, 0.460f), glm::vec3(90.000f, 0.0f, 90.000f), glm::vec3(1.000f, 1.000f, 1.000f));
+				SpawnCD(CD, CDMaterial, "CD", glm::vec3(-0.640f + distanceFromBlock, 5.610f, 2.710f), glm::vec3(90.000f, 0.0f, 90.000f), glm::vec3(1.000f, 1.000f, 1.000f));
+				SpawnCD(CD, CDMaterial, "CD", glm::vec3(2.170f + distanceFromBlock, 5.610f, -2.880f), glm::vec3(90.000f, 0.0f, 90.000f), glm::vec3(1.000f, 1.000f, 1.000f));
+				break;
+			case 5:
+
+				//block 6
+				SpawnStartPlat(StartPlatform, StartPlatformMaterial, "StartPlatform", glm::vec3(-9.820f + distanceFromBlock, 5.610f, -9.10f), glm::vec3(90.0f, 0.0f, 0.0f), glm::vec3(0.350f, 0.350f, 0.350f));
+				SpawnObj(SmallPlatform, SmallPlatformMaterial, "Small Platform", glm::vec3(-6.540f + distanceFromBlock, 5.610f, -4.220f), glm::vec3(180.0f, 0.0f, 180.0f), glm::vec3(0.350f, 0.350f, 0.350f));
+				SpawnObj(SmallPlatform, SmallPlatformMaterial, "Small Platform", glm::vec3(-5.000f + distanceFromBlock, 5.610f, -2.830f), glm::vec3(180.0f, 0.0f, 180.0f), glm::vec3(0.350f, 0.350f, 0.350f));
+				SpawnObj(SmallPlatform, SmallPlatformMaterial, "Small Platform", glm::vec3(-3.550f + distanceFromBlock, 5.610f, -1.410f), glm::vec3(180.0f, 0.0f, 180.0f), glm::vec3(0.350f, 0.350f, 0.350f));
+				SpawnObj(SmallPlatform, SmallPlatformMaterial, "Small Platform", glm::vec3(4.650f + distanceFromBlock, 5.610f, 2.020f), glm::vec3(180.0f, 0.0f, 180.0f), glm::vec3(0.350f, 0.350f, 0.350f));
+				SpawnObj(SmallPlatform, SmallPlatformMaterial, "Small Platform", glm::vec3(7.500f + distanceFromBlock, 5.610f, 0.720f), glm::vec3(180.0f, 0.0f, 180.0f), glm::vec3(0.350f, 0.350f, 0.350f));
+				SpawnObj(SmallPlatform, SmallPlatformMaterial, "Small Platform", glm::vec3(4.650f + distanceFromBlock, 5.610f, -1.110f), glm::vec3(180.0f, 0.0f, 180.0f), glm::vec3(0.350f, 0.350f, 0.350f));
+				SpawnObj(SmallPlatform, SmallPlatformMaterial, "Small Platform", glm::vec3(7.500f + distanceFromBlock, 5.610f, -2.630f), glm::vec3(180.0f, 0.0f, 180.0f), glm::vec3(0.350f, 0.350f, 0.350f));
+				SpawnSpeaker(Speaker, SpeakerMaterial, "Speaker", glm::vec3(0.840f + distanceFromBlock, 6.410f, 2.360f), glm::vec3(90.0f, 0.0f, -32.000f), glm::vec3(0.500f, 0.500f, 0.500f));
+				SpawnSmallWallJump(SmallWallJump, SmallWallJumpMaterial, "Small Wall Jump", glm::vec3(-2.600f + distanceFromBlock, 5.610f, 5.940f), glm::vec3(180.0f, 0.0f, 180.0f), glm::vec3(0.500f, 0.210f, 1.500f));
+				SpawnSmallWallJump(SmallWallJump, SmallWallJumpMaterial, "Small Wall Jump", glm::vec3(-1.170f + distanceFromBlock, 5.610f, 6.950f), glm::vec3(180.0f, 0.0f, 180.0f), glm::vec3(0.500f, 0.210f, 1.500f));
+				SpawnBuilding(Building, BuildingMaterial, "Building Block6 1", glm::vec3(-1.010f + distanceFromBlock, 5.610f, -4.960f), glm::vec3(90.0f, 0.0f, 0.0f), glm::vec3(0.310f, 0.310f, 0.310f));
+				SpawnBuilding(Building, BuildingMaterial, "Building Block6 2", glm::vec3(2.070f + distanceFromBlock, 5.610f, -3.810f), glm::vec3(90.0f, 0.0f, 0.0f), glm::vec3(0.310f, 0.310f, 0.310f));
+				SpawnCollectable(Vinyl, VinylMaterial, "Vinyl", glm::vec3(-1.890f + distanceFromBlock, 5.610f, 5.390f), glm::vec3(90.000f, 0.0f, 90.000f), glm::vec3(1.000f, 1.000f, 1.000f));
+				SpawnStartPlat(StartPlatform, StartPlatformMaterial, "EndPlatform", glm::vec3(6.840f + distanceFromBlock, 5.610f, -9.10f), glm::vec3(90.0f, 0.0f, 0.0f), glm::vec3(0.350f, 0.350f, 0.350f));
+
+				// CDs for Block 6
+				SpawnCD(CD, CDMaterial, "CD", glm::vec3(-6.510f + distanceFromBlock, 5.610f, -3.190f), glm::vec3(90.000f, 0.0f, 90.000f), glm::vec3(1.000f, 1.000f, 1.000f));
+				SpawnCD(CD, CDMaterial, "CD", glm::vec3(-3.500f + distanceFromBlock, 5.610f, -0.740f), glm::vec3(90.000f, 0.0f, 90.000f), glm::vec3(1.000f, 1.000f, 1.000f));
+				SpawnCD(CD, CDMaterial, "CD", glm::vec3(-1.190f + distanceFromBlock, 5.610f, 1.590f), glm::vec3(90.000f, 0.0f, 90.000f), glm::vec3(1.000f, 1.000f, 1.000f));
+				SpawnCD(CD, CDMaterial, "CD", glm::vec3(4.650f + distanceFromBlock, 5.610f, 2.630f), glm::vec3(90.000f, 0.0f, 90.000f), glm::vec3(1.000f, 1.000f, 1.000f));
+				SpawnCD(CD, CDMaterial, "CD", glm::vec3(7.420f + distanceFromBlock, 5.610f, 1.290f), glm::vec3(90.000f, 0.0f, 90.000f), glm::vec3(1.000f, 1.000f, 1.000f));
+				SpawnCD(CD, CDMaterial, "CD", glm::vec3(4.650f + distanceFromBlock, 5.610f, -0.480f), glm::vec3(90.000f, 0.0f, 90.000f), glm::vec3(1.000f, 1.000f, 1.000f));
+				SpawnCD(CD, CDMaterial, "CD", glm::vec3(7.420f + distanceFromBlock, 5.610f, -1.980f), glm::vec3(90.000f, 0.0f, 90.000f), glm::vec3(1.000f, 1.000f, 1.000f));
+				break;
+			case 6:
+				//block 7
+				SpawnStartPlat(StartPlatform, StartPlatformMaterial, "StartPlatform", glm::vec3(-9.820f + distanceFromBlock, 5.610f, -9.10f), glm::vec3(90.0f, 0.0f, 0.0f), glm::vec3(0.350f, 0.350f, 0.350f));
+				SpawnObj(SmallPlatform, SmallPlatformMaterial, "Small Platform", glm::vec3(-4.170f + distanceFromBlock, 5.610f, 2.210f), glm::vec3(180.0f, 0.0f, 180.0f), glm::vec3(0.350f, 0.350f, 0.350f));
+				SpawnObj(SmallPlatform, SmallPlatformMaterial, "Small Platform", glm::vec3(-0.810f + distanceFromBlock, 5.610f, 2.270f), glm::vec3(180.0f, 0.0f, 180.0f), glm::vec3(0.350f, 0.350f, 0.350f));
+				SpawnObj(SmallPlatform, SmallPlatformMaterial, "Small Platform", glm::vec3(-0.100f + distanceFromBlock, 5.610f, -1.110f), glm::vec3(180.0f, 0.0f, 180.0f), glm::vec3(0.350f, 0.350f, 0.350f));
+				SpawnSpeaker(Speaker, SpeakerMaterial, "Speaker", glm::vec3(3.400f + distanceFromBlock, 6.410f, 2.560f), glm::vec3(90.0f, 0.0f, -32.000f), glm::vec3(0.500f, 0.500f, 0.500f));
+				SpawnStairsLeft(StairsLeft, StairsLeftMaterial, "Stairs Left", glm::vec3(-1.250f + distanceFromBlock, 5.610f, -0.920f), glm::vec3(90.0f, 0.0f, 90.0f), glm::vec3(0.350f, 0.350f, 0.350f));
+				SpawnSmallWallJump(SmallWallJump, SmallWallJumpMaterial, "Small Wall Jump", glm::vec3(-8.210f + distanceFromBlock, 5.610f, 2.050f), glm::vec3(180.0f, 0.0f, 180.0f), glm::vec3(0.500f, 0.210f, 1.500f));
+				SpawnSmallWallJump(SmallWallJump, SmallWallJumpMaterial, "Small Wall Jump", glm::vec3(-5.780f + distanceFromBlock, 5.610f, 0.380f), glm::vec3(180.0f, 0.0f, 180.0f), glm::vec3(0.500f, 0.210f, 1.500f));
+				SpawnBuilding(Building, BuildingMaterial, "Building", glm::vec3(4.130f + distanceFromBlock, 5.610f, -3.610f), glm::vec3(90.0f, 0.0f, 0.0f), glm::vec3(0.310f, 0.310f, 0.310f));
+				SpawnGem(BeatGem, BeatGemMaterial, "BeatGem", glm::vec3(1.350f + distanceFromBlock, 5.610f, 1.180f), glm::vec3(90.0f, 0.0f, 180.0f), glm::vec3(0.500f, 0.500f, 0.500f));
+				SpawnCollectable(Vinyl, VinylMaterial, "Vinyl", glm::vec3(-0.180f + distanceFromBlock, 5.610f, -0.330f), glm::vec3(90.000f, 0.0f, 90.000f), glm::vec3(1.000f, 1.000f, 1.000f));
+				SpawnStartPlat(StartPlatform, StartPlatformMaterial, "EndPlatform", glm::vec3(6.840f + distanceFromBlock, 5.610f, -9.10f), glm::vec3(90.0f, 0.0f, 0.0f), glm::vec3(0.350f, 0.350f, 0.350f));
+
+				// CDs for Block 7
+				SpawnCD(CD, CDMaterial, "CD", glm::vec3(-6.980f + distanceFromBlock, 5.610f, -0.950f), glm::vec3(90.000f, 0.0f, 90.000f), glm::vec3(1.000f, 1.000f, 1.000f));
+				SpawnCD(CD, CDMaterial, "CD", glm::vec3(-6.990f + distanceFromBlock, 5.610f, 2.340f), glm::vec3(90.000f, 0.0f, 90.000f), glm::vec3(1.000f, 1.000f, 1.000f));
+				SpawnCD(CD, CDMaterial, "CD", glm::vec3(-4.230f + distanceFromBlock, 5.610f, 2.760f), glm::vec3(90.000f, 0.0f, 90.000f), glm::vec3(1.000f, 1.000f, 1.000f));
+				SpawnCD(CD, CDMaterial, "CD", glm::vec3(-0.720f + distanceFromBlock, 5.610f, 2.760f), glm::vec3(90.000f, 0.0f, 90.000f), glm::vec3(1.000f, 1.000f, 1.000f));
+				break;
+			case 7:
+				// 8th Block
+
+				SpawnStartPlat(StartPlatform, StartPlatformMaterial, "StartPlatform", glm::vec3(-9.820f + distanceFromBlock, 5.610f, -9.10f), glm::vec3(90.0f, 0.0f, 0.0f), glm::vec3(0.350f, 0.350f, 0.350f));
+				SpawnObj(SmallPlatform, SmallPlatformMaterial, "Small Platform", glm::vec3(-6.640f + distanceFromBlock, 5.610f, -4.140f), glm::vec3(180.0f, 0.0f, 180.0f), glm::vec3(0.350f, 0.350f, 0.350f));
+				SpawnObj(SmallPlatform, SmallPlatformMaterial, "Small Platform", glm::vec3(-4.430f + distanceFromBlock, 5.610f, -3.310f), glm::vec3(180.0f, 0.0f, 180.0f), glm::vec3(0.350f, 0.350f, 0.350f));
+				SpawnStairsRight(StairsRight, StairsRightMaterial, "Stairs Right", glm::vec3(-0.320f + distanceFromBlock, 5.610f, -5.570f), glm::vec3(90.0f, 0.0f, 90.0f), glm::vec3(0.350f, 0.350f, 0.350f));
+				SpawnSpeaker(Speaker, SpeakerMaterial, "Speaker", glm::vec3(3.410f + distanceFromBlock, 6.410f, -0.350f), glm::vec3(90.0f, 0.0f, -32.000f), glm::vec3(0.500f, 0.500f, 0.500f));
+				SpawnBuilding(Building, BuildingMaterial, "Building", glm::vec3(4.570f + distanceFromBlock, 5.610f, -6.630f), glm::vec3(90.0f, 0.0f, 0.0f), glm::vec3(0.310f, 0.310f, 0.310f));
+				SpawnBuilding2(Building, BuildingMaterial, "Building", glm::vec3(-4.500f + distanceFromBlock, 5.610f, 7.810f), glm::vec3(90.0f, 0.0f, 0.0f), glm::vec3(0.350f, 0.350f, 0.350f));
+				SpawnBuilding3(Building, BuildingMaterial, "Building", glm::vec3(-1.350f + distanceFromBlock, 5.610f, 5.180f), glm::vec3(90.0f, 0.0f, 0.0f), glm::vec3(0.290f, 0.290f, 0.290f));
+				SpawnGem(BeatGem, BeatGemMaterial, "BeatGem", glm::vec3(-2.630f + distanceFromBlock, 5.610f, -4.550f), glm::vec3(90.0f, 0.0f, 180.0f), glm::vec3(0.500f, 0.500f, 0.500f));
+				SpawnSuperSmallWallJump(SuperSmallWallJump, SuperSmallWallJumpMaterial, "Super Small Wall Jump", glm::vec3(2.400f + distanceFromBlock, 5.610f, -3.180f), glm::vec3(180.0f, 0.0f, 180.0f), glm::vec3(0.500f, 0.210f, 1.500f));
+				SpawnSuperSmallWallJump(SuperSmallWallJump, SuperSmallWallJumpMaterial, "Super Small Wall Jump", glm::vec3(0.700f + distanceFromBlock, 5.610f, -1.510f), glm::vec3(180.0f, 0.0f, 180.0f), glm::vec3(0.500f, 0.210f, 1.500f));
+				SpawnSuperSmallWallJump(SuperSmallWallJump, SuperSmallWallJumpMaterial, "Super Small Wall Jump", glm::vec3(2.400f + distanceFromBlock, 5.610f, -0.590f), glm::vec3(180.0f, 0.0f, 180.0f), glm::vec3(0.500f, 0.210f, 1.500f));
+				SpawnSuperSmallWallJump(SuperSmallWallJump, SuperSmallWallJumpMaterial, "Super Small Wall Jump", glm::vec3(0.700f + distanceFromBlock, 5.610f, 0.700f), glm::vec3(180.0f, 0.0f, 180.0f), glm::vec3(0.500f, 0.210f, 1.500f));
+				SpawnStartPlat(StartPlatform, StartPlatformMaterial, "EndPlatform", glm::vec3(8.870f + distanceFromBlock, 5.610f, -9.10f), glm::vec3(90.0f, 0.0f, 0.0f), glm::vec3(0.350f, 0.350f, 0.350f));
+
+				// CDs for Block 8
+				SpawnCD(CD, CDMaterial, "CD", glm::vec3(-6.540f + distanceFromBlock, 5.610f, -3.410f), glm::vec3(90.000f, 0.0f, 90.000f), glm::vec3(1.000f, 1.000f, 1.000f));
+				SpawnCD(CD, CDMaterial, "CD", glm::vec3(-4.320f + distanceFromBlock, 5.610f, -2.620f), glm::vec3(90.000f, 0.0f, 90.000f), glm::vec3(1.000f, 1.000f, 1.000f));
+				SpawnCD(CD, CDMaterial, "CD", glm::vec3(1.540f + distanceFromBlock, 5.610f, -0.020f), glm::vec3(90.000f, 0.0f, 90.000f), glm::vec3(1.000f, 1.000f, 1.000f));
+				SpawnCD(CD, CDMaterial, "CD", glm::vec3(1.500f + distanceFromBlock, 5.610f, -4.260f), glm::vec3(90.000f, 0.0f, 90.000f), glm::vec3(1.000f, 1.000f, 1.000f));
+				SpawnCD(CD, CDMaterial, "CD", glm::vec3(4.170f + distanceFromBlock, 5.610f, 0.400f), glm::vec3(90.000f, 0.0f, 90.000f), glm::vec3(1.000f, 1.000f, 1.000f));
+				break;
+
+			default:
+				// 1st Block
+				SpawnStartPlat(StartPlatform, StartPlatformMaterial, "StartPlatform", glm::vec3(-9.820f + distanceFromBlock, 5.610f, -4.450), glm::vec3(90.0f, 0.0f, 0.0f), glm::vec3(0.350f, 0.350f, 0.350f));
+				SpawnObj(SmallPlatform, SmallPlatformMaterial, "Small Platform", glm::vec3(-6.070f + distanceFromBlock, 5.610f, -4.150f), glm::vec3(180.0f, 0.0f, 180.0f), glm::vec3(0.350f, 0.350f, 0.350f));
+				SpawnObj(SmallPlatform, SmallPlatformMaterial, "Small Platform", glm::vec3(-2.840f + distanceFromBlock, 5.610f, -4.150f), glm::vec3(180.0f, 0.0f, 180.0f), glm::vec3(0.350f, 0.350f, 0.350f));
+				SpawnObj(SmallPlatform, SmallPlatformMaterial, "Small Platform", glm::vec3(2.760f + distanceFromBlock, 5.610f, -1.770f), glm::vec3(180.0f, 0.0f, 180.0f), glm::vec3(0.350f, 0.350f, 0.350f));
+				SpawnGem(BeatGem, BeatGemMaterial, "BeatGem", glm::vec3(0.120f + distanceFromBlock, 5.610f, -3.160f), glm::vec3(90.0f, 0.0f, 180.0f), glm::vec3(0.500f, 0.500f, 0.500f));
+				SpawnCollectable(Vinyl, VinylMaterial, "Vinyl", glm::vec3(5.640f + distanceFromBlock, 5.610f, 0.080f), glm::vec3(90.000f, 0.0f, 90.000f), glm::vec3(1.000f, 1.000f, 1.000f));
+				SpawnStartPlat(StartPlatform, StartPlatformMaterial, "EndPlatform", glm::vec3(6.360f + distanceFromBlock, 5.610f, -4.920f), glm::vec3(90.0f, 0.0f, 0.0f), glm::vec3(0.350f, 0.350f, 0.350f));
+
+				// CDs for Block 1
+				SpawnCD(CD, CDMaterial, "CD", glm::vec3(-6.030f + distanceFromBlock, 5.610f, -3.220f), glm::vec3(90.000f, 0.0f, 90.000f), glm::vec3(1.000f, 1.000f, 1.000f));
+				SpawnCD(CD, CDMaterial, "CD", glm::vec3(-2.710f + distanceFromBlock, 5.610f, -3.190f), glm::vec3(90.000f, 0.0f, 90.000f), glm::vec3(1.000f, 1.000f, 1.000f));
+				SpawnCD(CD, CDMaterial, "CD", glm::vec3(0.170f + distanceFromBlock, 5.610f, -2.380f), glm::vec3(90.000f, 0.0f, 90.000f), glm::vec3(1.000f, 1.000f, 1.000f));
+				SpawnCD(CD, CDMaterial, "CD", glm::vec3(2.640f + distanceFromBlock, 5.610f, -0.770f), glm::vec3(90.000f, 0.0f, 90.000f), glm::vec3(1.000f, 1.000f, 1.000f));
+				break;
+			}
+			//we only want to wait 20seconds for the first level after that we simply want to wait 10
+			//SpawnTimer = 0.f;
 		}
 
 		dt *= playbackSpeed;
