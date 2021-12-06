@@ -5,6 +5,7 @@
 #include "Utils/ImGuiHelper.h"
 #include <iostream>
 #include"BeatTimer.h"
+#include "RenderComponent.h"
 void CharacterController::Awake()
 {
     _body = GetComponent<Gameplay::Physics::RigidBody>();
@@ -42,9 +43,11 @@ CharacterController::Sptr CharacterController::FromJson(const nlohmann::json & b
 
 void CharacterController::OnTriggerVolumeEntered(const std::shared_ptr<Gameplay::Physics::RigidBody>&body) {
     LOG_INFO("Body has entered our trigger volume: {}", body->GetGameObject()->Name);
-    if ((body->GetGameObject()->Name == "BeatGem") && (_GemJumpTimer>1.25)&&(_GemJumpTimer<1.6666)) {
+    if ((body->GetGameObject()->Name == "BeatGem") && (_GemJumpTimer>1.80)&&(_GemJumpTimer<2.4)) {
         _canJump = true;
         std::cout << "jumper worked";
+        
+        //body->GetGameObject()->Get<RenderComponent>()-> set material function
     }
     if ((_platform != body->GetGameObject()->Name )&&(body->GetGameObject()->Name != "BeatGem")){
         _canJump = true;
