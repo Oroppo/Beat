@@ -2033,7 +2033,7 @@ int main() {
 				transform->SetMin({ 0, 0 });
 				transform->SetMax({ 504, 475});
 
-				transform->SetPosition({ 150 , 80 });
+				transform->SetPosition({ 450 , 80 });
 
 
 				GuiPanel::Sptr panel = button->Add<GuiPanel>();
