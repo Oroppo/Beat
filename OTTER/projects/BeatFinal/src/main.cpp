@@ -2099,7 +2099,7 @@ int main() {
 	ToneFire::StudioSound test;
 	test.LoadEvent("event:/Music");
 	test.SetEventPosition("event:/Music", FMOD_VECTOR{ -10.270f, 5.710f, -3.800f });
-	//test.PlayEvent("event:/Music");
+	test.PlayEvent("event:/Music");
 	//test.SetEventParameter("event:/Music", "Volume", 0.5f);
 	
 	///// Game loop /////
