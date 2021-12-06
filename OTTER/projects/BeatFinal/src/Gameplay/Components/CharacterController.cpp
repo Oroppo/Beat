@@ -46,14 +46,38 @@ CharacterController::Sptr CharacterController::FromJson(const nlohmann::json & b
     return result;
 }
 
-void CharacterController::OnTriggerVolumeEntered(const std::shared_ptr<Gameplay::Physics::RigidBody>&body) {
-    LOG_INFO("Body has entered our trigger volume: {}", body->GetGameObject()->Name);
-    if ((body->GetGameObject()->Name == "BeatGem") && (_GemJumpTimer>1.80)&&(_GemJumpTimer<2.4)) {
+//for collectibles
+void CharacterController::OnEnteredTrigger(const std::shared_ptr<Gameplay::Physics::TriggerVolume>& trigger) {
+
+    if ((trigger->GetGameObject()->Name == "BeatGem") && (_GemJumpTimer > 1.80) && (_GemJumpTimer < 2.4)) {
         _canJump = true;
         std::cout << "jumper worked";
-        
-        //body->GetGameObject()->Get<RenderComponent>()-> set material function
+
+        trigger->GetGameObject()->Get<RenderComponent>()->IsEnabled = false;
+        _BeatGemHits++;
+        score += 500;
     }
+        if (trigger->GetGameObject()->Name == "Vinyl") {
+            score += 1000;
+            _VinylScore++;
+        }
+        if (trigger->GetGameObject()->Name == "CD") {
+            score += 100;
+            _CDScore++;
+        }
+        std::stringstream ss;
+        ss << score;
+        std::string stringScore;
+        ss >> stringScore;
+        trigger->GetGameObject()->SetPostion(glm::vec3(0.0f, -100.0f, 0.0f));
+        GetGameObject()->GetScene()->FindObjectByName("GameOver Score Text")->Get<GuiText>()->SetText(stringScore);
+    
+}
+
+//for physical platforms
+void CharacterController::OnTriggerVolumeEntered(const std::shared_ptr<Gameplay::Physics::RigidBody>&body) {
+    LOG_INFO("Body has entered our trigger volume: {}", body->GetGameObject()->Name);
+
     if ((_platform != body->GetGameObject()->Name )&&(body->GetGameObject()->Name != "BeatGem")){
         _canJump = true;
         _platform = body->GetGameObject()->Name;
@@ -67,22 +91,6 @@ void CharacterController::OnTriggerVolumeEntered(const std::shared_ptr<Gameplay:
         _rotPlat = (_body->GetGameObject()->GetPosition()) - body->GetGameObject()->GetPosition();
         body->GetGameObject()->SetRotation(body->GetGameObject()->GetRotationEuler() + glm::vec3(0.0f, -20 * _rotPlat.x, 0.0f));
         LOG_INFO(_rotPlat.x);
-    }
-   
-    //add score
-    if ((_platform == "Vinyl")|| (_platform == "CD")) {
-        if (_platform == "Vinyl") {
-            score += 1000;
-        }
-        if (_platform == "CD") {
-            score += 100;
-        }
-        std::stringstream ss;
-        ss << score;
-        std::string stringScore;
-        ss >> stringScore;
-        body->GetGameObject()->SetPostion(glm::vec3(-100.0f, 0.0f, 0.0f));
-        GetGameObject()->GetScene()->FindObjectByName("GameOver Score Text")->Get<GuiText>()->SetText(stringScore);
     }
   
 }

@@ -336,12 +336,13 @@ void SpawnGem(MeshResource::Sptr Mesh, Material::Sptr MaterialOn, Material::Sptr
 		renderer->SetMaterial(MaterialOff);
 
 		TriggerVolume::Sptr volume = Startplatform->Add<TriggerVolume>();
+		volume->AddCollider(BoxCollider::Create(glm::vec3(0.5f, 0.5f, 0.5f)));
 		volume->SetFlags(TriggerTypeFlags::Statics | TriggerTypeFlags::Kinematics);
 
 		// Add a dynamic rigid body to this object
-		RigidBody::Sptr physics = Startplatform->Add<RigidBody>(RigidBodyType::Kinematic);
+		//RigidBody::Sptr physics = Startplatform->Add<RigidBody>(RigidBodyType::Kinematic);
 		// For Gem Colliders X = left/right Y = Up/Down Z = Towards/Away
-		physics->AddCollider(BoxCollider::Create(glm::vec3(0.5f, 0.5f, 0.5f)));
+		
 
 
 		if (parent != nullptr) {
@@ -377,10 +378,13 @@ void SpawnCollectable(MeshResource::Sptr Mesh, Material::Sptr Material, std::str
 		renderer->SetMaterial(Material);
 
 		// Add a dynamic rigid body to this object
-		RigidBody::Sptr physics = Startplatform->Add<RigidBody>(RigidBodyType::Kinematic);
+		//RigidBody::Sptr physics = Startplatform->Add<RigidBody>(RigidBodyType::Kinematic);
 		// For Colliders X is towards Cam, Y is up/down , Z is Left and Right
-		ICollider::Sptr CollectCollider = physics->AddCollider(BoxCollider::Create(glm::vec3(0.5f, 0.5f, 0.5f)));
-		CollectCollider->SetPosition(glm::vec3(0.0f, 0.5f, 0.0f));
+		//ICollider::Sptr CollectCollider = physics->AddCollider(BoxCollider::Create(glm::vec3(0.5f, 0.5f, 0.5f)));
+		
+		TriggerVolume::Sptr volume = Startplatform->Add<TriggerVolume>();
+		volume->AddCollider(BoxCollider::Create(glm::vec3(0.5f, 0.5f, 0.5f)));
+		//volume->SetPostion(glm::vec3(0.0f, 0.5f, 0.0f));
 
 		if (parent != nullptr) {
 			parent->AddChild(Startplatform);
@@ -413,8 +417,8 @@ void SpawnCD(MeshResource::Sptr Mesh, Material::Sptr Material, std::string ObjNa
 		//RigidBody::Sptr physics = Startplatform->Add<RigidBody>(RigidBodyType::Kinematic);
 		//physics->AddCollider(BoxCollider::Create(glm::vec3(0.5f, 0.5f, 0.5f)));
 
-		//TriggerVolume::Sptr volume = Startplatform->Add<TriggerVolume>();
-		//volume->AddCollider(BoxCollider::Create(glm::vec3(0.5f, 0.5f, 0.5f)));
+		TriggerVolume::Sptr volume = Startplatform->Add<TriggerVolume>();
+		volume->AddCollider(BoxCollider::Create(glm::vec3(0.5f, 0.5f, 0.5f)));
 
 		if (parent != nullptr) {
 			parent->AddChild(Startplatform);

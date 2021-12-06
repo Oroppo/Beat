@@ -27,7 +27,7 @@ public:
 
 	virtual nlohmann::json ToJson() const override;
 	static CharacterController::Sptr FromJson(const nlohmann::json& blob);
-
+	virtual void OnEnteredTrigger(const std::shared_ptr<Gameplay::Physics::TriggerVolume>& trigger);
 	virtual void OnTriggerVolumeEntered(const std::shared_ptr<Gameplay::Physics::RigidBody>& body);
 	virtual void OnTriggerVolumeLeaving(const std::shared_ptr<Gameplay::Physics::RigidBody>& body);
 
@@ -37,7 +37,7 @@ protected:
 	float _impulse2;
 	float _GemJumpTimer;
 	bool _canJump;
-	int score = 0;
+	int score = 0, _VinylScore = 0, _CDScore=0, _BeatGemHits=0;
 	std::string _platform;
 	glm::vec3 _impulse = glm::vec3(0, 0, 13.0);
 	Gameplay::Physics::RigidBody::Sptr _body;
