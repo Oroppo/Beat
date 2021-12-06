@@ -103,6 +103,6 @@ void BackgroundBuildingMover::Update(float deltaTime)
 
     if (GetGameObject()->GetPosition().x <= -50.0f)
     {
-        GetGameObject()->SetPostion(glm::vec3(glm::vec3(40.870f, 21.880f, -36.040f)));
+        GetGameObject()->SetPostion(glm::vec3(glm::vec3(40.870f, 21.880f, -46.040f)));
     }
 }

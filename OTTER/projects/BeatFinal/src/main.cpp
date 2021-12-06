@@ -78,6 +78,7 @@
 #include "Gameplay/Components/ForeGroundMover.h"
 #include "Gameplay/Components/SeekBehaviour.h"
 #include "Gameplay/Components/BeatTimer.h"
+#include "Gameplay/Components/BuildingAnim.h"
 
 // Physics
 #include "Gameplay/Physics/RigidBody.h"
@@ -838,6 +839,7 @@ void SpawnBackGroundBuilding(MeshResource::Sptr Mesh, Material::Sptr Material, s
 		//Add Components
 		// Background mover ment for cars
 		KBuilding->Add<BackgroundBuildingMover>();
+		KBuilding->Add<BuildingAnim>();
 
 		// Create and attach a renderer for the Object
 		RenderComponent::Sptr renderer = KBuilding->Add<RenderComponent>();
@@ -926,6 +928,7 @@ int main() {
 	ComponentManager::RegisterType<RectTransform>();
 	ComponentManager::RegisterType<GuiPanel>();
 	ComponentManager::RegisterType<GuiText>();
+	ComponentManager::RegisterType<BuildingAnim>();
 
 
 	// GL states, we'll enable depth testing and backface fulling
@@ -1356,9 +1359,9 @@ int main() {
 		SpawnBackGroundCar(SemiTruckMesh, SemiTruckMaterial, "Semi1", glm::vec3(28.870f, 7.80f, 2.7f), glm::vec3(90.0f, 0.0f, -90.0f), glm::vec3(0.250f, 0.250f, 0.250f));
 		SpawnForeGroundCar(Car1Mesh, Car1Material, "Car2", glm::vec3(-9.970f, 0.470f, -1.90f), glm::vec3(90.0f, 0.0f, 90.0f), glm::vec3(0.250f, 0.250f, 0.250f));
 		SpawnForeGroundCar(PickupTruckMesh, PickupTruckMaterial, "Pickup1", glm::vec3(-18.970f, 0.470f, -1.90f), glm::vec3(90.0f, 0.0f, 90.0f), glm::vec3(0.250f, 0.250f, 0.250f));
-		SpawnBackGroundBuilding(KBuilding1Mesh, KBuildingMaterial, "KBuilding1", glm::vec3(0.0f, 21.880f, -36.040f), glm::vec3(90.0f, 0.0f, 0.0f), glm::vec3(0.780f, 1.470f, 1.0f));
-		SpawnBackGroundBuilding(KBuilding2Mesh, KBuilding2Material, "KBuilding2", glm::vec3(19.670, 21.880f, -17.260f), glm::vec3(90.0f, 0.0f, 0.0f), glm::vec3(0.780f, 1.470f, 1.0f));
-		SpawnBackGroundBuilding(KBuilding3Mesh, KBuilding3Material, "KBuilding3", glm::vec3(-26.530f, 21.880f, -21.270f), glm::vec3(90.0f, 0.0f, 0.0f), glm::vec3(0.780f, 1.470f, 1.0f));
+		SpawnBackGroundBuilding(KBuilding1Mesh, KBuildingMaterial, "KBuilding1", glm::vec3(-1.0f, 21.880f, -46.040f), glm::vec3(90.0f, 0.0f, 0.0f), glm::vec3(0.780f, 1.470f, 1.0f));
+		SpawnBackGroundBuilding(KBuilding2Mesh, KBuilding2Material, "KBuilding2", glm::vec3(25.670, 21.880f, -46.040f), glm::vec3(90.0f, 0.0f, 0.0f), glm::vec3(0.780f, 1.470f, 1.0f));
+		SpawnBackGroundBuilding(KBuilding3Mesh, KBuilding3Material, "KBuilding3", glm::vec3(-30.530f, 21.880f, -46.040f), glm::vec3(90.0f, 0.0f, 0.0f), glm::vec3(0.780f, 1.470f, 1.0f));
 		SpawnBackGroundBuilding(OvalBuilding, OvalBuildingMaterial, "OvalBuilding", glm::vec3(-29.320f, 25.970f, -12.360f), glm::vec3(90.0f, 0.0f, 0.0f), glm::vec3(0.780f, 1.470f, 1.0f));
 
 		/*
