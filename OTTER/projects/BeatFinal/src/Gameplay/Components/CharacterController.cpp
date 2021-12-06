@@ -71,6 +71,7 @@ void CharacterController::OnEnteredTrigger(const std::shared_ptr<Gameplay::Physi
         std::string stringScore;
         ss >> stringScore;
         trigger->GetGameObject()->SetPostion(glm::vec3(0.0f, -100.0f, 0.0f));
+        trigger->GetGameObject()->GetScene()->FindObjectByName("GameOver Score Text")->Get<RectTransform>()->SetPosition({205 , 100});
         GetGameObject()->GetScene()->FindObjectByName("GameOver Score Text")->Get<GuiText>()->SetText(stringScore);
     
 }

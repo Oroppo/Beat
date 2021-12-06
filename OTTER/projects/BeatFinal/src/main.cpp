@@ -884,6 +884,9 @@ void key_callback(GLFWwindow* window, int key, int scancode, int action, int mod
 		scene->FindObjectByName("Vinyl Tutorial")->Get<GuiPanel>()->IsEnabled = false;
 		scene->FindObjectByName("Wall Jump Tutorial")->Get<GuiPanel>()->IsEnabled = false;
 		scene->FindObjectByName("Beat Gem Tutorial")->Get<GuiPanel>()->IsEnabled = false;
+		scene->FindObjectByName("HUD Score Display")->Get<GuiPanel>()->IsEnabled = true;
+		scene->FindObjectByName("GameOver Score Text")->Get<GuiPanel>()->IsEnabled = true;
+		scene->FindObjectByName("GameOver Score Text")->Get<GuiText>()->IsEnabled = true;
 	}
 
 	if (key == GLFW_KEY_ESCAPE && action == GLFW_PRESS)
@@ -1136,9 +1139,10 @@ int main() {
 	Texture2D::Sptr TexBeatBar = ResourceManager::CreateAsset<Texture2D>("textures/GUI/BeatBar.png");
 	Texture2D::Sptr TexBeatBarTick = ResourceManager::CreateAsset<Texture2D>("textures/GUI/BeatBarTick.png");
 	Texture2D::Sptr GemOff = ResourceManager::CreateAsset<Texture2D>("textures/GemOff.png");
+	Texture2D::Sptr TexScoreDisplay = ResourceManager::CreateAsset<Texture2D>("textures/GUI/ScoreDisplay.png");
 
-	Font::Sptr Roboto = ResourceManager::CreateAsset<Font>("fonts/Roboto-Medium.ttf", 16.f);
-	Roboto->Bake();
+	Font::Sptr FontVCR = ResourceManager::CreateAsset<Font>("fonts/VCR.ttf", 16.f);
+	FontVCR->Bake();
 
 	//Minification and Magnification
 	//leafTex->SetMinFilter(MinFilter::Nearest);
@@ -1853,30 +1857,6 @@ int main() {
 
 				}
 
-				{
-					GameObject::Sptr button = scene->CreateGameObject("GameOver Score Text");
-
-					RectTransform::Sptr transform = button->Add<RectTransform>();
-					transform->SetPosition({ 0, 0 });
-					transform->SetRotationDeg(0);
-					transform->SetSize({ 504 * 0.75, 475 * 0.75 });
-					transform->SetMin({ 0, 0 });
-					transform->SetMax({ 504 * 0.75, 475 * 0.75 });
-
-					GuiPanel::Sptr panel = button->Add<GuiPanel>();
-					panel->SetTexture(TexScoreBreakdown);
-					panel->SetColor(glm::vec4(1.0f, 1.0f, 1.0f, 0.0f));
-					panel->SetBorderRadius(0);
-					panel->IsEnabled = true;
-
-					GuiText::Sptr text = button->Add<GuiText>();
-					text->SetColor(glm::vec4(1.f));
-					text->SetFont(Roboto);
-					text->SetText("0");
-
-					text->SetTextScale(10.f);
-
-				}
 
 				{//Quit
 					GameObject::Sptr button = scene->CreateGameObject("GameOver Quit Button");
@@ -2004,9 +1984,58 @@ int main() {
 		}
 		
 
-		/*
 		{//HUD
+			{//Beat Bar
+				GameObject::Sptr button = scene->CreateGameObject("HUD Score Display");
 
+				RectTransform::Sptr transform = button->Add<RectTransform>();
+				transform->SetPosition({ 0, 0 });
+				transform->SetRotationDeg(0);
+				transform->SetSize({ 500, 100});
+				transform->SetMin({ 0, 0 });
+				transform->SetMax({ 500, 100});
+
+				GuiPanel::Sptr panel = button->Add<GuiPanel>();
+				panel->SetTexture(TexScoreDisplay);
+				panel->SetColor(glm::vec4(1.0f, 1.0f, 1.0f, 1.0f));
+				panel->SetBorderRadius(0);
+				panel->IsEnabled = false;
+
+
+
+				transform->SetPosition({250, 50});
+
+			}
+
+			{//Score Text
+				GameObject::Sptr button = scene->CreateGameObject("GameOver Score Text");
+
+				RectTransform::Sptr transform = button->Add<RectTransform>();
+				transform->SetPosition({ 0,0});
+				transform->SetRotationDeg(0);
+				transform->SetSize({ 504, 475});
+				transform->SetMin({ 0, 0 });
+				transform->SetMax({ 504, 475});
+
+				transform->SetPosition({ 150 , 80 });
+
+
+				GuiPanel::Sptr panel = button->Add<GuiPanel>();
+				panel->SetTexture(TexScoreBreakdown);
+				panel->SetColor(glm::vec4(1.0f, 1.0f, 1.0f, 0.0f));
+				panel->SetBorderRadius(0);
+				panel->IsEnabled = false;
+
+				GuiText::Sptr text = button->Add<GuiText>();
+				text->SetColor(glm::vec4(0.f));
+				text->SetFont(FontVCR);
+				text->SetText("0");
+				text->IsEnabled = false;
+
+				text->SetTextScale(4.0f);
+
+			}
+		/*
 			{//Beat Bar
 				GameObject::Sptr button = scene->CreateGameObject("HUD Beat Bar");
 
@@ -2046,8 +2075,8 @@ int main() {
 				transform->SetPosition({ (float)windowSize.x * 0.4, (float)windowSize.y * 0.9 });
 
 			}
-		}
 		*/
+		}
 
 		GuiBatcher::SetDefaultTexture(ResourceManager::CreateAsset<Texture2D>("textures/ui-sprite.png"));
 		GuiBatcher::SetDefaultBorderRadius(8);
