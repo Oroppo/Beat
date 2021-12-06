@@ -870,14 +870,38 @@ void key_callback(GLFWwindow* window, int key, int scancode, int action, int mod
 {
 	if (key == GLFW_KEY_ESCAPE && action == GLFW_PRESS)
 	{
+
+		//toggle each of these booleans
 		scene->IsPlaying = !scene->IsPlaying;
-		//scene->FindObjectByName("Pause Menu")->Get<GuiPanel>()->IsEnabled = !scene->FindObjectByName("Pause Menu")->Get<GuiPanel>()->IsEnabled;
-		scene->FindObjectByName("Dimmed Background")->Get<GuiPanel>()->IsEnabled = !scene->FindObjectByName("Dimmed Background")->Get<GuiPanel>()->IsEnabled;
-		scene->FindObjectByName("Pause Menu Background")->Get<GuiPanel>()->IsEnabled = !scene->FindObjectByName("Pause Menu Background")->Get<GuiPanel>()->IsEnabled;
-		scene->FindObjectByName("Resume Button")->Get<GuiPanel>()->IsEnabled = !scene->FindObjectByName("Resume Button")->Get<GuiPanel>()->IsEnabled;
-		scene->FindObjectByName("Options Button")->Get<GuiPanel>()->IsEnabled = !scene->FindObjectByName("Options Button")->Get<GuiPanel>()->IsEnabled;
-		scene->FindObjectByName("Quit Button")->Get<GuiPanel>()->IsEnabled = !scene->FindObjectByName("Quit Button")->Get<GuiPanel>()->IsEnabled;
-		scene->FindObjectByName("Music Button")->Get<GuiPanel>()->IsEnabled = !scene->FindObjectByName("Music Button")->Get<GuiPanel>()->IsEnabled;
+		scene->FindObjectByName("PauseMenu Dimmed Background")->Get<GuiPanel>()->IsEnabled = !scene->FindObjectByName("PauseMenu Dimmed Background")->Get<GuiPanel>()->IsEnabled;
+		scene->FindObjectByName("PauseMenu Background")->Get<GuiPanel>()->IsEnabled = !scene->FindObjectByName("PauseMenu Background")->Get<GuiPanel>()->IsEnabled;
+		scene->FindObjectByName("PauseMenu Resume Button")->Get<GuiPanel>()->IsEnabled = !scene->FindObjectByName("PauseMenu Resume Button")->Get<GuiPanel>()->IsEnabled;
+		scene->FindObjectByName("PauseMenu Options Button")->Get<GuiPanel>()->IsEnabled = !scene->FindObjectByName("PauseMenu Options Button")->Get<GuiPanel>()->IsEnabled;
+		scene->FindObjectByName("PauseMenu Quit Button")->Get<GuiPanel>()->IsEnabled = !scene->FindObjectByName("PauseMenu Quit Button")->Get<GuiPanel>()->IsEnabled;
+		scene->FindObjectByName("PauseMenu Resync Button")->Get<GuiPanel>()->IsEnabled = !scene->FindObjectByName("PauseMenu Resync Button")->Get<GuiPanel>()->IsEnabled;
+	}
+
+	if (key == GLFW_KEY_1 && action == GLFW_PRESS)
+	{
+
+		//toggle each of these booleans
+		scene->FindObjectByName("MainMenu Logo")->Get<GuiPanel>()->IsEnabled = !scene->FindObjectByName("MainMenu Logo")->Get<GuiPanel>()->IsEnabled;
+		scene->FindObjectByName("MainMenu Play Button")->Get<GuiPanel>()->IsEnabled = !scene->FindObjectByName("MainMenu Play Button")->Get<GuiPanel>()->IsEnabled;
+		scene->FindObjectByName("MainMenu Options Button")->Get<GuiPanel>()->IsEnabled = !scene->FindObjectByName("MainMenu Options Button")->Get<GuiPanel>()->IsEnabled;
+		scene->FindObjectByName("MainMenu Music Button")->Get<GuiPanel>()->IsEnabled = !scene->FindObjectByName("MainMenu Music Button")->Get<GuiPanel>()->IsEnabled;
+		scene->FindObjectByName("MainMenu Credits Button")->Get<GuiPanel>()->IsEnabled = !scene->FindObjectByName("MainMenu Credits Button")->Get<GuiPanel>()->IsEnabled;
+		scene->FindObjectByName("MainMenu Quit Button")->Get<GuiPanel>()->IsEnabled = !scene->FindObjectByName("MainMenu Quit Button")->Get<GuiPanel>()->IsEnabled;
+	}
+
+	if (key == GLFW_KEY_2 && action == GLFW_PRESS)
+	{
+
+		//toggle each of these booleans
+		scene->FindObjectByName("GameOver Dimmed Background")->Get<GuiPanel>()->IsEnabled = !scene->FindObjectByName("GameOver Dimmed Background")->Get<GuiPanel>()->IsEnabled;
+		scene->FindObjectByName("GameOver Text")->Get<GuiPanel>()->IsEnabled = !scene->FindObjectByName("GameOver Text")->Get<GuiPanel>()->IsEnabled;
+		scene->FindObjectByName("GameOver Score Breakdown")->Get<GuiPanel>()->IsEnabled = !scene->FindObjectByName("GameOver Score Breakdown")->Get<GuiPanel>()->IsEnabled;
+		scene->FindObjectByName("GameOver Quit Button")->Get<GuiPanel>()->IsEnabled = !scene->FindObjectByName("GameOver Quit Button")->Get<GuiPanel>()->IsEnabled;
+		scene->FindObjectByName("GameOver Continue Button")->Get<GuiPanel>()->IsEnabled = !scene->FindObjectByName("GameOver Continue Button")->Get<GuiPanel>()->IsEnabled;
 	}
 }
 
@@ -1091,6 +1115,8 @@ int main() {
 	Texture2D::Sptr SpeakerTex = ResourceManager::CreateAsset<Texture2D>("textures/speakertex.png");
 	Texture2D::Sptr SquarePlatTex = ResourceManager::CreateAsset<Texture2D>("textures/SquarePlatformTex.png");
 	Texture2D::Sptr FloatingLightTex = ResourceManager::CreateAsset<Texture2D>("textures/StreetLightTex.png");
+	Texture2D::Sptr TexBeatBar = ResourceManager::CreateAsset<Texture2D>("textures/GUI/BeatBar.png");
+	Texture2D::Sptr TexBeatBarTick = ResourceManager::CreateAsset<Texture2D>("textures/GUI/BeatBarTick.png");
 
 	//Minification and Magnification
 	//leafTex->SetMinFilter(MinFilter::Nearest);
@@ -1453,11 +1479,10 @@ int main() {
 
 		/////////////////////////// UI //////////////////////////////
 
-		/*
 		{//Main Menu Block
 
 				{//Logo
-					GameObject::Sptr logo = scene->CreateGameObject("Logo");
+					GameObject::Sptr logo = scene->CreateGameObject("MainMenu Logo");
 
 					RectTransform::Sptr transform = logo->Add<RectTransform>();
 					transform->SetPosition({ 0, 0 });
@@ -1470,6 +1495,7 @@ int main() {
 					logoPanel->SetTexture(TexBeatLogo);
 					logoPanel->SetColor(glm::vec4(1.0f, 1.0f, 1.0f, 1.0f));
 					logoPanel->SetBorderRadius(0);
+					logoPanel->IsEnabled = false;
 
 
 
@@ -1478,7 +1504,7 @@ int main() {
 				}
 
 				{//Play Button
-					GameObject::Sptr button = scene->CreateGameObject("Play Button");
+					GameObject::Sptr button = scene->CreateGameObject("MainMenu Play Button");
 
 					RectTransform::Sptr transform = button->Add<RectTransform>();
 					transform->SetPosition({ 0, 0 });
@@ -1491,6 +1517,7 @@ int main() {
 					panel->SetTexture(TexPlayButton);
 					panel->SetColor(glm::vec4(1.0f, 1.0f, 1.0f, 1.0f));
 					panel->SetBorderRadius(0);
+					panel->IsEnabled = false;
 
 
 					transform->SetPosition({ (float)windowSize.x * 0.20, (float)windowSize.y * 0.8});
@@ -1498,7 +1525,7 @@ int main() {
 				}
 
 				{//Options Button
-					GameObject::Sptr button = scene->CreateGameObject("Options Button");
+					GameObject::Sptr button = scene->CreateGameObject("MainMenu Options Button");
 
 					RectTransform::Sptr transform = button->Add<RectTransform>();
 					transform->SetPosition({ 0, 0 });
@@ -1511,6 +1538,7 @@ int main() {
 					panel->SetTexture(TexOptionsButton);
 					panel->SetColor(glm::vec4(1.0f, 1.0f, 1.0f, 0.6f));
 					panel->SetBorderRadius(0);
+					panel->IsEnabled = false;
 
 
 					transform->SetPosition({ (float)windowSize.x * 0.35, (float)windowSize.y * 0.8 });
@@ -1518,7 +1546,7 @@ int main() {
 				}
 
 				{//Music Button
-					GameObject::Sptr button = scene->CreateGameObject("Music Button");
+					GameObject::Sptr button = scene->CreateGameObject("MainMenu Music Button");
 
 					RectTransform::Sptr transform = button->Add<RectTransform>();
 					transform->SetPosition({ 0, 0 });
@@ -1531,6 +1559,7 @@ int main() {
 					panel->SetTexture(TexMusicButton);
 					panel->SetColor(glm::vec4(1.0f, 1.0f, 1.0f, 0.6f));
 					panel->SetBorderRadius(0);
+					panel->IsEnabled = false;
 
 
 					transform->SetPosition({ (float)windowSize.x * 0.5, (float)windowSize.y * 0.8 });
@@ -1538,7 +1567,7 @@ int main() {
 				}
 
 				{//Credits Button
-					GameObject::Sptr button = scene->CreateGameObject("Credits Button");
+					GameObject::Sptr button = scene->CreateGameObject("MainMenu Credits Button");
 
 					RectTransform::Sptr transform = button->Add<RectTransform>();
 					transform->SetPosition({ 0, 0 });
@@ -1551,6 +1580,7 @@ int main() {
 					panel->SetTexture(TexCreditsButton);
 					panel->SetColor(glm::vec4(1.0f, 1.0f, 1.0f, 0.6f));
 					panel->SetBorderRadius(0);
+					panel->IsEnabled = false;
 
 
 
@@ -1559,7 +1589,7 @@ int main() {
 				}
 
 				{//Quit Button
-					GameObject::Sptr button = scene->CreateGameObject("Quit Button");
+					GameObject::Sptr button = scene->CreateGameObject("MainMenu Quit Button");
 
 					RectTransform::Sptr transform = button->Add<RectTransform>();
 					transform->SetPosition({ 0, 0 });
@@ -1572,6 +1602,7 @@ int main() {
 					panel->SetTexture(TexQuitButton);
 					panel->SetColor(glm::vec4(1.0f, 1.0f, 1.0f, 1.0f));
 					panel->SetBorderRadius(0);
+					panel->IsEnabled = false;
 
 
 
@@ -1581,13 +1612,11 @@ int main() {
 
 			}
 
-		*/
-
 
 		{//Pause Menu Block
 
 			{//Dim BG
-				GameObject::Sptr background = scene->CreateGameObject("Dimmed Background");
+				GameObject::Sptr background = scene->CreateGameObject("PauseMenu Dimmed Background");
 
 				RectTransform::Sptr transform = background->Add<RectTransform>();
 				transform->SetPosition({ 0, 0 });
@@ -1608,7 +1637,7 @@ int main() {
 			}
 
 			{//Background
-				GameObject::Sptr background = scene->CreateGameObject("Pause Menu Background");
+				GameObject::Sptr background = scene->CreateGameObject("PauseMenu Background");
 
 				RectTransform::Sptr transform = background->Add<RectTransform>();
 				transform->SetPosition({ 0, 0 });
@@ -1629,7 +1658,7 @@ int main() {
 			}
 
 			{//Resume Button
-				GameObject::Sptr button = scene->CreateGameObject("Resume Button");
+				GameObject::Sptr button = scene->CreateGameObject("PauseMenu Resume Button");
 
 				RectTransform::Sptr transform = button->Add<RectTransform>();
 				transform->SetPosition({ 0, 0 });
@@ -1650,7 +1679,7 @@ int main() {
 			}
 
 			{//Options Button
-				GameObject::Sptr button = scene->CreateGameObject("Options Button");
+				GameObject::Sptr button = scene->CreateGameObject("PauseMenu Options Button");
 
 				RectTransform::Sptr transform = button->Add<RectTransform>();
 				transform->SetPosition({ 0, 0 });
@@ -1670,7 +1699,7 @@ int main() {
 			}
 
 			{//Resync Button
-				GameObject::Sptr button = scene->CreateGameObject("Music Button");
+				GameObject::Sptr button = scene->CreateGameObject("PauseMenu Resync Button");
 
 				RectTransform::Sptr transform = button->Add<RectTransform>();
 				transform->SetPosition({ 0, 0 });
@@ -1690,7 +1719,7 @@ int main() {
 			}
 
 			{//Quit Button
-				GameObject::Sptr button = scene->CreateGameObject("Quit Button");
+				GameObject::Sptr button = scene->CreateGameObject("PauseMenu Quit Button");
 
 				RectTransform::Sptr transform = button->Add<RectTransform>();
 				transform->SetPosition({ 0, 0 });
@@ -1711,13 +1740,10 @@ int main() {
 			}
 		}
 
-
-		/*
-
 		{//Game Over Block
 
 				{//Dim BG
-					GameObject::Sptr background = scene->CreateGameObject("Dimmed Background");
+					GameObject::Sptr background = scene->CreateGameObject("GameOver Dimmed Background");
 
 					RectTransform::Sptr transform = background->Add<RectTransform>();
 					transform->SetPosition({ 0, 0 });
@@ -1730,6 +1756,7 @@ int main() {
 					panel->SetTexture(TexDimmedBG);
 					panel->SetColor(glm::vec4(1.0f, 1.0f, 1.0f, 1.0f));
 					panel->SetBorderRadius(0);
+					panel->IsEnabled = false;
 
 
 					transform->SetPosition({ (float)windowSize.x * 0.5, (float)windowSize.y * 0.5 });
@@ -1737,7 +1764,7 @@ int main() {
 				}
 
 				{//Game Over Text
-					GameObject::Sptr button = scene->CreateGameObject("Game Over Text");
+					GameObject::Sptr button = scene->CreateGameObject("GameOver Text");
 
 					RectTransform::Sptr transform = button->Add<RectTransform>();
 					transform->SetPosition({ 0, 0 });
@@ -1750,6 +1777,7 @@ int main() {
 					panel->SetTexture(TexGameOverText);
 					panel->SetColor(glm::vec4(1.0f, 1.0f, 1.0f, 1.0f));
 					panel->SetBorderRadius(0);
+					panel->IsEnabled = false;
 
 
 					transform->SetPosition({ (float)windowSize.x * 0.5, (float)windowSize.y * 0.2});
@@ -1757,7 +1785,7 @@ int main() {
 				}
 
 				{//Score breakdown
-					GameObject::Sptr button = scene->CreateGameObject("Score breakdown");
+					GameObject::Sptr button = scene->CreateGameObject("GameOver Score Breakdown");
 
 					RectTransform::Sptr transform = button->Add<RectTransform>();
 					transform->SetPosition({ 0, 0 });
@@ -1770,13 +1798,14 @@ int main() {
 					panel->SetTexture(TexScoreBreakdown);
 					panel->SetColor(glm::vec4(1.0f, 1.0f, 1.0f, 1.0f));
 					panel->SetBorderRadius(0);
+					panel->IsEnabled = false;
 
 					transform->SetPosition({ (float)windowSize.x * 0.4, (float)windowSize.y * 0.5 });
 
 				}
 
 				{//Quit
-					GameObject::Sptr button = scene->CreateGameObject("Quit Button");
+					GameObject::Sptr button = scene->CreateGameObject("GameOver Quit Button");
 
 					RectTransform::Sptr transform = button->Add<RectTransform>();
 					transform->SetPosition({ 0, 0 });
@@ -1789,13 +1818,14 @@ int main() {
 					panel->SetTexture(TexQuitButton);
 					panel->SetColor(glm::vec4(1.0f, 1.0f, 1.0f, 1.0f));
 					panel->SetBorderRadius(0);
+					panel->IsEnabled = false;
 
 					transform->SetPosition({ (float)windowSize.x * 0.35, (float)windowSize.y * 0.8 });
 
 				}
 
 				{//Continue Button
-					GameObject::Sptr button = scene->CreateGameObject("Continue Button");
+					GameObject::Sptr button = scene->CreateGameObject("GameOver Continue Button");
 
 					RectTransform::Sptr transform = button->Add<RectTransform>();
 					transform->SetPosition({ 0, 0 });
@@ -1808,14 +1838,13 @@ int main() {
 					panel->SetTexture(TexContinueButton);
 					panel->SetColor(glm::vec4(1.0f, 1.0f, 1.0f, 1.0f));
 					panel->SetBorderRadius(0);
+					panel->IsEnabled = false;
 
 
 					transform->SetPosition({ (float)windowSize.x * 0.65, (float)windowSize.y * 0.8 });
 
 				}
 		}
-
-		*/
 		/*
 		{//Tutorial Blocks
 
@@ -1898,6 +1927,51 @@ int main() {
 					transform->SetPosition({ (float)windowSize.x * 0.6, (float)windowSize.y * 0.6 });
 
 				}
+		}
+		*/
+
+		/*
+		{//HUD
+
+			{//Beat Bar
+				GameObject::Sptr button = scene->CreateGameObject("HUD Beat Bar");
+
+				RectTransform::Sptr transform = button->Add<RectTransform>();
+				transform->SetPosition({ 0, 0 });
+				transform->SetRotationDeg(0);
+				transform->SetSize({ 800 * 0.75, 300 * 0.75 });
+				transform->SetMin({ 0, 0 });
+				transform->SetMax({ 800 * 0.75, 300 * 0.75 });
+
+				GuiPanel::Sptr panel = button->Add<GuiPanel>();
+				panel->SetTexture(TexBeatBar);
+				panel->SetColor(glm::vec4(1.0f, 1.0f, 1.0f, 1.0f));
+				panel->SetBorderRadius(0);
+
+
+				transform->SetPosition({ (float)windowSize.x * 0.5, (float)windowSize.y * 0.9 });
+
+			}
+
+			{//Beat Tick
+				GameObject::Sptr button = scene->CreateGameObject("HUD Beat Tick");
+
+				RectTransform::Sptr transform = button->Add<RectTransform>();
+				transform->SetPosition({ 0, 0 });
+				transform->SetRotationDeg(0);
+				transform->SetSize({ 50 * 0.75, 170 * 0.75 });
+				transform->SetMin({ 0, 0 });
+				transform->SetMax({ 50 * 0.75, 170 * 0.75 });
+
+				GuiPanel::Sptr panel = button->Add<GuiPanel>();
+				panel->SetTexture(TexBeatBarTick);
+				panel->SetColor(glm::vec4(1.0f, 1.0f, 1.0f, 1.0f));
+				panel->SetBorderRadius(0);
+
+
+				transform->SetPosition({ (float)windowSize.x * 0.4, (float)windowSize.y * 0.9 });
+
+			}
 		}
 		*/
 
