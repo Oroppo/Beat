@@ -31,6 +31,8 @@ nlohmann::json BeatTimer::ToJson() const {
 		{ "BeatTime", _BeatTime }
 	};
 }
+
+
 BeatTimer::~BeatTimer() = default;
 
 

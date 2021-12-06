@@ -319,6 +319,15 @@ void ToneFire::StudioSound::PlayEvent(const std::string& eventName)
 	_bankEventInstances[eventName]->start();
 }
 
+void ToneFire::StudioSound::SetVolume(const std::string& eventName, float volume)
+{
+	if (_bankEventDescriptions[eventName] == nullptr)
+		LoadEvent(eventName);
+
+	_bankEventInstances[eventName]->setVolume(volume);
+}
+
+
 void ToneFire::StudioSound::StopEvent(const std::string& eventName)
 {
 	if (_bankEventDescriptions[eventName] == nullptr)

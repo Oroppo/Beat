@@ -8,7 +8,7 @@
 void LevelMover::OnLoad() {
 
     keypoints.push_back(GetGameObject()->GetPosition().x);
-    keypoints.push_back(GetGameObject()->GetPosition().x - 40);
+    keypoints.push_back(GetGameObject()->GetPosition().x - 80);
     
     _journeyLength = std::abs(keypoints[keyframe] - keypoints[keyframe + 1]);
 }

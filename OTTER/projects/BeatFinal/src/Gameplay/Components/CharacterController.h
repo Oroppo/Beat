@@ -24,6 +24,7 @@ public:
 public:
 	virtual void RenderImGui() override;
 	MAKE_TYPENAME(CharacterController);
+
 	virtual nlohmann::json ToJson() const override;
 	static CharacterController::Sptr FromJson(const nlohmann::json& blob);
 

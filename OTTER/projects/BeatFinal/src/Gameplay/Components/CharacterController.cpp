@@ -6,6 +6,11 @@
 #include <iostream>
 #include"BeatTimer.h"
 #include "RenderComponent.h"
+#include "GUI/GuiPanel.h"
+#include "GUI/GuiText.h"
+
+#include<sstream>  
+
 void CharacterController::Awake()
 {
     _body = GetComponent<Gameplay::Physics::RigidBody>();
@@ -72,7 +77,12 @@ void CharacterController::OnTriggerVolumeEntered(const std::shared_ptr<Gameplay:
         if (_platform == "CD") {
             score += 100;
         }
-        body->GetGameObject()->SetPostion(glm::vec3(0.0f, -100.0f, 0.0f));
+        std::stringstream ss;
+        ss << score;
+        std::string stringScore;
+        ss >> stringScore;
+        body->GetGameObject()->SetPostion(glm::vec3(-100.0f, 0.0f, 0.0f));
+        GetGameObject()->GetScene()->FindObjectByName("GameOver Score Text")->Get<GuiText>()->SetText(stringScore);
     }
   
 }
@@ -119,20 +129,24 @@ void CharacterController::Update(float deltaTime) {
         _body->SetLinearVelocity(glm::vec3(0.0f, 0.0f, 0.0f));
     }
 
-    //- glm::vec3( 0.0f,_body->GetLinearVelocity().y,0.0f)
+    GetGameObject()->SetPositionY(5.61f);
+    _body->GetGameObject()->SetRotation(glm::vec3(90.0f, 0.0f, 90.0f));
 
 
     if (GetGameObject()->GetPosition().z <= -14.5f)
     {
-        GetGameObject()->SetPostion(glm::vec3(-10.270f, 5.710f, -3.800f));
+        // Activate GameOver U.I. When the player dies! 
+        GetGameObject()->GetScene()->FindObjectByName("GameOver Dimmed Background")->Get<GuiPanel>()->IsEnabled = (GetGameObject()->GetScene()->FindObjectByName("GameOver Dimmed Background")->Get<GuiPanel>()->IsEnabled) = true;
+        GetGameObject()->GetScene()->FindObjectByName("GameOver Text")->Get<GuiPanel>()->IsEnabled = (GetGameObject()->GetScene()->FindObjectByName("GameOver Text")->Get<GuiPanel>()->IsEnabled) = true;
+        GetGameObject()->GetScene()->FindObjectByName("GameOver Score Breakdown")->Get<GuiPanel>()->IsEnabled = GetGameObject()->GetScene()->FindObjectByName("GameOver Score Breakdown")->Get<GuiPanel>()->IsEnabled = true;
+        GetGameObject()->GetScene()->FindObjectByName("GameOver Quit Button")->Get<GuiPanel>()->IsEnabled = GetGameObject()->GetScene()->FindObjectByName("GameOver Quit Button")->Get<GuiPanel>()->IsEnabled = true;
+        GetGameObject()->GetScene()->FindObjectByName("GameOver Continue Button")->Get<GuiPanel>()->IsEnabled = GetGameObject()->GetScene()->FindObjectByName("GameOver Continue Button")->Get<GuiPanel>()->IsEnabled = true;
+        GetGameObject()->GetScene()->FindObjectByName("GameOver Score Text")->Get<GuiText>()->IsEnabled = GetGameObject()->GetScene()->FindObjectByName("GameOver Score Text")->Get<GuiText>()->IsEnabled = true;
+       
     }
-
-    GetGameObject()->GetScene()->Lights[1].Position = GetGameObject()->GetPosition();
-
-    _body->SetAngularDamping(100.f);
-    _body->SetLinearDamping(0.5f);
-
-    GetGameObject()->SetPositionY(5.61f);
-    _body->GetGameObject()->SetRotation(glm::vec3(90.0f, 0.0f, 90.0f));
-
 }
+    
+
+    //GetGameObject()->GetScene()->Lights[1].Position = GetGameObject()->GetPosition();
+
+

@@ -17,8 +17,11 @@ public:
 public:
 	virtual void RenderImGui() override;
 	MAKE_TYPENAME(BeatTimer);
+
 	virtual nlohmann::json ToJson() const override;
 	static BeatTimer::Sptr FromJson(const nlohmann::json& blob);
+
+
 	float GetBeatTime();
 protected:
 

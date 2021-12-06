@@ -135,6 +135,8 @@ namespace ToneFire {
 		//If the event given is not loaded into memory, it will load that event.
 		void StopEvent(const std::string& eventName);
 
+		void SetVolume(const std::string& eventName, float volume);
+
 		//Sets the parameter of a particular event.
 		//If the event given is not loaded into memory, it will load that event.
 		//Will throw an error if the parameter does not exist.
@@ -179,6 +181,7 @@ namespace ToneFire {
 		void Update();
 		void LoadBank(const std::string& bankName,
 			FMOD_STUDIO_LOAD_BANK_FLAGS flags = FMOD_STUDIO_LOAD_BANK_NORMAL);
+		
 	private:
 
 		FMOD::Studio::EventDescription* _GetEventDescription(const std::string& eventName);
