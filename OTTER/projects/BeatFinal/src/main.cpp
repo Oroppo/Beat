@@ -855,6 +855,128 @@ void SpawnBackGroundBuilding(MeshResource::Sptr Mesh, Material::Sptr Material, s
 
 
 void CreateScene() {
+	
+}
+
+void key_callback(GLFWwindow* window, int key, int scancode, int action, int mods)
+{
+	if (key == GLFW_KEY_ESCAPE && action == GLFW_PRESS)
+	{
+		scene->IsPlaying = !scene->IsPlaying;
+		//scene->FindObjectByName("Pause Menu")->Get<GuiPanel>()->IsEnabled = !scene->FindObjectByName("Pause Menu")->Get<GuiPanel>()->IsEnabled;
+		scene->FindObjectByName("Dimmed Background")->Get<GuiPanel>()->IsEnabled = !scene->FindObjectByName("Dimmed Background")->Get<GuiPanel>()->IsEnabled;
+		scene->FindObjectByName("Pause Menu Background")->Get<GuiPanel>()->IsEnabled = !scene->FindObjectByName("Pause Menu Background")->Get<GuiPanel>()->IsEnabled;
+		scene->FindObjectByName("Resume Button")->Get<GuiPanel>()->IsEnabled = !scene->FindObjectByName("Resume Button")->Get<GuiPanel>()->IsEnabled;
+		scene->FindObjectByName("Options Button")->Get<GuiPanel>()->IsEnabled = !scene->FindObjectByName("Options Button")->Get<GuiPanel>()->IsEnabled;
+		scene->FindObjectByName("Quit Button")->Get<GuiPanel>()->IsEnabled = !scene->FindObjectByName("Quit Button")->Get<GuiPanel>()->IsEnabled;
+		scene->FindObjectByName("Music Button")->Get<GuiPanel>()->IsEnabled = !scene->FindObjectByName("Music Button")->Get<GuiPanel>()->IsEnabled;
+	}
+}
+
+int main() {	
+	Logger::Init(); // We'll borrow the logger from the toolkit, but we need to initialize it
+
+	//Initialize GLFW
+	if (!initGLFW())
+		return 1;
+
+	//Initialize GLAD
+	if (!initGLAD())
+		return 1;
+
+	// Let OpenGL know that we want debug output, and route it to our handler function
+	glEnable(GL_DEBUG_OUTPUT);
+	glEnable(GL_DEBUG_OUTPUT_SYNCHRONOUS);
+	glDebugMessageCallback(GlDebugMessage, nullptr);
+
+	// Initialize our ImGui helper
+	ImGuiHelper::Init(window);
+
+	// Initialize our resource manager
+	ResourceManager::Init();
+
+	// Register all our resource types so we can load them from manifest files
+	ResourceManager::RegisterType<Texture2D>();
+	ResourceManager::RegisterType<Material>();
+	ResourceManager::RegisterType<MeshResource>();
+	ResourceManager::RegisterType<Shader>();
+
+	// Register all of our component types so we can load them from files
+	ComponentManager::RegisterType<Camera>();
+	ComponentManager::RegisterType<RenderComponent>();
+	ComponentManager::RegisterType<RigidBody>();
+	ComponentManager::RegisterType<BeatTimer>();
+	ComponentManager::RegisterType<TriggerVolume>();
+	ComponentManager::RegisterType<MoveThings>();
+	//ComponentManager::RegisterType<MouseController>();
+	ComponentManager::RegisterType<SeekBehaviour>();
+	ComponentManager::RegisterType<RotatingBehaviour>();
+	ComponentManager::RegisterType<RotatingBehaviourCD>();
+	ComponentManager::RegisterType<CharacterController>();
+	ComponentManager::RegisterType<JumpBehaviour>();
+	ComponentManager::RegisterType<ScoreComponent>();
+	ComponentManager::RegisterType<MaterialSwapBehaviour>();
+	ComponentManager::RegisterType<LevelMover>();
+	ComponentManager::RegisterType<BackgroundMover>();
+	ComponentManager::RegisterType<BackgroundBuildingMover>();
+	ComponentManager::RegisterType<VinylAnim>();
+	ComponentManager::RegisterType<ForeGroundMover>();
+	ComponentManager::RegisterType<RectTransform>();
+	ComponentManager::RegisterType<GuiPanel>();
+	ComponentManager::RegisterType<GuiText>();
+
+
+	// GL states, we'll enable depth testing and backface fulling
+	// GL states, we'll enable depth testing and backface fulling
+	glEnable(GL_DEPTH_TEST);
+	glEnable(GL_CULL_FACE);
+	glCullFace(GL_BACK);
+	glClearColor(0.2f, 0.2f, 0.2f, 1.0f);
+
+	// Structure for our frame-level uniforms, matches layout from
+	// fragments/frame_uniforms.glsl
+	// For use with a UBO.
+	struct FrameLevelUniforms {
+		// The camera's view matrix
+		glm::mat4 u_View;
+		// The camera's projection matrix
+		glm::mat4 u_Projection;
+		// The combined viewProject matrix
+		glm::mat4 u_ViewProjection;
+		// The camera's position in world space
+		glm::vec4 u_CameraPos;
+		// The time in seconds since the start of the application
+		float u_Time;
+	};
+	// This uniform buffer will hold all our frame level uniforms, to be shared between shaders
+	UniformBuffer<FrameLevelUniforms>::Sptr frameUniforms = std::make_shared<UniformBuffer<FrameLevelUniforms>>(BufferUsage::DynamicDraw);
+	// The slot that we'll bind our frame level UBO to
+	const int FRAME_UBO_BINDING = 0;
+
+	// Structure for our isntance-level uniforms, matches layout from
+	// fragments/frame_uniforms.glsl
+	// For use with a UBO.
+	struct InstanceLevelUniforms {
+		// Complete MVP
+		glm::mat4 u_ModelViewProjection;
+		// Just the model transform, we'll do worldspace lighting
+		glm::mat4 u_Model;
+		// Normal Matrix for transforming normals
+		glm::mat4 u_NormalMatrix;
+	};
+
+	// This uniform buffer will hold all our instance level uniforms, to be shared between shaders
+	UniformBuffer<InstanceLevelUniforms>::Sptr instanceUniforms = std::make_shared<UniformBuffer<InstanceLevelUniforms>>(BufferUsage::DynamicDraw);
+
+	// The slot that we'll bind our instance level UBO to
+	const int INSTANCE_UBO_BINDING = 1;
+
+	////////////////////////////////
+	///// SCENE CREATION MOVED /////
+	////////////////////////////////
+	
+	//CreateScene();
+
 	bool loadScene = false;
 
 	// For now we can use a toggle to generate our scene vs load from file
@@ -929,11 +1051,11 @@ void CreateScene() {
 		MeshResource::Sptr FloatingLight = ResourceManager::CreateAsset<MeshResource>("FloatingStreetLight.obj");
 
 		//Textures
-		Texture2D::Sptr StartTex = ResourceManager::CreateAsset<Texture2D>("textures/DiscoBuildingTex.png"); 
-		Texture2D::Sptr SmallTex = ResourceManager::CreateAsset<Texture2D>("textures/DanceFloorTex2.png"); 
+		Texture2D::Sptr StartTex = ResourceManager::CreateAsset<Texture2D>("textures/DiscoBuildingTex.png");
+		Texture2D::Sptr SmallTex = ResourceManager::CreateAsset<Texture2D>("textures/DanceFloorTex2.png");
 		Texture2D::Sptr VinylTex = ResourceManager::CreateAsset<Texture2D>("textures/VinylTex.png");
 		Texture2D::Sptr CDTex = ResourceManager::CreateAsset<Texture2D>("textures/CDTex.png");
-		Texture2D::Sptr GemTex = ResourceManager::CreateAsset<Texture2D>("textures/Gem.png"); 
+		Texture2D::Sptr GemTex = ResourceManager::CreateAsset<Texture2D>("textures/Gem.png");
 		Texture2D::Sptr CharacterTex = ResourceManager::CreateAsset<Texture2D>("textures/shirt.png");
 		Texture2D::Sptr LoseScreenTex = ResourceManager::CreateAsset<Texture2D>("textures/Game_Over_Screen.png");
 		Texture2D::Sptr SmallWallJumpTex = ResourceManager::CreateAsset<Texture2D>("textures/SmallWallJumpTexBlue.png");
@@ -1141,7 +1263,7 @@ void CreateScene() {
 			HalfCirclePlatMaterial->Set("u_Material.Shininess", 0.1f);
 		}
 
-		Material::Sptr StairsRightMaterial= ResourceManager::CreateAsset<Material>(basicShader);
+		Material::Sptr StairsRightMaterial = ResourceManager::CreateAsset<Material>(basicShader);
 		{
 			StairsRightMaterial->Name = "Stairs Right";
 			StairsRightMaterial->Set("u_Material.Diffuse", StairsRightTex);
@@ -1224,26 +1346,7 @@ void CreateScene() {
 		GameObject::Sptr Block7 = scene->CreateGameObject("Block7");
 		GameObject::Sptr Block8 = scene->CreateGameObject("Block8");
 		{
-			Block1->Add<LevelMover>();
-			Block2->Add<LevelMover>();
-			Block3->Add<LevelMover>();
-			Block4->Add<LevelMover>();
-			Block5->Add<LevelMover>();
-			Block6->Add<LevelMover>();
-			Block7->Add<LevelMover>();
-			Block8->Add<LevelMover>();
-			TutorialBlock->Add<LevelMover>();
 
-			//These have rigid bodies so that our objects can move
-			auto rb1 = Block1->Add<RigidBody>();
-			auto rb2 = Block2->Add<RigidBody>();
-			auto rb3 = Block3->Add<RigidBody>();
-			auto rb4 = Block4->Add<RigidBody>();
-			auto rb5 = Block5->Add<RigidBody>();
-			auto rb6 = Block6->Add<RigidBody>();
-			auto rb7 = Block7->Add<RigidBody>();
-			auto rb8 = Block8->Add<RigidBody>();
-			auto rbt = TutorialBlock->Add<RigidBody>();
 		}
 
 		//This is a game object built purely to manage game systems i.e. Scene Swaps
@@ -1258,10 +1361,10 @@ void CreateScene() {
 			//Scene Swapper
 
 		}
-	
+
 
 		// Tutorial
-		
+
 		// Background and forground vehicles\\
 		Give these Parents for Foreground/Background Blocks if we have enough objects to do that with!
 		SpawnBackGroundCar(Car1Mesh, Car1Material, "Car1", glm::vec3(14.870f, 7.80f, 2.7f), glm::vec3(90.0f, 0.0f, -90.0f), glm::vec3(0.250f, 0.250f, 0.250f));
@@ -1409,7 +1512,7 @@ void CreateScene() {
 		SpawnSmallWallJump(SmallWallJump, SmallWallJumpMaterial, "Small Wall Jump", glm::vec3(-2.600f, 5.610f, 5.940f), glm::vec3(180.0f, 0.0f, 180.0f), glm::vec3(0.500f, 0.210f, 1.500f), Block6);
 		SpawnSmallWallJump(SmallWallJump, SmallWallJumpMaterial, "Small Wall Jump", glm::vec3(-1.170f, 5.610f, 6.950f), glm::vec3(180.0f, 0.0f, 180.0f), glm::vec3(0.500f, 0.210f, 1.500f), Block6);
 		SpawnBuilding(Building, BuildingMaterial, "Building Block6 1", glm::vec3(-1.010f, 5.610f, -4.960f), glm::vec3(90.0f, 0.0f, 0.0f), glm::vec3(0.310f, 0.310f, 0.310f), Block6);
-		SpawnBuilding(Building, BuildingMaterial, "Building Block6 2", glm::vec3(2.070f, 5.610f, -3.810f), glm::vec3(90.0f, 0.0f, 0.0f), glm::vec3(0.310f, 0.310f, 0.310f), Block6); 
+		SpawnBuilding(Building, BuildingMaterial, "Building Block6 2", glm::vec3(2.070f, 5.610f, -3.810f), glm::vec3(90.0f, 0.0f, 0.0f), glm::vec3(0.310f, 0.310f, 0.310f), Block6);
 		SpawnCollectable(Vinyl, VinylMaterial, "Vinyl", glm::vec3(-1.890f, 5.610f, 5.390f), glm::vec3(90.000f, 0.0f, 90.000f), glm::vec3(1.000f, 1.000f, 1.000f), Block6);
 		SpawnStartPlat(StartPlatform, StartPlatformMaterial, "EndPlatform", glm::vec3(6.840f, 5.610f, -4.920f), glm::vec3(90.0f, 0.0f, 0.0f), glm::vec3(0.350f, 0.350f, 0.350f), Block6);
 
@@ -1433,7 +1536,7 @@ void CreateScene() {
 		SpawnStairsLeft(StairsLeft, StairsLeftMaterial, "Stairs Left", glm::vec3(-1.250f, 5.610f, -0.920f), glm::vec3(90.0f, 0.0f, 90.0f), glm::vec3(0.350f, 0.350f, 0.350f), Block7);
 		SpawnSmallWallJump(SmallWallJump, SmallWallJumpMaterial, "Small Wall Jump", glm::vec3(-8.210f, 5.610f, 2.050f), glm::vec3(180.0f, 0.0f, 180.0f), glm::vec3(0.500f, 0.210f, 1.500f), Block7);
 		SpawnSmallWallJump(SmallWallJump, SmallWallJumpMaterial, "Small Wall Jump", glm::vec3(-5.780f, 5.610f, 0.380f), glm::vec3(180.0f, 0.0f, 180.0f), glm::vec3(0.500f, 0.210f, 1.500f), Block7);
-		SpawnBuilding(Building, BuildingMaterial, "Building", glm::vec3(4.130f, 5.610f, -3.610f), glm::vec3(90.0f, 0.0f, 0.0f), glm::vec3(0.310f, 0.310f, 0.310f), Block7); 
+		SpawnBuilding(Building, BuildingMaterial, "Building", glm::vec3(4.130f, 5.610f, -3.610f), glm::vec3(90.0f, 0.0f, 0.0f), glm::vec3(0.310f, 0.310f, 0.310f), Block7);
 		SpawnGem(BeatGem, BeatGemMaterial, "BeatGem", glm::vec3(1.350f, 5.610f, 1.180f), glm::vec3(90.0f, 0.0f, 180.0f), glm::vec3(0.500f, 0.500f, 0.500f), Block7);
 		SpawnCollectable(Vinyl, VinylMaterial, "Vinyl", glm::vec3(-0.180f, 5.610f, -0.330f), glm::vec3(90.000f, 0.0f, 90.000f), glm::vec3(1.000f, 1.000f, 1.000f), Block7);
 		SpawnStartPlat(StartPlatform, StartPlatformMaterial, "EndPlatform", glm::vec3(6.840f, 5.610f, -4.920f), glm::vec3(90.0f, 0.0f, 0.0f), glm::vec3(0.350f, 0.350f, 0.350f), Block7);
@@ -1444,9 +1547,9 @@ void CreateScene() {
 		SpawnCD(CD, CDMaterial, "CD", glm::vec3(-4.230f, 5.610f, 2.760f), glm::vec3(90.000f, 0.0f, 90.000f), glm::vec3(1.000f, 1.000f, 1.000f), Block7);
 		SpawnCD(CD, CDMaterial, "CD", glm::vec3(-0.720f, 5.610f, 2.760f), glm::vec3(90.000f, 0.0f, 90.000f), glm::vec3(1.000f, 1.000f, 1.000f), Block7);
 		*/
-		
+
 		// 8th Block
-		
+
 		SpawnStartPlat(StartPlatform, StartPlatformMaterial, "StartPlatform", glm::vec3(-9.820f, 5.610f, -4.450), glm::vec3(90.0f, 0.0f, 0.0f), glm::vec3(0.350f, 0.350f, 0.350f), Block8);
 		SpawnObj(SmallPlatform, SmallPlatformMaterial, "Small Platform", glm::vec3(-6.640f, 5.610f, -4.140f), glm::vec3(180.0f, 0.0f, 180.0f), glm::vec3(0.350f, 0.350f, 0.350f), Block8);
 		SpawnObj(SmallPlatform, SmallPlatformMaterial, "Small Platform", glm::vec3(-4.430f, 5.610f, -3.310f), glm::vec3(180.0f, 0.0f, 180.0f), glm::vec3(0.350f, 0.350f, 0.350f), Block8);
@@ -1468,7 +1571,7 @@ void CreateScene() {
 		SpawnCD(CD, CDMaterial, "CD", glm::vec3(1.540f, 5.610f, -0.020f), glm::vec3(90.000f, 0.0f, 90.000f), glm::vec3(1.000f, 1.000f, 1.000f), Block8);
 		SpawnCD(CD, CDMaterial, "CD", glm::vec3(1.500f, 5.610f, -4.260f), glm::vec3(90.000f, 0.0f, 90.000f), glm::vec3(1.000f, 1.000f, 1.000f), Block8);
 		SpawnCD(CD, CDMaterial, "CD", glm::vec3(4.170f, 5.610f, 0.400f), glm::vec3(90.000f, 0.0f, 90.000f), glm::vec3(1.000f, 1.000f, 1.000f), Block8);
-		
+
 
 		// Player:
 		GameObject::Sptr character = scene->CreateGameObject("Character/Player");
@@ -1500,7 +1603,7 @@ void CreateScene() {
 			volume->AddCollider(collider);
 		}
 
-		GameObject::Sptr DiscoBall = scene->CreateGameObject("DiscoBall"); 
+		GameObject::Sptr DiscoBall = scene->CreateGameObject("DiscoBall");
 		{
 			DiscoBall->SetPostion(glm::vec3(-10.270f, 5.710f, -1.0f));
 			DiscoBall->SetRotation(glm::vec3(90.0f, 0.0f, 90.0f));
@@ -1510,17 +1613,17 @@ void CreateScene() {
 			renderer->SetMesh(DiscoBallMesh);
 			renderer->SetMaterial(DiscoBallMaterial);
 
-		SeekBehaviour::Sptr seeking = DiscoBall->Add<SeekBehaviour>();
-		seeking->seekTo(character);
+			SeekBehaviour::Sptr seeking = DiscoBall->Add<SeekBehaviour>();
+			seeking->seekTo(character);
 
-		RigidBody::Sptr ballphysics = DiscoBall->Add<RigidBody>(RigidBodyType::Dynamic);
+			RigidBody::Sptr ballphysics = DiscoBall->Add<RigidBody>(RigidBodyType::Dynamic);
 		}
 
 		/////////////////////////// UI //////////////////////////////
-		
+
 		/*
 		{//Main Menu Block
-		
+
 				{//Logo
 					GameObject::Sptr logo = scene->CreateGameObject("Logo");
 
@@ -1645,131 +1748,137 @@ void CreateScene() {
 				}
 
 			}
-		
+
 		*/
-		/*
-
-			{//Pause Menu Block
-
-				{//Dim BG
-					GameObject::Sptr background = scene->CreateGameObject("Dimmed Background");
-
-					RectTransform::Sptr transform = background->Add<RectTransform>();
-					transform->SetPosition({ 0, 0 });
-					transform->SetRotationDeg(0);
-					transform->SetSize({ 1920, 1080 });
-					transform->SetMin({ 0, 0 });
-					transform->SetMax({ 1920, 1080 });
-
-					GuiPanel::Sptr panel = background->Add<GuiPanel>();
-					panel->SetTexture(TexDimmedBG);
-					panel->SetColor(glm::vec4(1.0f, 1.0f, 1.0f, 1.0f));
-					panel->SetBorderRadius(0);
 
 
-					transform->SetPosition({ (float)windowSize.x * 0.5, (float)windowSize.y * 0.5 });
+		{//Pause Menu Block
 
-				}
+			{//Dim BG
+				GameObject::Sptr background = scene->CreateGameObject("Dimmed Background");
 
-				{//Background
-					GameObject::Sptr background = scene->CreateGameObject("Pause Menu Background");
+				RectTransform::Sptr transform = background->Add<RectTransform>();
+				transform->SetPosition({ 0, 0 });
+				transform->SetRotationDeg(0);
+				transform->SetSize({ 1920, 1080 });
+				transform->SetMin({ 0, 0 });
+				transform->SetMax({ 1920, 1080 });
 
-					RectTransform::Sptr transform = background->Add<RectTransform>();
-					transform->SetPosition({ 0, 0 });
-					transform->SetRotationDeg(0);
-					transform->SetSize({ 400, 750 });
-					transform->SetMin({ 0, 0 });
-					transform->SetMax({ 400, 750 });
-
-					GuiPanel::Sptr panel = background->Add<GuiPanel>();
-					panel->SetTexture(TexPauseMenu);
-					panel->SetColor(glm::vec4(1.0f, 1.0f, 1.0f, 1.0f));
-					panel->SetBorderRadius(0);
-
-
-					transform->SetPosition({ (float)windowSize.x * 0.5, (float)windowSize.y * 0.5 });
-
-				}
-
-				{//Resume Button
-					GameObject::Sptr button = scene->CreateGameObject("Resume Button");
-
-					RectTransform::Sptr transform = button->Add<RectTransform>();
-					transform->SetPosition({ 0, 0 });
-					transform->SetRotationDeg(0);
-					transform->SetSize({ 300, 150 });
-					transform->SetMin({ 0, 0 });
-					transform->SetMax({ 300, 150 });
-
-					GuiPanel::Sptr panel = button->Add<GuiPanel>();
-					panel->SetTexture(TexResumeButton);
-					panel->SetColor(glm::vec4(1.0f, 1.0f, 1.0f, 1.0f));
-					panel->SetBorderRadius(0);
+				GuiPanel::Sptr panel = background->Add<GuiPanel>();
+				panel->SetTexture(TexDimmedBG);
+				panel->SetColor(glm::vec4(1.0f, 1.0f, 1.0f, 1.0f));
+				panel->SetBorderRadius(0);
+				panel->IsEnabled = false;
 
 
-					transform->SetPosition({ (float)windowSize.x * 0.5, (float)windowSize.y * 0.28});
+				transform->SetPosition({ (float)windowSize.x * 0.5, (float)windowSize.y * 0.5 });
 
-				}
+			}
 
-				{//Options Button
-					GameObject::Sptr button = scene->CreateGameObject("Options Button");
+			{//Background
+				GameObject::Sptr background = scene->CreateGameObject("Pause Menu Background");
 
-					RectTransform::Sptr transform = button->Add<RectTransform>();
-					transform->SetPosition({ 0, 0 });
-					transform->SetRotationDeg(0);
-					transform->SetSize({ 300, 150 });
-					transform->SetMin({ 0, 0 });
-					transform->SetMax({ 300, 150 });
+				RectTransform::Sptr transform = background->Add<RectTransform>();
+				transform->SetPosition({ 0, 0 });
+				transform->SetRotationDeg(0);
+				transform->SetSize({ 400, 750 });
+				transform->SetMin({ 0, 0 });
+				transform->SetMax({ 400, 750 });
 
-					GuiPanel::Sptr panel = button->Add<GuiPanel>();
-					panel->SetTexture(TexOptionsButton);
-					panel->SetColor(glm::vec4(1.0f, 1.0f, 1.0f, 0.6f));
-					panel->SetBorderRadius(0);
-
-					transform->SetPosition({ (float)windowSize.x * 0.5, (float)windowSize.y * 0.43 });
-
-				}
-
-				{//Resync Button
-					GameObject::Sptr button = scene->CreateGameObject("Music Button");
-
-					RectTransform::Sptr transform = button->Add<RectTransform>();
-					transform->SetPosition({ 0, 0 });
-					transform->SetRotationDeg(0);
-					transform->SetSize({ 300, 150 });
-					transform->SetMin({ 0, 0 });
-					transform->SetMax({ 300, 150 });
-
-					GuiPanel::Sptr panel = button->Add<GuiPanel>();
-					panel->SetTexture(TexResyncButton);
-					panel->SetColor(glm::vec4(1.0f, 1.0f, 1.0f, 0.6f));
-					panel->SetBorderRadius(0);
-
-					transform->SetPosition({ (float)windowSize.x * 0.5, (float)windowSize.y * 0.58 });
-
-				}
-
-				{//Quit Button
-					GameObject::Sptr button = scene->CreateGameObject("Quit Button");
-
-					RectTransform::Sptr transform = button->Add<RectTransform>();
-					transform->SetPosition({ 0, 0 });
-					transform->SetRotationDeg(0);
-					transform->SetSize({ 300, 150 });
-					transform->SetMin({ 0, 0 });
-					transform->SetMax({ 300, 150 });
-
-					GuiPanel::Sptr panel = button->Add<GuiPanel>();
-					panel->SetTexture(TexQuitButton);
-					panel->SetColor(glm::vec4(1.0f, 1.0f, 1.0f, 1.0f));
-					panel->SetBorderRadius(0);
+				GuiPanel::Sptr panel = background->Add<GuiPanel>();
+				panel->SetTexture(TexPauseMenu);
+				panel->SetColor(glm::vec4(1.0f, 1.0f, 1.0f, 1.0f));
+				panel->SetBorderRadius(0);
+				panel->IsEnabled = false;
 
 
-					transform->SetPosition({ (float)windowSize.x * 0.5, (float)windowSize.y * 0.73 });
+				transform->SetPosition({ (float)windowSize.x * 0.5, (float)windowSize.y * 0.5 });
 
-				}
+			}
+
+			{//Resume Button
+				GameObject::Sptr button = scene->CreateGameObject("Resume Button");
+
+				RectTransform::Sptr transform = button->Add<RectTransform>();
+				transform->SetPosition({ 0, 0 });
+				transform->SetRotationDeg(0);
+				transform->SetSize({ 300, 150 });
+				transform->SetMin({ 0, 0 });
+				transform->SetMax({ 300, 150 });
+
+				GuiPanel::Sptr panel = button->Add<GuiPanel>();
+				panel->SetTexture(TexResumeButton);
+				panel->SetColor(glm::vec4(1.0f, 1.0f, 1.0f, 1.0f));
+				panel->SetBorderRadius(0);
+				panel->IsEnabled = false;
+
+
+				transform->SetPosition({ (float)windowSize.x * 0.5, (float)windowSize.y * 0.28 });
+
+			}
+
+			{//Options Button
+				GameObject::Sptr button = scene->CreateGameObject("Options Button");
+
+				RectTransform::Sptr transform = button->Add<RectTransform>();
+				transform->SetPosition({ 0, 0 });
+				transform->SetRotationDeg(0);
+				transform->SetSize({ 300, 150 });
+				transform->SetMin({ 0, 0 });
+				transform->SetMax({ 300, 150 });
+
+				GuiPanel::Sptr panel = button->Add<GuiPanel>();
+				panel->SetTexture(TexOptionsButton);
+				panel->SetColor(glm::vec4(1.0f, 1.0f, 1.0f, 0.6f));
+				panel->SetBorderRadius(0);
+				panel->IsEnabled = false;
+
+				transform->SetPosition({ (float)windowSize.x * 0.5, (float)windowSize.y * 0.43 });
+
+			}
+
+			{//Resync Button
+				GameObject::Sptr button = scene->CreateGameObject("Music Button");
+
+				RectTransform::Sptr transform = button->Add<RectTransform>();
+				transform->SetPosition({ 0, 0 });
+				transform->SetRotationDeg(0);
+				transform->SetSize({ 300, 150 });
+				transform->SetMin({ 0, 0 });
+				transform->SetMax({ 300, 150 });
+
+				GuiPanel::Sptr panel = button->Add<GuiPanel>();
+				panel->SetTexture(TexResyncButton);
+				panel->SetColor(glm::vec4(1.0f, 1.0f, 1.0f, 0.6f));
+				panel->SetBorderRadius(0);
+				panel->IsEnabled = false;
+
+				transform->SetPosition({ (float)windowSize.x * 0.5, (float)windowSize.y * 0.58 });
+
+			}
+
+			{//Quit Button
+				GameObject::Sptr button = scene->CreateGameObject("Quit Button");
+
+				RectTransform::Sptr transform = button->Add<RectTransform>();
+				transform->SetPosition({ 0, 0 });
+				transform->SetRotationDeg(0);
+				transform->SetSize({ 300, 150 });
+				transform->SetMin({ 0, 0 });
+				transform->SetMax({ 300, 150 });
+
+				GuiPanel::Sptr panel = button->Add<GuiPanel>();
+				panel->SetTexture(TexQuitButton);
+				panel->SetColor(glm::vec4(1.0f, 1.0f, 1.0f, 1.0f));
+				panel->SetBorderRadius(0);
+				panel->IsEnabled = false;
+
+
+				transform->SetPosition({ (float)windowSize.x * 0.5, (float)windowSize.y * 0.73 });
+
+			}
 		}
-		*/
+
 
 		/*
 
@@ -1959,7 +2068,7 @@ void CreateScene() {
 				}
 		}
 		*/
-	
+
 		GuiBatcher::SetDefaultTexture(ResourceManager::CreateAsset<Texture2D>("textures/ui-sprite.png"));
 		GuiBatcher::SetDefaultBorderRadius(8);
 
@@ -1973,118 +2082,6 @@ void CreateScene() {
 		scene->Save("scene.json");
 
 	}
-}
-
-void key_callback(GLFWwindow* window, int key, int scancode, int action, int mods)
-{
-	if (key == GLFW_KEY_ESCAPE && action == GLFW_PRESS)
-	{
-		scene->IsPlaying = !scene->IsPlaying;
-	}
-}
-
-int main() {	
-	Logger::Init(); // We'll borrow the logger from the toolkit, but we need to initialize it
-
-	//Initialize GLFW
-	if (!initGLFW())
-		return 1;
-
-	//Initialize GLAD
-	if (!initGLAD())
-		return 1;
-
-	// Let OpenGL know that we want debug output, and route it to our handler function
-	glEnable(GL_DEBUG_OUTPUT);
-	glEnable(GL_DEBUG_OUTPUT_SYNCHRONOUS);
-	glDebugMessageCallback(GlDebugMessage, nullptr);
-
-	// Initialize our ImGui helper
-	ImGuiHelper::Init(window);
-
-	// Initialize our resource manager
-	ResourceManager::Init();
-
-	// Register all our resource types so we can load them from manifest files
-	ResourceManager::RegisterType<Texture2D>();
-	ResourceManager::RegisterType<Material>();
-	ResourceManager::RegisterType<MeshResource>();
-	ResourceManager::RegisterType<Shader>();
-
-	// Register all of our component types so we can load them from files
-	ComponentManager::RegisterType<Camera>();
-	ComponentManager::RegisterType<RenderComponent>();
-	ComponentManager::RegisterType<RigidBody>();
-	ComponentManager::RegisterType<BeatTimer>();
-	ComponentManager::RegisterType<TriggerVolume>();
-	ComponentManager::RegisterType<MoveThings>();
-	//ComponentManager::RegisterType<MouseController>();
-	ComponentManager::RegisterType<SeekBehaviour>();
-	ComponentManager::RegisterType<RotatingBehaviour>();
-	ComponentManager::RegisterType<RotatingBehaviourCD>();
-	ComponentManager::RegisterType<CharacterController>();
-	ComponentManager::RegisterType<JumpBehaviour>();
-	ComponentManager::RegisterType<ScoreComponent>();
-	ComponentManager::RegisterType<MaterialSwapBehaviour>();
-	ComponentManager::RegisterType<LevelMover>();
-	ComponentManager::RegisterType<BackgroundMover>();
-	ComponentManager::RegisterType<BackgroundBuildingMover>();
-	ComponentManager::RegisterType<VinylAnim>();
-	ComponentManager::RegisterType<ForeGroundMover>();
-	ComponentManager::RegisterType<RectTransform>();
-	ComponentManager::RegisterType<GuiPanel>();
-	ComponentManager::RegisterType<GuiText>();
-
-
-	// GL states, we'll enable depth testing and backface fulling
-	// GL states, we'll enable depth testing and backface fulling
-	glEnable(GL_DEPTH_TEST);
-	glEnable(GL_CULL_FACE);
-	glCullFace(GL_BACK);
-	glClearColor(0.2f, 0.2f, 0.2f, 1.0f);
-
-	// Structure for our frame-level uniforms, matches layout from
-	// fragments/frame_uniforms.glsl
-	// For use with a UBO.
-	struct FrameLevelUniforms {
-		// The camera's view matrix
-		glm::mat4 u_View;
-		// The camera's projection matrix
-		glm::mat4 u_Projection;
-		// The combined viewProject matrix
-		glm::mat4 u_ViewProjection;
-		// The camera's position in world space
-		glm::vec4 u_CameraPos;
-		// The time in seconds since the start of the application
-		float u_Time;
-	};
-	// This uniform buffer will hold all our frame level uniforms, to be shared between shaders
-	UniformBuffer<FrameLevelUniforms>::Sptr frameUniforms = std::make_shared<UniformBuffer<FrameLevelUniforms>>(BufferUsage::DynamicDraw);
-	// The slot that we'll bind our frame level UBO to
-	const int FRAME_UBO_BINDING = 0;
-
-	// Structure for our isntance-level uniforms, matches layout from
-	// fragments/frame_uniforms.glsl
-	// For use with a UBO.
-	struct InstanceLevelUniforms {
-		// Complete MVP
-		glm::mat4 u_ModelViewProjection;
-		// Just the model transform, we'll do worldspace lighting
-		glm::mat4 u_Model;
-		// Normal Matrix for transforming normals
-		glm::mat4 u_NormalMatrix;
-	};
-
-	// This uniform buffer will hold all our instance level uniforms, to be shared between shaders
-	UniformBuffer<InstanceLevelUniforms>::Sptr instanceUniforms = std::make_shared<UniformBuffer<InstanceLevelUniforms>>(BufferUsage::DynamicDraw);
-
-	// The slot that we'll bind our instance level UBO to
-	const int INSTANCE_UBO_BINDING = 1;
-
-	////////////////////////////////
-	///// SCENE CREATION MOVED /////
-	////////////////////////////////
-	CreateScene();
 
 	// We'll use this to allow editing the save/load path
 	// via ImGui, note the reserve to allocate extra space

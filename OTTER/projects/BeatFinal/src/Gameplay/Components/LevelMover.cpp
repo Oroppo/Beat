@@ -76,25 +76,20 @@ void LevelMover::Update(float deltaTime)
 
     float sqt = (fractionOfJourney) * (fractionOfJourney);
 
-   // float SlowInOut = sqt / (2.0f * (sqt - fractionOfJourney) + 1.0f);
+    // float SlowInOut = sqt / (2.0f * (sqt - fractionOfJourney) + 1.0f);
 
-    GetGameObject()->SetPostion(glm::vec3(Lerp(keypoints[keyframe], keypoints[keyframe+1], fractionOfJourney), ObjY, ObjZ));
+    GetGameObject()->SetPostion(glm::vec3(Lerp(keypoints[keyframe], keypoints[keyframe + 1], fractionOfJourney), ObjY, ObjZ));
 
     if ((fractionOfJourney >= 1.f) && (keyframe != keypoints.size() - 1))
     {
         _timeStored = _timer - _startTime;
         keyframe++;
     }
-    /*
-    if (GetGameObject()->GetPosition().y >= 10.0f);
-    {
-       BObjPosX = BObjPosX - 15.0 * deltaTime;
-       GetGameObject()->SetPostion(glm::vec3(BObjPosX, ObjY, ObjZ));
-    }
 
-    FObjPosX = FObjPosX - 4.5 * deltaTime;
-    GetGameObject()->SetPostion(glm::vec3(FObjPosX, ObjY, ObjZ));
-    */
+    Gameplay::GameObject::Sptr context = GetGameObject()->SelfRef();
+    if (GetGameObject()->GetPosition().x <= -20.f) {
+        GetGameObject()->GetScene()->RemoveGameObject(context);
+    }
 }
 
 // Templated LERP function returns positon at current time for LERP
