@@ -90,6 +90,9 @@
 #include "Gameplay/Physics/TriggerVolume.h"
 #include "Graphics/DebugDraw.h"
 
+// Animations
+#include "Gameplay/Animation/MorphAnimator.h"
+#include "Gameplay/Animation/MorphMeshRenderer.h"
 //Sound
 #include "Sound/AudioEngine.h"
 #include "Fmod.h"
@@ -978,7 +981,8 @@ int main() {
 	ComponentManager::RegisterType<GuiText>();
 	ComponentManager::RegisterType<BuildingAnim>();
 	ComponentManager::RegisterType<MaterialSwap>();
-
+	ComponentManager::RegisterType<Morphanimator>();
+	ComponentManager::RegisterType<MorphMeshRenderer>();
 
 	// GL states, we'll enable depth testing and backface fulling
 	// GL states, we'll enable depth testing and backface fulling
@@ -1091,6 +1095,15 @@ int main() {
 	MeshResource::Sptr Speaker = ResourceManager::CreateAsset<MeshResource>("speaker.obj");
 	MeshResource::Sptr SquarePlat = ResourceManager::CreateAsset<MeshResource>("SquarePlatform.obj");
 	MeshResource::Sptr FloatingLight = ResourceManager::CreateAsset<MeshResource>("FloatingStreetLight.obj");
+	MeshResource::Sptr DiscoBotMesh1 = ResourceManager::CreateAsset<MeshResource>("CharacterAnims/run1.obj");
+	MeshResource::Sptr DiscoBotMesh2 = ResourceManager::CreateAsset<MeshResource>("CharacterAnims/run2.obj");
+	MeshResource::Sptr DiscoBotMesh3 = ResourceManager::CreateAsset<MeshResource>("CharacterAnims/run3.obj");
+	MeshResource::Sptr DiscoBotMesh4 = ResourceManager::CreateAsset<MeshResource>("CharacterAnims/run4.obj");
+	MeshResource::Sptr DiscoBotMesh5 = ResourceManager::CreateAsset<MeshResource>("CharacterAnims/run5.obj");
+	MeshResource::Sptr DiscoBotMesh6 = ResourceManager::CreateAsset<MeshResource>("CharacterAnims/run6.obj");
+	MeshResource::Sptr DiscoBotMesh7 = ResourceManager::CreateAsset<MeshResource>("CharacterAnims/run7.obj");
+	MeshResource::Sptr DiscoBotMesh8 = ResourceManager::CreateAsset<MeshResource>("CharacterAnims/run8.obj");
+	MeshResource::Sptr DiscoBotMesh9 = ResourceManager::CreateAsset<MeshResource>("CharacterAnims/run9.obj");
 
 	//Textures
 	Texture2D::Sptr StartTex = ResourceManager::CreateAsset<Texture2D>("textures/LStartPlatformTex.png");
@@ -1527,8 +1540,27 @@ int main() {
 			BoxCollider::Sptr collider = BoxCollider::Create(glm::vec3(0.3f, 0.3f, 0.3f));
 			collider->SetPosition(glm::vec3(0.f, 0.25f, 0.f));
 			volume->AddCollider(collider);
-		}
 
+			MorphMeshRenderer::Sptr morph1 = character->Add<MorphMeshRenderer>();
+			morph1->SetMorphMeshRenderer(DiscoBotMesh1, CharacterMaterial);
+			Morphanimator::Sptr morph2 = character->Add<Morphanimator>();
+
+			std::vector<MeshResource::Sptr> KeyFrames;
+
+			KeyFrames.push_back(DiscoBotMesh2);
+			KeyFrames.push_back(DiscoBotMesh3);
+			KeyFrames.push_back(DiscoBotMesh4);
+			KeyFrames.push_back(DiscoBotMesh5);
+			KeyFrames.push_back(DiscoBotMesh6);
+			KeyFrames.push_back(DiscoBotMesh7);
+			KeyFrames.push_back(DiscoBotMesh8);
+			KeyFrames.push_back(DiscoBotMesh9);
+
+			morph2->SetInitial();
+			morph2->SetFrameTime(0.1f);
+			morph2->SetFrames(KeyFrames);
+		}
+		
 		GameObject::Sptr DiscoBall = scene->CreateGameObject("DiscoBall");
 		{
 			DiscoBall->SetPostion(glm::vec3(-10.270f, 5.710f, -1.0f));
