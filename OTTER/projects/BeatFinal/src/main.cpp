@@ -302,7 +302,7 @@ void SpawnStartPlat(MeshResource::Sptr Mesh, Material::Sptr Material, std::strin
 
 		// Add a dynamic rigid body to this object
 		RigidBody::Sptr physics = Startplatform->Add<RigidBody>(RigidBodyType::Kinematic);
-		physics->AddCollider(BoxCollider::Create(glm::vec3(1.8f, 0.7f, 1.0f)));
+		physics->AddCollider(BoxCollider::Create(glm::vec3(1.8f, 5.0f, 1.0f)));
 
 		if (parent != nullptr) {
 			parent->AddChild(Startplatform);
@@ -1036,7 +1036,7 @@ int main() {
 		MeshResource::Sptr OvalBuilding = ResourceManager::CreateAsset<MeshResource>("OvalBuilding.obj");
 		MeshResource::Sptr CharacterMesh = ResourceManager::CreateAsset<MeshResource>("dudeCharacter.obj");
 		MeshResource::Sptr DiscoBallMesh = ResourceManager::CreateAsset<MeshResource>("DiscoBall2.obj");
-		MeshResource::Sptr StartPlatform = ResourceManager::CreateAsset<MeshResource>("StartPlatformV6.obj");
+		MeshResource::Sptr StartPlatform = ResourceManager::CreateAsset<MeshResource>("LStartPlatform.obj");
 		MeshResource::Sptr Car1Mesh = ResourceManager::CreateAsset<MeshResource>("FutureCar1.obj");
 		MeshResource::Sptr SemiTruckMesh = ResourceManager::CreateAsset<MeshResource>("Semitruck.obj");
 		MeshResource::Sptr PickupTruckMesh = ResourceManager::CreateAsset<MeshResource>("FuturePickup.obj");
@@ -1051,8 +1051,8 @@ int main() {
 		MeshResource::Sptr FloatingLight = ResourceManager::CreateAsset<MeshResource>("FloatingStreetLight.obj");
 
 		//Textures
-		Texture2D::Sptr StartTex = ResourceManager::CreateAsset<Texture2D>("textures/DiscoBuildingTex.png");
-		Texture2D::Sptr SmallTex = ResourceManager::CreateAsset<Texture2D>("textures/DanceFloorTex2.png");
+		Texture2D::Sptr StartTex = ResourceManager::CreateAsset<Texture2D>("textures/LStartPlatformTex.png"); 
+		Texture2D::Sptr SmallTex = ResourceManager::CreateAsset<Texture2D>("textures/DanceFloorTex2.png"); 
 		Texture2D::Sptr VinylTex = ResourceManager::CreateAsset<Texture2D>("textures/VinylTex.png");
 		Texture2D::Sptr CDTex = ResourceManager::CreateAsset<Texture2D>("textures/CDTex.png");
 		Texture2D::Sptr GemTex = ResourceManager::CreateAsset<Texture2D>("textures/Gem.png");
@@ -1549,8 +1549,8 @@ int main() {
 		*/
 
 		// 8th Block
-
-		SpawnStartPlat(StartPlatform, StartPlatformMaterial, "StartPlatform", glm::vec3(-9.820f, 5.610f, -4.450), glm::vec3(90.0f, 0.0f, 0.0f), glm::vec3(0.350f, 0.350f, 0.350f), Block8);
+		
+		SpawnStartPlat(StartPlatform, StartPlatformMaterial, "StartPlatform", glm::vec3(-9.820f, 5.610f, -9.10f), glm::vec3(90.0f, 0.0f, 0.0f), glm::vec3(0.350f, 0.350f, 0.350f), Block8);
 		SpawnObj(SmallPlatform, SmallPlatformMaterial, "Small Platform", glm::vec3(-6.640f, 5.610f, -4.140f), glm::vec3(180.0f, 0.0f, 180.0f), glm::vec3(0.350f, 0.350f, 0.350f), Block8);
 		SpawnObj(SmallPlatform, SmallPlatformMaterial, "Small Platform", glm::vec3(-4.430f, 5.610f, -3.310f), glm::vec3(180.0f, 0.0f, 180.0f), glm::vec3(0.350f, 0.350f, 0.350f), Block8);
 		SpawnStairsRight(StairsRight, StairsRightMaterial, "Stairs Right", glm::vec3(-0.320f, 5.610f, -5.570f), glm::vec3(90.0f, 0.0f, 90.0f), glm::vec3(0.350f, 0.350f, 0.350f), Block8);
@@ -1563,7 +1563,7 @@ int main() {
 		SpawnSuperSmallWallJump(SuperSmallWallJump, SuperSmallWallJumpMaterial, "Super Small Wall Jump", glm::vec3(0.700f, 5.610f, -1.510f), glm::vec3(180.0f, 0.0f, 180.0f), glm::vec3(0.500f, 0.210f, 1.500f), Block8);
 		SpawnSuperSmallWallJump(SuperSmallWallJump, SuperSmallWallJumpMaterial, "Super Small Wall Jump", glm::vec3(2.400f, 5.610f, -0.590f), glm::vec3(180.0f, 0.0f, 180.0f), glm::vec3(0.500f, 0.210f, 1.500f), Block8);
 		SpawnSuperSmallWallJump(SuperSmallWallJump, SuperSmallWallJumpMaterial, "Super Small Wall Jump", glm::vec3(0.700f, 5.610f, 0.700f), glm::vec3(180.0f, 0.0f, 180.0f), glm::vec3(0.500f, 0.210f, 1.500f), Block8);
-		SpawnStartPlat(StartPlatform, StartPlatformMaterial, "EndPlatform", glm::vec3(6.840f, 5.610f, -4.920f), glm::vec3(90.0f, 0.0f, 0.0f), glm::vec3(0.350f, 0.350f, 0.350f), Block8);
+		SpawnStartPlat(StartPlatform, StartPlatformMaterial, "EndPlatform", glm::vec3(8.870f, 5.610f, -9.10f), glm::vec3(90.0f, 0.0f, 0.0f), glm::vec3(0.350f, 0.350f, 0.350f), Block8);
 
 		// CDs for Block 8
 		SpawnCD(CD, CDMaterial, "CD", glm::vec3(-6.540f, 5.610f, -3.410f), glm::vec3(90.000f, 0.0f, 90.000f), glm::vec3(1.000f, 1.000f, 1.000f), Block8);
