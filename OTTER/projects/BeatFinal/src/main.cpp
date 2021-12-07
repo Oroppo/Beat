@@ -173,7 +173,7 @@ bool initGLFW() {
 	}
 
 	//Create a new GLFW window and make it current
-	window = glfwCreateWindow(windowSize.x, windowSize.y, windowTitle.c_str(), nullptr, nullptr);
+	window = glfwCreateWindow(windowSize.x, windowSize.y, windowTitle.c_str(), glfwGetPrimaryMonitor(), nullptr);
 	glfwMakeContextCurrent(window);
 	
 	// Set our window resized callback
@@ -775,14 +775,14 @@ void SpawnFloatingLights(MeshResource::Sptr Mesh, Material::Sptr Material, std::
 /// <summary>
 /// Draws a simple window for displaying materials and their editors
 /// </summary>
-void DrawMaterialsWindow() {
-	if (ImGui::Begin("Materials")) {
-		ResourceManager::Each<Material>([](Material::Sptr material) {
-			material->RenderImGui();
-			});
-	}
-	ImGui::End();
-}
+//void DrawMaterialsWindow() {
+//	if (ImGui::Begin("Materials")) {
+//		ResourceManager::Each<Material>([](Material::Sptr material) {
+//			material->RenderImGui();
+//			});
+//	}
+//	ImGui::End();
+//}
 
 void SpawnBackGroundCar(MeshResource::Sptr Mesh, Material::Sptr Material, std::string ObjName = "DeezNuts", glm::vec3 pos = glm::vec3(0.0f, 0.0f, 0.0f),
 	glm::vec3 rot = glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3 scale = glm::vec3(1.0f, 1.0f, 1.0f), GameObject::Sptr parent = nullptr) {
@@ -883,25 +883,28 @@ void key_callback(GLFWwindow* window, int key, int scancode, int action, int mod
 {
 	//if any key is pressed will disable these booleans. only happens once per execution.
 	if (action == GLFW_PRESS) {
-		scene->FindObjectByName("Movement Tutorial")->Get<GuiPanel>()->IsEnabled =false;
-		scene->FindObjectByName("Vinyl Tutorial")->Get<GuiPanel>()->IsEnabled = false;
-		scene->FindObjectByName("Wall Jump Tutorial")->Get<GuiPanel>()->IsEnabled = false;
-		scene->FindObjectByName("Beat Gem Tutorial")->Get<GuiPanel>()->IsEnabled = false;
-		scene->FindObjectByName("HUD Score Display")->Get<GuiPanel>()->IsEnabled = true;
-		scene->FindObjectByName("GameOver Score Text")->Get<GuiPanel>()->IsEnabled = true;
-		scene->FindObjectByName("GameOver Score Text")->Get<GuiText>()->IsEnabled = true;
+		//scene->FindObjectByName("Movement Tutorial")->Get<GuiPanel>()->IsEnabled =false;
+		//scene->FindObjectByName("Vinyl Tutorial")->Get<GuiPanel>()->IsEnabled = false;
+		//scene->FindObjectByName("Wall Jump Tutorial")->Get<GuiPanel>()->IsEnabled = false;
+		//scene->FindObjectByName("Beat Gem Tutorial")->Get<GuiPanel>()->IsEnabled = false;
+		//scene->FindObjectByName("HUD Score Display")->Get<GuiPanel>()->IsEnabled = true;
+		//scene->FindObjectByName("GameOver Score Text")->Get<GuiPanel>()->IsEnabled = true;
+		//scene->FindObjectByName("GameOver Score Text")->Get<GuiText>()->IsEnabled = true;
+		//scene->FindObjectByName("HUD Beat Tick")->Get<GuiPanel>()->IsEnabled = true;
+		//scene->FindObjectByName("HUD Beat Bar")->Get<GuiPanel>()->IsEnabled = true;
 	}
-
-	if (key == GLFW_KEY_ESCAPE && action == GLFW_PRESS)
-	{
-		//toggle each of these booleans
-		scene->IsPlaying = !scene->IsPlaying;
-		scene->FindObjectByName("PauseMenu Dimmed Background")->Get<GuiPanel>()->IsEnabled = !scene->FindObjectByName("PauseMenu Dimmed Background")->Get<GuiPanel>()->IsEnabled;
-		scene->FindObjectByName("PauseMenu Background")->Get<GuiPanel>()->IsEnabled = !scene->FindObjectByName("PauseMenu Background")->Get<GuiPanel>()->IsEnabled;
-		scene->FindObjectByName("PauseMenu Resume Button")->Get<GuiPanel>()->IsEnabled = !scene->FindObjectByName("PauseMenu Resume Button")->Get<GuiPanel>()->IsEnabled;
-		scene->FindObjectByName("PauseMenu Options Button")->Get<GuiPanel>()->IsEnabled = !scene->FindObjectByName("PauseMenu Options Button")->Get<GuiPanel>()->IsEnabled;
-		scene->FindObjectByName("PauseMenu Quit Button")->Get<GuiPanel>()->IsEnabled = !scene->FindObjectByName("PauseMenu Quit Button")->Get<GuiPanel>()->IsEnabled;
-		scene->FindObjectByName("PauseMenu Resync Button")->Get<GuiPanel>()->IsEnabled = !scene->FindObjectByName("PauseMenu Resync Button")->Get<GuiPanel>()->IsEnabled;
+	if (!scene->FindObjectByName("GameOver Dimmed Background")->Get<GuiPanel>()->IsEnabled) {
+		if (key == GLFW_KEY_ESCAPE && action == GLFW_PRESS)
+		{
+			//toggle each of these booleans
+			scene->IsPlaying = !scene->IsPlaying;
+			scene->FindObjectByName("PauseMenu Dimmed Background")->Get<GuiPanel>()->IsEnabled = !scene->FindObjectByName("PauseMenu Dimmed Background")->Get<GuiPanel>()->IsEnabled;
+			scene->FindObjectByName("PauseMenu Background")->Get<GuiPanel>()->IsEnabled = !scene->FindObjectByName("PauseMenu Background")->Get<GuiPanel>()->IsEnabled;
+			scene->FindObjectByName("PauseMenu Resume Button")->Get<GuiPanel>()->IsEnabled = !scene->FindObjectByName("PauseMenu Resume Button")->Get<GuiPanel>()->IsEnabled;
+			scene->FindObjectByName("PauseMenu Options Button")->Get<GuiPanel>()->IsEnabled = !scene->FindObjectByName("PauseMenu Options Button")->Get<GuiPanel>()->IsEnabled;
+			scene->FindObjectByName("PauseMenu Quit Button")->Get<GuiPanel>()->IsEnabled = !scene->FindObjectByName("PauseMenu Quit Button")->Get<GuiPanel>()->IsEnabled;
+			scene->FindObjectByName("PauseMenu Resync Button")->Get<GuiPanel>()->IsEnabled = !scene->FindObjectByName("PauseMenu Resync Button")->Get<GuiPanel>()->IsEnabled;
+		}
 	}
 
 	if (key == GLFW_KEY_1 && action == GLFW_PRESS)
@@ -1964,85 +1967,85 @@ int main() {
 		
 		{//Tutorial Blocks
 
-				{//Movement
-					GameObject::Sptr button = scene->CreateGameObject("Movement Tutorial");
-
-					RectTransform::Sptr transform = button->Add<RectTransform>();
-					transform->SetPosition({ 0, 0 });
-					transform->SetRotationDeg(0);
-					transform->SetSize({ 700 *0.75, 500 * 0.75 });
-					transform->SetMin({ 0, 0 });
-					transform->SetMax({ 700 * 0.75, 500 * 0.75 });
-
-					GuiPanel::Sptr panel = button->Add<GuiPanel>();
-					panel->SetTexture(TexMovementTutorial);
-					panel->SetColor(glm::vec4(1.0f, 1.0f, 1.0f, 1.0f));
-					panel->SetBorderRadius(0);
-
-
-					transform->SetPosition({ (float)windowSize.x * 0.2, (float)windowSize.y * 0.2 });
-
-				}
-
-				{//Wall Jump
-					GameObject::Sptr button = scene->CreateGameObject("Wall Jump Tutorial");
-
-					RectTransform::Sptr transform = button->Add<RectTransform>();
-					transform->SetPosition({ 0, 0 });
-					transform->SetRotationDeg(0);
-					transform->SetSize({ 700 * 0.75, 500 * 0.75 });
-					transform->SetMin({ 0, 0 });
-					transform->SetMax({ 700 * 0.75, 500 * 0.75 });
-
-					GuiPanel::Sptr panel = button->Add<GuiPanel>();
-					panel->SetTexture(TexWallJumpTutorial);
-					panel->SetColor(glm::vec4(1.0f, 1.0f, 1.0f, 1.0f));
-					panel->SetBorderRadius(0);
-
-
-					transform->SetPosition({ (float)windowSize.x * 0.2, (float)windowSize.y * 0.6 });
-
-				}
-
-				{//Beat Gem
-					GameObject::Sptr button = scene->CreateGameObject("Beat Gem Tutorial");
-
-					RectTransform::Sptr transform = button->Add<RectTransform>();
-					transform->SetPosition({ 0, 0 });
-					transform->SetRotationDeg(0);
-					transform->SetSize({ 700 * 0.75, 500 * 0.75 });
-					transform->SetMin({ 0, 0 });
-					transform->SetMax({ 700 * 0.75, 500 * 0.75 });
-
-					GuiPanel::Sptr panel = button->Add<GuiPanel>();
-					panel->SetTexture(TexBeatGemTutorial);
-					panel->SetColor(glm::vec4(1.0f, 1.0f, 1.0f, 1.0f));
-					panel->SetBorderRadius(0);
-
-
-					transform->SetPosition({ (float)windowSize.x * 0.6, (float)windowSize.y * 0.2 });
-
-				}
-
-				{//Vinyls
-					GameObject::Sptr button = scene->CreateGameObject("Vinyl Tutorial");
-
-					RectTransform::Sptr transform = button->Add<RectTransform>();
-					transform->SetPosition({ 0, 0 });
-					transform->SetRotationDeg(0);
-					transform->SetSize({ 700 * 0.75, 500 * 0.75 });
-					transform->SetMin({ 0, 0 });
-					transform->SetMax({ 700 * 0.75, 500 * 0.75 });
-
-					GuiPanel::Sptr panel = button->Add<GuiPanel>();
-					panel->SetTexture(TexVinylsTutorial);
-					panel->SetColor(glm::vec4(1.0f, 1.0f, 1.0f, 1.0f));
-					panel->SetBorderRadius(0);
-
-
-					transform->SetPosition({ (float)windowSize.x * 0.6, (float)windowSize.y * 0.6 });
-
-				}
+			//	{//Movement
+			//		GameObject::Sptr button = scene->CreateGameObject("Movement Tutorial");
+			//
+			//		RectTransform::Sptr transform = button->Add<RectTransform>();
+			//		transform->SetPosition({ 0, 0 });
+			//		transform->SetRotationDeg(0);
+			//		transform->SetSize({ 700 *0.75, 500 * 0.75 });
+			//		transform->SetMin({ 0, 0 });
+			//		transform->SetMax({ 700 * 0.75, 500 * 0.75 });
+			//
+			//		GuiPanel::Sptr panel = button->Add<GuiPanel>();
+			//		panel->SetTexture(TexMovementTutorial);
+			//		panel->SetColor(glm::vec4(1.0f, 1.0f, 1.0f, 1.0f));
+			//		panel->SetBorderRadius(0);
+			//
+			//
+			//		transform->SetPosition({ (float)windowSize.x * 0.2, (float)windowSize.y * 0.2 });
+			//
+			//	}
+			//
+			//	{//Wall Jump
+			//		GameObject::Sptr button = scene->CreateGameObject("Wall Jump Tutorial");
+			//
+			//		RectTransform::Sptr transform = button->Add<RectTransform>();
+			//		transform->SetPosition({ 0, 0 });
+			//		transform->SetRotationDeg(0);
+			//		transform->SetSize({ 700 * 0.75, 500 * 0.75 });
+			//		transform->SetMin({ 0, 0 });
+			//		transform->SetMax({ 700 * 0.75, 500 * 0.75 });
+			//
+			//		GuiPanel::Sptr panel = button->Add<GuiPanel>();
+			//		panel->SetTexture(TexWallJumpTutorial);
+			//		panel->SetColor(glm::vec4(1.0f, 1.0f, 1.0f, 1.0f));
+			//		panel->SetBorderRadius(0);
+			//
+			//
+			//		transform->SetPosition({ (float)windowSize.x * 0.2, (float)windowSize.y * 0.6 });
+			//
+			//	}
+			//
+			//	{//Beat Gem
+			//		GameObject::Sptr button = scene->CreateGameObject("Beat Gem Tutorial");
+			//
+			//		RectTransform::Sptr transform = button->Add<RectTransform>();
+			//		transform->SetPosition({ 0, 0 });
+			//		transform->SetRotationDeg(0);
+			//		transform->SetSize({ 700 * 0.75, 500 * 0.75 });
+			//		transform->SetMin({ 0, 0 });
+			//		transform->SetMax({ 700 * 0.75, 500 * 0.75 });
+			//
+			//		GuiPanel::Sptr panel = button->Add<GuiPanel>();
+			//		panel->SetTexture(TexBeatGemTutorial);
+			//		panel->SetColor(glm::vec4(1.0f, 1.0f, 1.0f, 1.0f));
+			//		panel->SetBorderRadius(0);
+			//
+			//
+			//		transform->SetPosition({ (float)windowSize.x * 0.6, (float)windowSize.y * 0.2 });
+			//
+			//	}
+			//
+			//	{//Vinyls
+			//		GameObject::Sptr button = scene->CreateGameObject("Vinyl Tutorial");
+			//
+			//		RectTransform::Sptr transform = button->Add<RectTransform>();
+			//		transform->SetPosition({ 0, 0 });
+			//		transform->SetRotationDeg(0);
+			//		transform->SetSize({ 700 * 0.75, 500 * 0.75 });
+			//		transform->SetMin({ 0, 0 });
+			//		transform->SetMax({ 700 * 0.75, 500 * 0.75 });
+			//
+			//		GuiPanel::Sptr panel = button->Add<GuiPanel>();
+			//		panel->SetTexture(TexVinylsTutorial);
+			//		panel->SetColor(glm::vec4(1.0f, 1.0f, 1.0f, 1.0f));
+			//		panel->SetBorderRadius(0);
+			//
+			//
+			//		transform->SetPosition({ (float)windowSize.x * 0.6, (float)windowSize.y * 0.6 });
+			//
+			//	}
 		}
 		
 
@@ -2095,49 +2098,49 @@ int main() {
 				text->IsEnabled = false;
 
 				text->SetTextScale(4.0f);
-
 			}
-		/*
-			{//Beat Bar
-				GameObject::Sptr button = scene->CreateGameObject("HUD Beat Bar");
-
-				RectTransform::Sptr transform = button->Add<RectTransform>();
-				transform->SetPosition({ 0, 0 });
-				transform->SetRotationDeg(0);
-				transform->SetSize({ 800 * 0.75, 300 * 0.75 });
-				transform->SetMin({ 0, 0 });
-				transform->SetMax({ 800 * 0.75, 300 * 0.75 });
-
-				GuiPanel::Sptr panel = button->Add<GuiPanel>();
-				panel->SetTexture(TexBeatBar);
-				panel->SetColor(glm::vec4(1.0f, 1.0f, 1.0f, 1.0f));
-				panel->SetBorderRadius(0);
-
-
-				transform->SetPosition({ (float)windowSize.x * 0.5, (float)windowSize.y * 0.9 });
-
-			}
-
-			{//Beat Tick
-				GameObject::Sptr button = scene->CreateGameObject("HUD Beat Tick");
-
-				RectTransform::Sptr transform = button->Add<RectTransform>();
-				transform->SetPosition({ 0, 0 });
-				transform->SetRotationDeg(0);
-				transform->SetSize({ 50 * 0.75, 170 * 0.75 });
-				transform->SetMin({ 0, 0 });
-				transform->SetMax({ 50 * 0.75, 170 * 0.75 });
-
-				GuiPanel::Sptr panel = button->Add<GuiPanel>();
-				panel->SetTexture(TexBeatBarTick);
-				panel->SetColor(glm::vec4(1.0f, 1.0f, 1.0f, 1.0f));
-				panel->SetBorderRadius(0);
-
-
-				transform->SetPosition({ (float)windowSize.x * 0.4, (float)windowSize.y * 0.9 });
-
-			}
-		*/
+		
+			//{//Beat Bar
+			//	GameObject::Sptr button = scene->CreateGameObject("HUD Beat Bar");
+			//
+			//	RectTransform::Sptr transform = button->Add<RectTransform>();
+			//	transform->SetPosition({ 0, 0 });
+			//	transform->SetRotationDeg(0);
+			//	transform->SetSize({ 800 * 0.75, 300 * 0.75 });
+			//	transform->SetMin({ 0, 0 });
+			//	transform->SetMax({ 800 * 0.75, 300 * 0.75 });
+			//
+			//	GuiPanel::Sptr panel = button->Add<GuiPanel>();
+			//	panel->SetTexture(TexBeatBar);
+			//	panel->SetColor(glm::vec4(1.0f, 1.0f, 1.0f, 1.0f));
+			//	panel->SetBorderRadius(0);
+			//	panel->IsEnabled = false;
+			//
+			//
+			//	transform->SetPosition({ (float)windowSize.x * 0.5, (float)windowSize.y * 0.9 });
+			//
+			//}
+			//
+			//{//Beat Tick
+			//	GameObject::Sptr button = scene->CreateGameObject("HUD Beat Tick");
+			//
+			//	RectTransform::Sptr transform = button->Add<RectTransform>();
+			//	transform->SetPosition({ 0, 0 });
+			//	transform->SetRotationDeg(0);
+			//	transform->SetSize({ 50 * 0.75, 170 * 0.75 });
+			//	transform->SetMin({ 0, 0 });
+			//	transform->SetMax({ 50 * 0.75, 170 * 0.75 });
+			//
+			//	GuiPanel::Sptr panel = button->Add<GuiPanel>();
+			//	panel->SetTexture(TexBeatBarTick);
+			//	panel->SetColor(glm::vec4(1.0f, 1.0f, 1.0f, 1.0f));
+			//	panel->SetBorderRadius(0);
+			//	panel->IsEnabled = false;
+			//
+			//	transform->SetPosition({ (float)windowSize.x * 0.4, (float)windowSize.y * 0.9 });
+			//
+			//}
+		
 		}
 
 		GuiBatcher::SetDefaultTexture(ResourceManager::CreateAsset<Texture2D>("textures/ui-sprite.png"));
@@ -2180,21 +2183,29 @@ int main() {
 	ToneFire::StudioSound test;
 	test.LoadEvent("event:/Music");
 	test.SetEventPosition("event:/Music", FMOD_VECTOR{ -10.270f, 5.710f, -3.800f });
+	test.PlayEvent("event:/Music");
 	test.SetVolume("event:/Music", 0.5f);
-	
+	float MusicTimer = 0;
 	//test.SetEventParameter("event:/Music", "Volume", 0.5f);
-	float SpawnTimer = 20;
+	float SpawnTimer = 0;
 	///// Game loop /////
 	while (!glfwWindowShouldClose(window)) {
 		glfwPollEvents();
-		ImGuiHelper::StartFrame();
+		//ImGuiHelper::StartFrame();
 		studio.Update();
+
+		if (MusicTimer>=127) {
+
+			test.PlayEvent("event:/Music");
+			MusicTimer -= 127;
+
+		}
 
 		//Idk wtf is going on here it shouldn't be checking if not true but it DOES work so I'm leaving it alone
 		if (!scene->IsPlaying) {
-			
-			test.PlayEvent("event:/Music");
+			//test.PlayEvent("event:/Music");
 		}
+		scene->IsPlaying = true;
 
 
 		glm::vec3 playerPos = scene->FindObjectByName("DiscoBall")->GetPosition();
@@ -2221,94 +2232,95 @@ int main() {
 		// Calculate the time since our last frame (dt)
 		double thisFrame = glfwGetTime();
 		float dt = static_cast<float>(thisFrame - lastFrame);
+		MusicTimer += dt;
 
 		if (scene->IsPlaying) {
 
 			SpawnTimer += dt;
 		}
 		// Draw our material properties window!
-		DrawMaterialsWindow();
+		//DrawMaterialsWindow();
 
 		//Player Quick Pause Functionality
 		glfwSetKeyCallback(window, key_callback);
 
 		// Showcasing how to use the imGui library!
-		bool isDebugWindowOpen = ImGui::Begin("Debugging");
-		//isDebugWindowOpen = false;
-		//scene->IsPlaying = true;
-		if (isDebugWindowOpen) {
-			// Draws a button to control whether or not the game is currently playing
-			static char buttonLabel[64];
-			sprintf_s(buttonLabel, "%s###playmode", scene->IsPlaying ? "Exit Play Mode" : "Enter Play Mode");
-			if (ImGui::Button(buttonLabel)) {
-				// Save scene so it can be restored when exiting play mode
-				if (!scene->IsPlaying) {
-					editorSceneState = scene->ToJson();
-				}
-
-				// Toggle state
-				scene->IsPlaying = !scene->IsPlaying;
-
-				// If we've gone from playing to not playing, restore the state from before we started playing
-				if (!scene->IsPlaying) {
-					scene = nullptr;
-					// We reload to scene from our cached state
-					scene = Scene::FromJson(editorSceneState);
-					// Don't forget to reset the scene's window and wake all the objects!
-					scene->Window = window;
-					scene->Awake();
-				}
-			}
-
-			// Make a new area for the scene saving/loading
-			ImGui::Separator();
-			if (DrawSaveLoadImGui(scene, scenePath)) {
-				// C++ strings keep internal lengths which can get annoying
-				// when we edit it's underlying datastore, so recalcualte size
-				scenePath.resize(strlen(scenePath.c_str()));
-
-				// We have loaded a new scene, call awake to set
-				// up all our components
-				scene->Window = window;
-				scene->Awake();
-			}
-			ImGui::Separator();
-			// Draw a dropdown to select our physics debug draw mode
-			if (BulletDebugDraw::DrawModeGui("Physics Debug Mode:", physicsDebugMode)) {
-				scene->SetPhysicsDebugDrawMode(physicsDebugMode);
-			}
-			LABEL_LEFT(ImGui::SliderFloat, "Playback Speed:    ", &playbackSpeed, 0.0f, 10.0f);
-			ImGui::Separator();
-		}
+		//bool isDebugWindowOpen = ImGui::Begin("Debugging");
+		//bool isDebugWindowOpen = false;
+		////scene->IsPlaying = true;
+		//if (isDebugWindowOpen) {
+		//	// Draws a button to control whether or not the game is currently playing
+		//	static char buttonLabel[64];
+		//	sprintf_s(buttonLabel, "%s###playmode", scene->IsPlaying ? "Exit Play Mode" : "Enter Play Mode");
+		//	if (ImGui::Button(buttonLabel)) {
+		//		// Save scene so it can be restored when exiting play mode
+		//		if (!scene->IsPlaying) {
+		//			editorSceneState = scene->ToJson();
+		//		}
+		//
+		//		// Toggle state
+		//		scene->IsPlaying = !scene->IsPlaying;
+		//
+		//		// If we've gone from playing to not playing, restore the state from before we started playing
+		//		if (!scene->IsPlaying) {
+		//			scene = nullptr;
+		//			// We reload to scene from our cached state
+		//			scene = Scene::FromJson(editorSceneState);
+		//			// Don't forget to reset the scene's window and wake all the objects!
+		//			scene->Window = window;
+		//			scene->Awake();
+		//		}
+		//	}
+		//
+		//	// Make a new area for the scene saving/loading
+		//	ImGui::Separator();
+		//	if (DrawSaveLoadImGui(scene, scenePath)) {
+		//		// C++ strings keep internal lengths which can get annoying
+		//		// when we edit it's underlying datastore, so recalcualte size
+		//		scenePath.resize(strlen(scenePath.c_str()));
+		//
+		//		// We have loaded a new scene, call awake to set
+		//		// up all our components
+		//		scene->Window = window;
+		//		scene->Awake();
+		//	}
+		//	ImGui::Separator();
+		//	// Draw a dropdown to select our physics debug draw mode
+		//	if (BulletDebugDraw::DrawModeGui("Physics Debug Mode:", physicsDebugMode)) {
+		//		scene->SetPhysicsDebugDrawMode(physicsDebugMode);
+		//	}
+		//	LABEL_LEFT(ImGui::SliderFloat, "Playback Speed:    ", &playbackSpeed, 0.0f, 10.0f);
+		//	ImGui::Separator();
+		//}
 
 		// Clear the color and depth buffers
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-		// Draw some ImGui stuff for the lights
-		if (isDebugWindowOpen) {
-			for (int ix = 0; ix < scene->Lights.size(); ix++) {
-				char buff[256];
-				sprintf_s(buff, "Light %d##%d", ix, ix);
-				// DrawLightImGui will return true if the light was deleted
-				if (DrawLightImGui(scene, buff, ix)) {
-					// Remove light from scene, restore all lighting data
-					scene->Lights.erase(scene->Lights.begin() + ix);
-					scene->SetupShaderAndLights();
-					// Move back one element so we don't skip anything!
-					ix--;
-				}
-			}
-			// As long as we don't have max lights, draw a button
-			// to add another one
-			if (scene->Lights.size() < scene->MAX_LIGHTS) {
-				if (ImGui::Button("Add Light")) {
-					scene->Lights.push_back(Light());
-					scene->SetupShaderAndLights();
-				}
-			}
-			// Split lights from the objects in ImGui
-			ImGui::Separator();
-		}
+		//// Draw some ImGui stuff for the lights
+		//if (isDebugWindowOpen) {
+		//	for (int ix = 0; ix < scene->Lights.size(); ix++) {
+		//		char buff[256];
+		//		sprintf_s(buff, "Light %d##%d", ix, ix);
+		//		// DrawLightImGui will return true if the light was deleted
+		//		if (DrawLightImGui(scene, buff, ix)) {
+		//			// Remove light from scene, restore all lighting data
+		//			scene->Lights.erase(scene->Lights.begin() + ix);
+		//			scene->SetupShaderAndLights();
+		//			// Move back one element so we don't skip anything!
+		//			ix--;
+		//		}
+		//	}
+		//	// As long as we don't have max lights, draw a button
+		//	// to add another one
+		//	if (scene->Lights.size() < scene->MAX_LIGHTS) {
+		//		if (ImGui::Button("Add Light")) {
+		//			scene->Lights.push_back(Light());
+		//			scene->SetupShaderAndLights();
+		//		}
+		//	}
+		//	// Split lights from the objects in ImGui
+		//	ImGui::Separator();
+		//}
 		
 		LOG_INFO(SpawnTimer);
 
@@ -2533,9 +2545,9 @@ int main() {
 		scene->DoPhysics(dt);
 
 		// Draw object GUIs
-		if (isDebugWindowOpen) {
-			scene->DrawAllGameObjectGUIs();
-		}
+		//if (isDebugWindowOpen) {
+		//	scene->DrawAllGameObjectGUIs();
+		//}
 
 		// The current material that is bound for rendering
 		Material::Sptr currentMat = nullptr;
@@ -2639,18 +2651,18 @@ int main() {
 		glDepthMask(GL_TRUE);
 
 		// End our ImGui window
-		ImGui::End();
+		//ImGui::End();
 
 		VertexArrayObject::Unbind();
 
 		lastFrame = thisFrame;
-		ImGuiHelper::EndFrame();
+		//ImGuiHelper::EndFrame();
 		// InputEngine::EndFrame();
 		glfwSwapBuffers(window);
 	}
 
 	// Clean up the ImGui library
-	ImGuiHelper::Cleanup();
+	//ImGuiHelper::Cleanup();
 
 	// Clean up the resource manager
 	ResourceManager::Cleanup();
