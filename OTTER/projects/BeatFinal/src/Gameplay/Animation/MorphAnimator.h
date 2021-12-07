@@ -33,9 +33,11 @@ public:
 	virtual void Awake() override;
 	void SetInitial();
 
+	//need these cause sages framework requires them in
 	virtual void OnTriggerVolumeEntered(const std::shared_ptr<Gameplay::Physics::RigidBody>& body) override;
 	virtual void OnTriggerVolumeLeaving(const std::shared_ptr<Gameplay::Physics::RigidBody>& body) override;
 	virtual void RenderImGui() override;
+
 	void SetFrameTime(float t);
 	void SetFrames(std::vector<MeshResource::Sptr>& f);
 

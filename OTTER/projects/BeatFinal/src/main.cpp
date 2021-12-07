@@ -881,6 +881,8 @@ void CreateScene() {
 
 void key_callback(GLFWwindow* window, int key, int scancode, int action, int mods)
 {
+	nlohmann::json editorSceneState;
+
 	//if any key is pressed will disable these booleans. only happens once per execution.
 	if (action == GLFW_PRESS) {
 		scene->FindObjectByName("Movement Tutorial")->Get<GuiPanel>()->IsEnabled =false;
@@ -890,6 +892,9 @@ void key_callback(GLFWwindow* window, int key, int scancode, int action, int mod
 		scene->FindObjectByName("HUD Score Display")->Get<GuiPanel>()->IsEnabled = true;
 		scene->FindObjectByName("GameOver Score Text")->Get<GuiPanel>()->IsEnabled = true;
 		scene->FindObjectByName("GameOver Score Text")->Get<GuiText>()->IsEnabled = true;
+	}
+	if (key == GLFW_KEY_ENTER && action == GLFW_PRESS) {
+		scene = Scene::FromJson(editorSceneState);
 	}
 
 	if (key == GLFW_KEY_ESCAPE && action == GLFW_PRESS)

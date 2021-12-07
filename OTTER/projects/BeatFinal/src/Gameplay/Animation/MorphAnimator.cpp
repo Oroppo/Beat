@@ -67,7 +67,6 @@ void Morphanimator::Update(float deltaTime)
 		
 		if (m_data->frames.size() < 2)
 		{
-		
 			return;
 		}
 		size_t p0_index, p1_index;
@@ -77,6 +76,7 @@ void Morphanimator::Update(float deltaTime)
 
 		float garb;
 		Lerp(p0_index, p1_index, t);
+		//little jank to call from mesh renderer's update but it's a  tad more efficient than having 2 updates running
 		GetGameObject()->Get<MorphMeshRenderer>()->UpdateData(m_data->frames[p0_index], m_data->frames[p1_index], glm::modf(t, garb));
 
 	}
