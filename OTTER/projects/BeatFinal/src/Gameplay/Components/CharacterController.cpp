@@ -10,7 +10,7 @@
 #include "GUI/GuiText.h"
 
 #include<sstream>  
-
+#include<string.h>
 void CharacterController::Awake()
 {
     _body = GetComponent<Gameplay::Physics::RigidBody>();
@@ -48,15 +48,26 @@ CharacterController::Sptr CharacterController::FromJson(const nlohmann::json & b
 
 //for collectibles
 void CharacterController::OnEnteredTrigger(const std::shared_ptr<Gameplay::Physics::TriggerVolume>& trigger) {
- 
-    LOG_INFO("Body has entered our trigger: {}", trigger->GetGameObject()->Name);
-    if ((trigger->GetGameObject()->Name == "BeatGem") && (_GemJumpTimer > 1.8) && (_GemJumpTimer < 2.4)) {
-        _canJump = true;
-        std::cout << "jumper worked";
 
-        trigger->GetGameObject()->Get<RenderComponent>()->IsEnabled = false;
-        _BeatGemHits++;
-        score += 500;
+    std::string name = trigger->GetGameObject()->Name;
+
+
+    if ((name[0] == 'B')&& (name[1] == 'e')&& (name[2] == 'a')&& (name[3] == 't')&& (name[4] == 'G')) {
+        int beatNumber = (int)name[8] - 48;
+        for (int i = 0; i < 100; i++) {
+            LOG_INFO("Body has entered our trigger: {}", trigger->GetGameObject()->Name);
+            LOG_INFO(name[0]);
+            LOG_INFO(beatNumber);
+        }
+        if ((_GemJumpTimer > 0.6 * beatNumber - 0.6) && (_GemJumpTimer < 0.6 * beatNumber)) {
+            _canJump = true;
+            std::cout << "jumper worked";
+
+            trigger->GetGameObject()->Get<RenderComponent>()->IsEnabled = false;
+            _BeatGemHits++;
+            score += 500;
+        }
+
     }
         if (trigger->GetGameObject()->Name == "Vinyl") {
             score += 1000;
