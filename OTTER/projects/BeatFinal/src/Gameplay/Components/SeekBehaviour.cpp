@@ -48,7 +48,7 @@ void SeekBehaviour::Update(float deltaTime)
    }
     _body->SetLinearVelocity(difference);
  
-
+    GetGameObject()->LookAt(_target);
 }
 
 // Templated LERP function returns positon at current time for LERP

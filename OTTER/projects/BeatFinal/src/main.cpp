@@ -254,7 +254,7 @@ bool DrawLightImGui(const Scene::Sptr& scene, const char* title, int ix) {
 	return result;
 }
 // For spawning small platforms
-void SpawnObj(MeshResource::Sptr Mesh, Material::Sptr Material, std::string ObjName = "DeezNuts", glm::vec3 pos = glm::vec3(-10.900f, 5.610f, -4.920f), 
+void SpawnObj(MeshResource::Sptr Mesh, Material::Sptr Material, std::string ObjName = "Plat", glm::vec3 pos = glm::vec3(-10.900f, 5.610f, -4.920f), 
 	 glm::vec3 rot = glm::vec3(180.0f, 0.0f, 180.0f), glm::vec3 scale = glm::vec3(0.350f, 0.350f, 0.350f), GameObject::Sptr parent = nullptr) {
 	// Tutorial Stuff
 	GameObject::Sptr Startplatform = scene->CreateGameObject(ObjName);
@@ -276,7 +276,6 @@ void SpawnObj(MeshResource::Sptr Mesh, Material::Sptr Material, std::string ObjN
 		//physics->AddCollider(BoxCollider::Create(glm::vec3(1.0f, 1.0f, 1.0f)));
 
 
-		// FIX THIS //
 		ICollider::Sptr Box1 = physics->AddCollider(BoxCollider::Create(glm::vec3(0.87f, 0.5f, 0.4f)));
 		Box1->SetPosition(glm::vec3(0.f, 0.f, 0.f));
 		Box1->SetScale(glm::vec3(1,1,1));
@@ -1181,7 +1180,7 @@ int main() {
 
 	// Create an empty scene
 	scene = std::make_shared<Scene>();
-
+	
 	// Setting up our enviroment map
 	scene->SetSkyboxTexture(testCubemap);
 	scene->SetSkyboxShader(skyboxShader);
@@ -1217,33 +1216,35 @@ int main() {
 		WallJumpMaterial->Set("u_Material.Shininess", 0.1f);
 	}
 
-	Material::Sptr BeatGemMaterial = ResourceManager::CreateAsset<Material>(reflectiveShader);
+	Material::Sptr BeatGemMaterial = ResourceManager::CreateAsset<Material>(basicShader);
 	{
 		BeatGemMaterial->Name = "BeatGem";
 		BeatGemMaterial->Set("u_Material.Diffuse", GemOff);
-		BeatGemMaterial->Set("u_Material.Shininess", 0.2f);
+		BeatGemMaterial->Set("u_Material.Shininess", 0.1f);
 	}
 
-	Material::Sptr BeatGemOffMaterial = ResourceManager::CreateAsset<Material>(reflectiveShader);
+	Material::Sptr BeatGemOffMaterial = ResourceManager::CreateAsset<Material>(basicShader);
 	{
-		BeatGemMaterial->Name = "BeatGem";
-		BeatGemMaterial->Set("u_Material.Diffuse", GemTex);
-		BeatGemMaterial->Set("u_Material.Shininess", 0.2f);
+		BeatGemOffMaterial->Name = "BeatGem";
+		BeatGemOffMaterial->Set("u_Material.Diffuse", GemTex);
+		BeatGemOffMaterial->Set("u_Material.Shininess", 0.1f);
 	}
 
 
-	Material::Sptr VinylMaterial = ResourceManager::CreateAsset<Material>(basicShader);
+	Material::Sptr VinylMaterial = ResourceManager::CreateAsset<Material>(toonShader);
 	{
 		VinylMaterial->Name = "Vinyl";
 		VinylMaterial->Set("u_Material.Diffuse", VinylTex);
 		VinylMaterial->Set("u_Material.Shininess", 0.1f);
+		VinylMaterial->Set("u_Material.Steps", 4);
 	}
 
-	Material::Sptr CDMaterial = ResourceManager::CreateAsset<Material>(basicShader);
+	Material::Sptr CDMaterial = ResourceManager::CreateAsset<Material>(toonShader);
 	{
 		CDMaterial->Name = "CD";
 		CDMaterial->Set("u_Material.Diffuse", CDTex);
 		CDMaterial->Set("u_Material.Shininess", 0.1f);
+		CDMaterial->Set("u_Material.Steps", 4);
 	}
 
 	Material::Sptr CharacterMaterial = ResourceManager::CreateAsset<Material>(basicShader);
@@ -1401,6 +1402,12 @@ int main() {
 	else {
 
 		// Create some lights for our scene
+		scene->Lights.resize(2);
+		scene->Lights[0].Position = glm::vec3(0.0f, 1.0f, 3.0f);
+		scene->Lights[0].Color = glm::vec3(1.0f, 1.0f, 1.0f);
+		scene->Lights[0].Range = 50.0f;
+	/*
+		// Create some lights for our scene
 		scene->Lights.resize(6);
 		//scene->Lights[0].Position = glm::vec3(0.0f, 1.0f, 3.0f);
 		scene->Lights[0].Color = glm::vec3(1.0f, 1.0f, 1.0f);
@@ -1420,11 +1427,12 @@ int main() {
 
 		scene->Lights[5].Color = glm::vec3(1.0f, 1.0f, 1.0f);
 
-
+		*/
 		// Red/Green light
+		scene->Lights[1].Position = glm::vec3(6.840f, 5.610f, 3.0f);
 		scene->Lights[1].Color = glm::vec3((1.0f, 0.99f, 0.99f));
-		scene->Lights[1].Range = 100.0f;
-
+		scene->Lights[1].Range = 50.0f;
+	
 
 
 		// Set up the scene's camera
@@ -2164,7 +2172,8 @@ int main() {
 	// for input!
 	std::string scenePath = "scene.json";
 	scenePath.reserve(256);
-	scene->SetAmbientLight(glm::vec3(0.25f));
+	// doesn't seem to do anything besides on/off
+	scene->SetAmbientLight(glm::vec3(1.0f));
 
 	// Our high-precision timer
 	double lastFrame = glfwGetTime();
@@ -2208,6 +2217,8 @@ int main() {
 		glm::vec3 lightFollowPos = glm::vec3(playerPosX, playerPosY, (playerPos.z + 3));
 
 		///////////// For moving Lights will be expanded upon later ///////////////////////////////////
+		// Light 0 follows the discoball
+		// light 1 changes color when player is at the right most part of the screen
 		if (playerPos.x < 2.0f)
 		{
 			scene->Lights[1].Color = glm::vec3(0.98f, 0.10f, 0.10f);
@@ -2217,12 +2228,12 @@ int main() {
 		{
 			scene->Lights[1].Color = glm::vec3(0.011f, 0.70f, 0.20f);
 		}
-		scene->Lights[1].Position = glm::vec3(6.840f, 5.610f, 3.0f);
+		//scene->Lights[1].Position = glm::vec3(6.840f, 5.610f, 3.0f);
 		scene->Lights[0].Position = glm::vec3(lightFollowPos);
-		scene->Lights[1].Range = 50;
-		scene->Lights[0].Range = 50;
+		//scene->Lights[1].Range = 50;
+		//scene->Lights[0].Range = 50;
+		
 		scene->SetupShaderAndLights();
-
 		// Calculate the time since our last frame (dt)
 		double thisFrame = glfwGetTime();
 		float dt = static_cast<float>(thisFrame - lastFrame);
@@ -2321,6 +2332,18 @@ int main() {
 			SpawnTimer -= 22;
 			
 			
+			// can use to spawn in the tutorial level when the character dies
+			// besides this u could reset player position in character controll and reset score
+			// can't use right now because this call to function needs to realative
+			// to an object
+			/*if (CharacterController::GetCharacterBool() == 1)
+			{
+				int blockToSpawn = 0;
+			}
+			else
+			{
+				// put rest of block spawn code here
+			}*/
 			int blockToSpawn = rand() % 8;
 
 			switch (blockToSpawn) {

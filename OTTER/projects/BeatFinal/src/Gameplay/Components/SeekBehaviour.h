@@ -15,7 +15,6 @@ public:
 	virtual ~SeekBehaviour();
 	Gameplay::Physics::RigidBody::Sptr _body;
 
-
 	virtual void Awake() override;
 	virtual void Update(float deltaTime) override;
 	template<typename T>

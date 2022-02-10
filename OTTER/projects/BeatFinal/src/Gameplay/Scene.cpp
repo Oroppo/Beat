@@ -104,7 +104,8 @@ namespace Gameplay {
 	}
 
 	void Scene::SetAmbientLight(const glm::vec3& value) {
-		_lightingUbo->GetData().AmbientCol = glm::vec3(0.1f);
+		// recently changed from 0.1 to 1.20 - anything above 2.0 is very bright even with 0 lights
+		_lightingUbo->GetData().AmbientCol = glm::vec3(0.5f);
 		_lightingUbo->Update();
 	}
 
@@ -205,7 +206,7 @@ namespace Gameplay {
 		// Get a reference to the light UBO data so we can update it
 		LightingUboStruct& data = _lightingUbo->GetData();
 		// Send in how many active lights we have and the global lighting settings
-		data.AmbientCol = glm::vec3(0.1f);
+		data.AmbientCol = glm::vec3(1.0f);
 		data.NumLights = Lights.size();
 
 		// Iterate over all lights that are enabled and configure them
