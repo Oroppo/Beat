@@ -6,6 +6,7 @@
 #include "Utils/ResourceManager/ResourceManager.h"
 #include "Utils/ResourceManager/IResource.h"
 #include "Utils/TypeHelpers.h"
+#include "FMOD/SoundEffects.h"
 
 /// <summary>
 /// A simple behaviour that applies an impulse along the Z axis to the 
@@ -31,7 +32,6 @@ public:
 	virtual void OnTriggerVolumeEntered(const std::shared_ptr<Gameplay::Physics::RigidBody>& body);
 	virtual void OnTriggerVolumeLeaving(const std::shared_ptr<Gameplay::Physics::RigidBody>& body);
 
-
 protected:
 	double xPos = 0, yPos = 0;
 	float _impulse2;
@@ -44,5 +44,7 @@ protected:
 	Gameplay::Physics::RigidBody::Sptr _curvePlatform;
 	bool _onCurvePlatform;
 	glm::vec3 _rotPlat = glm::vec3(0.0f, 0.0f, 0.0f);
+	int _LoadSceneC = 0;
+	SoundEffects::Sptr SoundCaller;
 
 };
