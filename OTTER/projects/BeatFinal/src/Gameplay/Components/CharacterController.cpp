@@ -8,6 +8,7 @@
 #include "RenderComponent.h"
 #include "GUI/GuiPanel.h"
 #include "GUI/GuiText.h"
+#include "FMOD/SoundEffects.h"
 
 #include<sstream>  
 #include<string.h>
@@ -18,6 +19,11 @@ void CharacterController::Awake()
         IsEnabled = false;
     }
 
+    SoundEffects SoundCaller;
+    auto SFX = SoundCaller.SoundEffects::GetContextSound();
+        SFX.LoadEvent("event:/Jump Event");
+        SFX.SetEventPosition("event:/Jump Event", FMOD_VECTOR{ -10.270f, 5.710f, -3.800f });
+        SFX.SetVolume("event:/Jump Event", 0.05f);
 }
 
 
@@ -117,6 +123,28 @@ void CharacterController::OnTriggerVolumeLeaving(const std::shared_ptr<Gameplay:
         body->GetGameObject()->SetRotation(glm::vec3(-90.000f, 0.0f, 180.0f));
     }
 }
+
+void CharacterController::CharacterSceneLoad()
+{
+   // ResourceManager::LoadManifest("manifest.json");
+    GetGameObject()->GetScene()->Scene::Load("scene.json");
+
+    GetGameObject()->GetScene()->Awake();
+  //  GetGameObject()->GetScene()->Window = window2;
+    std::cout << GetGameObject()->GetScene() << std::endl;
+    _LoadSceneC = false;
+}
+
+int CharacterController::GetCharacterBool()
+{
+    return _LoadSceneC;
+}
+
+void CharacterController::SetCharacterBool()
+{
+    _LoadSceneC = 0;
+}
+
 void CharacterController::Update(float deltaTime) {
 
     bool _A = glfwGetKey(GetGameObject()->GetScene()->Window, GLFW_KEY_A);
@@ -140,6 +168,9 @@ void CharacterController::Update(float deltaTime) {
     if ((_W) && (_canJump == true)) {
         _body->SetLinearVelocity(glm::vec3(_body->GetLinearVelocity().x, _body->GetLinearVelocity().y, _impulse.z));
         _canJump = false;
+        SoundEffects SoundCaller;
+        auto SFXS = SoundCaller.SoundEffects::GetContextSound();
+        SFXS.PlayEvent("event:/Jump Event");
     }
     if ((!_A) && (!_D) && (!_W) && (_platform != "") && (_platform != "BeatGem")) {
         _body->SetLinearVelocity(glm::vec3(0.0f, 0.0f, 0.0f));
@@ -152,13 +183,12 @@ void CharacterController::Update(float deltaTime) {
     if (GetGameObject()->GetPosition().z <= -14.5f)
     {
         // Activate GameOver U.I. When the player dies! 
-        GetGameObject()->GetScene()->FindObjectByName("GameOver Dimmed Background")->Get<GuiPanel>()->IsEnabled = (GetGameObject()->GetScene()->FindObjectByName("GameOver Dimmed Background")->Get<GuiPanel>()->IsEnabled) = true;
-        GetGameObject()->GetScene()->FindObjectByName("GameOver Text")->Get<GuiPanel>()->IsEnabled = (GetGameObject()->GetScene()->FindObjectByName("GameOver Text")->Get<GuiPanel>()->IsEnabled) = true;
-        GetGameObject()->GetScene()->FindObjectByName("GameOver Score Breakdown")->Get<GuiPanel>()->IsEnabled = GetGameObject()->GetScene()->FindObjectByName("GameOver Score Breakdown")->Get<GuiPanel>()->IsEnabled = true;
-        GetGameObject()->GetScene()->FindObjectByName("GameOver Quit Button")->Get<GuiPanel>()->IsEnabled = GetGameObject()->GetScene()->FindObjectByName("GameOver Quit Button")->Get<GuiPanel>()->IsEnabled = true;
-        GetGameObject()->GetScene()->FindObjectByName("GameOver Continue Button")->Get<GuiPanel>()->IsEnabled = GetGameObject()->GetScene()->FindObjectByName("GameOver Continue Button")->Get<GuiPanel>()->IsEnabled = true;
-        GetGameObject()->GetScene()->FindObjectByName("GameOver Score Text")->Get<GuiText>()->IsEnabled = GetGameObject()->GetScene()->FindObjectByName("GameOver Score Text")->Get<GuiText>()->IsEnabled = true;
-       
+      //GetGameObject()->GetScene()->FindObjectByName("GameOver Dimmed Background")->Get<GuiPanel>()->IsEnabled = (GetGameObject()->GetScene()->FindObjectByName("GameOver Dimmed Background")->Get<GuiPanel>()->IsEnabled) = true;
+      //GetGameObject()->GetScene()->FindObjectByName("GameOver Text")->Get<GuiPanel>()->IsEnabled = (GetGameObject()->GetScene()->FindObjectByName("GameOver Text")->Get<GuiPanel>()->IsEnabled) = true;
+      //GetGameObject()->GetScene()->FindObjectByName("GameOver Score Breakdown")->Get<GuiPanel>()->IsEnabled = GetGameObject()->GetScene()->FindObjectByName("GameOver Score Breakdown")->Get<GuiPanel>()->IsEnabled = true;
+      //GetGameObject()->GetScene()->FindObjectByName("GameOver Quit Button")->Get<GuiPanel>()->IsEnabled = GetGameObject()->GetScene()->FindObjectByName("GameOver Quit Button")->Get<GuiPanel>()->IsEnabled = true;
+      //GetGameObject()->GetScene()->FindObjectByName("GameOver Continue Button")->Get<GuiPanel>()->IsEnabled = GetGameObject()->GetScene()->FindObjectByName("GameOver Continue Button")->Get<GuiPanel>()->IsEnabled = true;
+      //GetGameObject()->GetScene()->FindObjectByName("GameOver Score Text")->Get<GuiText>()->IsEnabled = GetGameObject()->GetScene()->FindObjectByName("GameOver Score Text")->Get<GuiText>()->IsEnabled = true;
     }
 }
     

@@ -97,6 +97,7 @@
 #include "Sound/AudioEngine.h"
 #include "Fmod.h"
 #include "FMOD/ToneFire.h"
+#include "FMOD/SoundEffects.h"
 
 // GUI
 #include "Gameplay/Components/GUI/RectTransform.h"
@@ -2186,15 +2187,16 @@ int main() {
 	
 	srand(time(0));
 
-	ToneFire::FMODStudio studio;
-	studio.LoadBank("Master.bank");
-	studio.LoadBank("Master.strings.bank");
-	studio.LoadBank("Level1.bank");
+	SoundEffects SoundCaller;
+	SoundCaller.SoundEffects::init();
+	auto SFX = SoundCaller.SoundEffects::GetContextSound();
+	auto FMODSFX = SoundCaller.SoundEffects::GetContext();
 
 	ToneFire::StudioSound test;
 	test.LoadEvent("event:/Music");
 	test.SetEventPosition("event:/Music", FMOD_VECTOR{ -10.270f, 5.710f, -3.800f });
-	test.SetVolume("event:/Music", 0.5f);
+	test.SetVolume("event:/Music", 0.05f);
+
 	
 	//test.SetEventParameter("event:/Music", "Volume", 0.5f);
 	float SpawnTimer = 20;
@@ -2202,11 +2204,11 @@ int main() {
 	while (!glfwWindowShouldClose(window)) {
 		glfwPollEvents();
 		ImGuiHelper::StartFrame();
-		studio.Update();
+		FMODSFX.Update();
 
 		//Idk wtf is going on here it shouldn't be checking if not true but it DOES work so I'm leaving it alone
-		if (!scene->IsPlaying) {
-			
+		if (scene->IsPlaying) {
+			std::cout << "Is this john working???" << std::endl;
 			test.PlayEvent("event:/Music");
 		}
 
