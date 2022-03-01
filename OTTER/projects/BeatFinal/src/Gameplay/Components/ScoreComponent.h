@@ -2,6 +2,8 @@
 #include "IComponent.h"
 #include "Gameplay/Physics/TriggerVolume.h"
 #include "Gameplay/Components/RenderComponent.h"
+#include "FMOD/SoundEffects.h"
+#include "FMOD/ToneFire.h"
 
 /// <summary>
 /// Provides an example behaviour that uses some of the trigger interface to change the material
@@ -29,6 +31,7 @@ public:
 
 	void IncrementScore() {
 		_score++;
+		SFXS.PlayEvent("event:/Coin Pickup");
 	}
 
 	void SetScore(int foo) {
@@ -39,4 +42,7 @@ public:
 protected:
 	int _score = 0;
 	RenderComponent::Sptr _renderer;
+
+	SoundEffects SoundCaller;
+	ToneFire::StudioSound SFXS = SoundCaller.SoundEffects::GetContextSound();
 };
