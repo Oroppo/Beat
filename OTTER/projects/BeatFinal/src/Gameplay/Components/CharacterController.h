@@ -45,6 +45,9 @@ protected:
 	bool _onCurvePlatform;
 	glm::vec3 _rotPlat = glm::vec3(0.0f, 0.0f, 0.0f);
 	int _LoadSceneC = 0;
-	SoundEffects::Sptr SoundCaller;
+
+	SoundEffects SoundCaller;
+	ToneFire::StudioSound SFXS = SoundCaller.SoundEffects::GetContextSound();
+	
 
 };

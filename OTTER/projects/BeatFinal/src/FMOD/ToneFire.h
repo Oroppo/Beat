@@ -9,6 +9,7 @@
 #include "fmod_errors.h"
 #include "fmod_studio.hpp"
 #include "fmod_studio_common.h"
+
 namespace ToneFire {
 	class FMODStudio;
 	class FMODCore;
@@ -124,7 +125,9 @@ namespace ToneFire {
 	*/
 	class StudioSound {
 		friend FMODStudio;
+		
 	public:
+#pragma warning
 		StudioSound();
 
 		//Will play an event given the proper name.
@@ -172,6 +175,7 @@ namespace ToneFire {
 	*/
 	class FMODStudio {
 		friend StudioSound;
+		
 	public:
 		FMODStudio(int maxChannels = 512,
 			const std::string& defaultPath = "Music/",

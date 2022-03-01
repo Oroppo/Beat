@@ -3,6 +3,7 @@
 #include "Fmod.h"
 #include "FMOD/ToneFire.h"
 #include <memory>
+#include <assert.h>
 
 class SoundEffects
 {
@@ -11,6 +12,7 @@ public:
 
 	void init()
 	{
+		assert(&Studio != nullptr);
 		Studio.LoadBank("Master.bank");
 		Studio.LoadBank("Master.strings.bank");
 		Studio.LoadBank("Level1.bank");
@@ -23,7 +25,7 @@ public:
 	{
 		return Test;
 	}
-
+	
 private:
 	ToneFire::FMODStudio Studio;
 	ToneFire::StudioSound Test;

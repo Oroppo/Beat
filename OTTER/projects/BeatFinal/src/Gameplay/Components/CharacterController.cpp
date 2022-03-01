@@ -19,11 +19,11 @@ void CharacterController::Awake()
         IsEnabled = false;
     }
 
-    SoundEffects SoundCaller;
-    auto SFX = SoundCaller.SoundEffects::GetContextSound();
-        SFX.LoadEvent("event:/Jump Event");
-        SFX.SetEventPosition("event:/Jump Event", FMOD_VECTOR{ -10.270f, 5.710f, -3.800f });
-        SFX.SetVolume("event:/Jump Event", 0.05f);
+   // SoundEffects SoundCaller;
+   // auto SFX = SoundCaller.SoundEffects::GetContextSound();
+   //     SFX.LoadEvent("event:/Jump Event");
+   //     SFX.SetEventPosition("event:/Jump Event", FMOD_VECTOR{ -10.270f, 5.710f, -3.800f });
+   //     SFX.SetVolume("event:/Jump Event", 0.05f);
 }
 
 
@@ -68,16 +68,19 @@ void CharacterController::OnEnteredTrigger(const std::shared_ptr<Gameplay::Physi
             trigger->GetGameObject()->Get<RenderComponent>()->IsEnabled = false;
             _BeatGemHits++;
             score += 500;
+            SFXS.PlayEvent("event:/Coin Pickup");
         }
 
     }
         if (trigger->GetGameObject()->Name == "Vinyl") {
             score += 1000;
             _VinylScore++;
+            SFXS.PlayEvent("event:/Coin Pickup");
         }
         if (trigger->GetGameObject()->Name == "CD") {
             score += 100;
             _CDScore++;
+            SFXS.PlayEvent("event:/Coin Pickup");
         }
         std::stringstream ss;
         ss << score;
@@ -124,26 +127,6 @@ void CharacterController::OnTriggerVolumeLeaving(const std::shared_ptr<Gameplay:
     }
 }
 
-void CharacterController::CharacterSceneLoad()
-{
-   // ResourceManager::LoadManifest("manifest.json");
-    GetGameObject()->GetScene()->Scene::Load("scene.json");
-
-    GetGameObject()->GetScene()->Awake();
-  //  GetGameObject()->GetScene()->Window = window2;
-    std::cout << GetGameObject()->GetScene() << std::endl;
-    _LoadSceneC = false;
-}
-
-int CharacterController::GetCharacterBool()
-{
-    return _LoadSceneC;
-}
-
-void CharacterController::SetCharacterBool()
-{
-    _LoadSceneC = 0;
-}
 
 void CharacterController::Update(float deltaTime) {
 
@@ -168,9 +151,8 @@ void CharacterController::Update(float deltaTime) {
     if ((_W) && (_canJump == true)) {
         _body->SetLinearVelocity(glm::vec3(_body->GetLinearVelocity().x, _body->GetLinearVelocity().y, _impulse.z));
         _canJump = false;
-        SoundEffects SoundCaller;
-        auto SFXS = SoundCaller.SoundEffects::GetContextSound();
-        SFXS.PlayEvent("event:/Jump Event");
+        SFXS.PlayEvent("event:/Jump");
+
     }
     if ((!_A) && (!_D) && (!_W) && (_platform != "") && (_platform != "BeatGem")) {
         _body->SetLinearVelocity(glm::vec3(0.0f, 0.0f, 0.0f));
