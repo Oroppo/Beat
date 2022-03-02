@@ -19,11 +19,10 @@ void CharacterController::Awake()
         IsEnabled = false;
     }
 
-   // SoundEffects SoundCaller;
-   // auto SFX = SoundCaller.SoundEffects::GetContextSound();
-   //     SFX.LoadEvent("event:/Jump Event");
-   //     SFX.SetEventPosition("event:/Jump Event", FMOD_VECTOR{ -10.270f, 5.710f, -3.800f });
-   //     SFX.SetVolume("event:/Jump Event", 0.05f);
+    SFXS.SetVolume("event:/Coin Pickup", 0.25f);
+    SFXS.SetVolume("event:/Jump", 0.25f);
+    SFXS.SetVolume("event:/Death", 0.25f);
+    SFXS.SetVolume("event:/Walk", 0.25f);
 }
 
 
@@ -69,6 +68,7 @@ void CharacterController::OnEnteredTrigger(const std::shared_ptr<Gameplay::Physi
             _BeatGemHits++;
             score += 500;
             SFXS.PlayEvent("event:/Coin Pickup");
+            
         }
 
     }
@@ -144,6 +144,7 @@ void CharacterController::Update(float deltaTime) {
 
     if (_A) {
         _body->SetLinearVelocity(glm::vec3(-3.0f, _body->GetLinearVelocity().y, _body->GetLinearVelocity().z));
+        SFXS.PlayEvent("event:/Walk");
     }
     if (_D) {
         _body->SetLinearVelocity(glm::vec3(3.0f, _body->GetLinearVelocity().y, _body->GetLinearVelocity().z));
@@ -164,6 +165,7 @@ void CharacterController::Update(float deltaTime) {
 
     if (GetGameObject()->GetPosition().z <= -14.5f)
     {
+        SFXS.PlayEvent("event:/Death");
         // Activate GameOver U.I. When the player dies! 
       //GetGameObject()->GetScene()->FindObjectByName("GameOver Dimmed Background")->Get<GuiPanel>()->IsEnabled = (GetGameObject()->GetScene()->FindObjectByName("GameOver Dimmed Background")->Get<GuiPanel>()->IsEnabled) = true;
       //GetGameObject()->GetScene()->FindObjectByName("GameOver Text")->Get<GuiPanel>()->IsEnabled = (GetGameObject()->GetScene()->FindObjectByName("GameOver Text")->Get<GuiPanel>()->IsEnabled) = true;

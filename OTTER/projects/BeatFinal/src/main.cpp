@@ -2190,6 +2190,7 @@ int main() {
 	//Give these an application layer for the final product
 	SoundEffects Sound;
 	Sound.init();
+
 	ToneFire::FMODStudio Studio = Sound.GetContext();
 	ToneFire::StudioSound Test = Sound.GetContextSound();
 
@@ -2208,8 +2209,10 @@ int main() {
 
 		//Idk wtf is going on here it shouldn't be checking if not true but it DOES work so I'm leaving it alone
 		if (!scene->IsPlaying) {
+
 			std::cout << "Is this john working???" << std::endl;
 			Test.PlayEvent("event:/Music");
+
 		}
 
 
