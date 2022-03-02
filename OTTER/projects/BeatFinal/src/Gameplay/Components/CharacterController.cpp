@@ -21,7 +21,7 @@ void CharacterController::Awake()
 
     SFXS.SetVolume("event:/Coin Pickup", 0.25f);
     SFXS.SetVolume("event:/Jump", 0.25f);
-    SFXS.SetVolume("event:/Death", 0.25f);
+    SFXS.SetVolume("event:/Death", 1.0f);
     SFXS.SetVolume("event:/Walk", 0.25f);
 }
 
@@ -166,7 +166,7 @@ void CharacterController::Update(float deltaTime) {
     if (GetGameObject()->GetPosition().z <= -14.5f)
     {
         SFXS.PlayEvent("event:/Death");
-        // Activate GameOver U.I. When the player dies! 
+      // Activate GameOver U.I. When the player dies! 
       //GetGameObject()->GetScene()->FindObjectByName("GameOver Dimmed Background")->Get<GuiPanel>()->IsEnabled = (GetGameObject()->GetScene()->FindObjectByName("GameOver Dimmed Background")->Get<GuiPanel>()->IsEnabled) = true;
       //GetGameObject()->GetScene()->FindObjectByName("GameOver Text")->Get<GuiPanel>()->IsEnabled = (GetGameObject()->GetScene()->FindObjectByName("GameOver Text")->Get<GuiPanel>()->IsEnabled) = true;
       //GetGameObject()->GetScene()->FindObjectByName("GameOver Score Breakdown")->Get<GuiPanel>()->IsEnabled = GetGameObject()->GetScene()->FindObjectByName("GameOver Score Breakdown")->Get<GuiPanel>()->IsEnabled = true;
