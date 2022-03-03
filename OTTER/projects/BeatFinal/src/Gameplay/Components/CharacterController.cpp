@@ -62,8 +62,6 @@ void CharacterController::OnEnteredTrigger(const std::shared_ptr<Gameplay::Physi
 
         if ((_GemJumpTimer > 0.6 * beatNumber - 0.6) && (_GemJumpTimer < 0.6 * beatNumber)) {
             _canJump = true;
-            std::cout << "jumper worked";
-
             trigger->GetGameObject()->Get<RenderComponent>()->IsEnabled = false;
             _BeatGemHits++;
             score += 500;
@@ -141,7 +139,7 @@ void CharacterController::Update(float deltaTime) {
         }
     }
     glm::vec3 CurrentPosition = GetGameObject()->GetPosition();
-
+   // GetGameObject()->GetScene()->FindObjectByName("Character/Player")->
     if (_A) {
         _body->SetLinearVelocity(glm::vec3(-3.0f, _body->GetLinearVelocity().y, _body->GetLinearVelocity().z));
         SFXS.PlayEvent("event:/Walk");

@@ -1122,6 +1122,7 @@ int main() {
 	Texture2D::Sptr VinylTex = ResourceManager::CreateAsset<Texture2D>("textures/VinylTex.png");
 	Texture2D::Sptr CDTex = ResourceManager::CreateAsset<Texture2D>("textures/CDTex.png");
 	Texture2D::Sptr GemTex = ResourceManager::CreateAsset<Texture2D>("textures/Gem.png");
+	Texture2D::Sptr GemOff = ResourceManager::CreateAsset<Texture2D>("textures/GemOff.png");
 	Texture2D::Sptr CharacterTex = ResourceManager::CreateAsset<Texture2D>("textures/shirt.png");
 	Texture2D::Sptr LoseScreenTex = ResourceManager::CreateAsset<Texture2D>("textures/Game_Over_Screen.png");
 	Texture2D::Sptr SmallWallJumpTex = ResourceManager::CreateAsset<Texture2D>("textures/SmallWallJumpTexBlue.png");
@@ -1162,7 +1163,6 @@ int main() {
 	Texture2D::Sptr FloatingLightTex = ResourceManager::CreateAsset<Texture2D>("textures/StreetLightTex.png");
 	Texture2D::Sptr TexBeatBar = ResourceManager::CreateAsset<Texture2D>("textures/GUI/BeatBar.png");
 	Texture2D::Sptr TexBeatBarTick = ResourceManager::CreateAsset<Texture2D>("textures/GUI/BeatBarTick.png");
-	Texture2D::Sptr GemOff = ResourceManager::CreateAsset<Texture2D>("textures/GemOff.png");
 	Texture2D::Sptr TexScoreDisplay = ResourceManager::CreateAsset<Texture2D>("textures/GUI/ScoreDisplay.png");
 
 	Font::Sptr FontVCR = ResourceManager::CreateAsset<Font>("fonts/VCR.ttf", 16.f);
@@ -1220,14 +1220,14 @@ int main() {
 	Material::Sptr BeatGemMaterial = ResourceManager::CreateAsset<Material>(basicShader);
 	{
 		BeatGemMaterial->Name = "BeatGem";
-		BeatGemMaterial->Set("u_Material.Diffuse", GemOff);
+		BeatGemMaterial->Set("u_Material.Diffuse", GemTex);
 		BeatGemMaterial->Set("u_Material.Shininess", 0.1f);
 	}
 
 	Material::Sptr BeatGemOffMaterial = ResourceManager::CreateAsset<Material>(basicShader);
 	{
 		BeatGemOffMaterial->Name = "BeatGem";
-		BeatGemOffMaterial->Set("u_Material.Diffuse", GemTex);
+		BeatGemOffMaterial->Set("u_Material.Diffuse", GemOff);
 		BeatGemOffMaterial->Set("u_Material.Shininess", 0.1f);
 	}
 
