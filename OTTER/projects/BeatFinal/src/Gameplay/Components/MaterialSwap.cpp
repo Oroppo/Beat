@@ -27,13 +27,11 @@ void MaterialSwap::Swap(){
 	if ((name[0] == 'B') && (name[1] == 'e') && (name[2] == 'a') && (name[3] == 't') && (name[4] == 'G')) {
 		int beatNumber = (int)name[8] - 48;
 		std::cout <<"the gem is on beat number "<< beatNumber;
-		if ((beatTime >= 0.6 * beatNumber - 0.6) && (beatTime <= 0.6 * beatNumber)) {
-			std::cout << "the gem timer works ";
+		if ((beatTime >= 0.6 * beatNumber - 0.6) && (beatTime <= 0.6 * beatNumber)) {			
 			_renderer->SetMaterial(OnMaterial);
 		}
 		else {
 			_renderer->SetMaterial(OffMaterial);
-			std::cout << "the gem timer doesnt works ";
 		}
 	}
 	//if (beatTime >= 1.8 && beatTime <= 2.4) {
