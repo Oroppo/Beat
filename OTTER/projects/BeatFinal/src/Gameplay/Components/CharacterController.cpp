@@ -19,10 +19,10 @@ void CharacterController::Awake()
         IsEnabled = false;
     }
 
-    SFXS.SetVolume("event:/Coin Pickup", 0.25f);
+    SFXS.SetVolume("event:/Coin Pickup", 0.1f);
     SFXS.SetVolume("event:/Jump", 0.25f);
     SFXS.SetVolume("event:/Death", 1.0f);
-    SFXS.SetVolume("event:/Walk", 0.25f);
+    SFXS.SetVolume("event:/Walk", 0.10f);
 }
 
 
@@ -78,6 +78,7 @@ void CharacterController::OnEnteredTrigger(const std::shared_ptr<Gameplay::Physi
         if (trigger->GetGameObject()->Name == "CD") {
             score += 100;
             _CDScore++;
+
             SFXS.PlayEvent("event:/Coin Pickup");
         }
         std::stringstream ss;
