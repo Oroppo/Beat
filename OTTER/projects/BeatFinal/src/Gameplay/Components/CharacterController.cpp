@@ -161,7 +161,7 @@ void CharacterController::Update(float deltaTime) {
     GetGameObject()->SetPositionY(5.61f);
     _body->GetGameObject()->SetRotation(glm::vec3(90.0f, 0.0f, 90.0f));
 
-
+    // This is for when the character reaches the very bottom of the screen aka: when they die
     if (GetGameObject()->GetPosition().z <= -14.5f)
     {
         SFXS.PlayEvent("event:/Death");
@@ -172,6 +172,11 @@ void CharacterController::Update(float deltaTime) {
       //GetGameObject()->GetScene()->FindObjectByName("GameOver Quit Button")->Get<GuiPanel>()->IsEnabled = GetGameObject()->GetScene()->FindObjectByName("GameOver Quit Button")->Get<GuiPanel>()->IsEnabled = true;
       //GetGameObject()->GetScene()->FindObjectByName("GameOver Continue Button")->Get<GuiPanel>()->IsEnabled = GetGameObject()->GetScene()->FindObjectByName("GameOver Continue Button")->Get<GuiPanel>()->IsEnabled = true;
       //GetGameObject()->GetScene()->FindObjectByName("GameOver Score Text")->Get<GuiText>()->IsEnabled = GetGameObject()->GetScene()->FindObjectByName("GameOver Score Text")->Get<GuiText>()->IsEnabled = true;
+      
+      // when the character dies set the position, score and velocity back to a starting value
+        GetGameObject()->SetPostion(glm::vec3(-15.820f, 5.710f, 0.0f));
+        score = 0;
+        _body->SetLinearVelocity(glm::vec3(0.0f, 0.0f, 0.0f));
     }
 }
     

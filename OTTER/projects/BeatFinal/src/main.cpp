@@ -730,7 +730,7 @@ void SpawnSquarePlat(MeshResource::Sptr Mesh, Material::Sptr Material, std::stri
 		// Add a dynamic rigid body to this object
 		RigidBody::Sptr physics = SuperSmallWallJump->Add<RigidBody>(RigidBodyType::Kinematic);
 		// For Wall Jump Colliders, X = Left/Right Y = towards/away, z = Up/Down
-		ICollider::Sptr CollectCollider = physics->AddCollider(BoxCollider::Create(glm::vec3(0.100f, 0.200f, 0.800f)));
+		ICollider::Sptr CollectCollider = physics->AddCollider(BoxCollider::Create(glm::vec3(0.5f, 0.3f, 0.4f)));
 		CollectCollider->SetPosition(glm::vec3(0.0f, 0.0f, 0.0f));
 
 		if (parent != nullptr) {
