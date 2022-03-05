@@ -38,6 +38,7 @@ protected:
 	float _GemJumpTimer;
 	bool _canJump;
 	int score = 0, _VinylScore = 0, _CDScore=0, _BeatGemHits=0;
+	float speed = 3.0f;
 	std::string _platform;
 	glm::vec3 _impulse = glm::vec3(0, 0, 12.0);
 	Gameplay::Physics::RigidBody::Sptr _body;
