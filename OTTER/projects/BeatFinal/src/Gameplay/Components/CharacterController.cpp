@@ -139,7 +139,6 @@ void CharacterController::Update(float deltaTime) {
     std::cout << " Beat Gem timer " << _GemJumpTimer << std::endl;
    
     glm::vec3 CurrentPosition = GetGameObject()->GetPosition();
-    // GetGameObject()->GetScene()->FindObjectByName("Character/Player")->
     if (_A) {
 
         _body->SetLinearVelocity(glm::vec3(-speed, _body->GetLinearVelocity().y, _body->GetLinearVelocity().z));

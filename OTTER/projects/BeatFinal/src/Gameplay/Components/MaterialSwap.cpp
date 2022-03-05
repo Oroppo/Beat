@@ -20,10 +20,11 @@ void MaterialSwap::Swap(){
 	//swaps based on BeatTime
 	float beatTime = GetGameObject()->GetScene()->FindObjectByName("GameManager")->Get<BeatTimer>()->GetBeatTime();
 	std::string name = GetGameObject()->Name;
-	//Seriously this is Fucking Atrocious we need to do
 	OnMaterial = GetGameObject()->GetScene()->FindObjectByName("Material Dummy On")->Get<RenderComponent>()->GetMaterial();
 	OffMaterial = GetGameObject()->GetScene()->FindObjectByName("Material Dummy Off")->Get<RenderComponent>()->GetMaterial();
 	_renderer = GetComponent<RenderComponent>();
+
+	//beat gem material swap behaviour
 	if ((name[0] == 'B') && (name[1] == 'e') && (name[2] == 'a') && (name[3] == 't') && (name[4] == 'G')) {
 		int beatNumber = (int)name[8] - 48;
 		if ((beatTime >= 0.6 * beatNumber - 0.6) && (beatTime <= 0.6 * beatNumber)) {			
@@ -33,11 +34,6 @@ void MaterialSwap::Swap(){
 			_renderer->SetMaterial(OffMaterial);
 		}
 	}
-	//if (beatTime >= 1.8 && beatTime <= 2.4) {
-	//
-	//}
-
-
 }
 
 void MaterialSwap ::Awake() {
