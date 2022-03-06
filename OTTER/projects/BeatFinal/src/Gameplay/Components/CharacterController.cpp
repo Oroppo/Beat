@@ -82,6 +82,7 @@ void CharacterController::OnEnteredTrigger(const std::shared_ptr<Gameplay::Physi
     ss << score;
     std::string stringScore;
     ss >> stringScore;
+
     trigger->GetGameObject()->SetPostion(glm::vec3(0.0f, -100.0f, 0.0f));
     trigger->GetGameObject()->GetScene()->FindObjectByName("GameOver Score Text")->Get<RectTransform>()->SetPosition({ 425 , 100 });
     GetGameObject()->GetScene()->FindObjectByName("GameOver Score Text")->Get<GuiText>()->SetText(stringScore);
@@ -117,7 +118,7 @@ void CharacterController::OnTriggerVolumeLeaving(const std::shared_ptr<Gameplay:
         body->GetGameObject()->SetRotation(glm::vec3(-90.000f, 0.0f, 180.0f));
 
     }
-    if (_platform == "Wall Jump") {
+    if (_platform == "Wall Jump" || (_platform == "Small Wall Jump") || (_platform == "Super Small Wall Jump")) {
         speed = 6.0f;
     }
     if ((_platform != "BeatGem") || (_platform == "Falling Platform")) {
@@ -158,7 +159,7 @@ void CharacterController::Update(float deltaTime) {
     GetGameObject()->SetPositionY(5.61f);
     _body->GetGameObject()->SetRotation(glm::vec3(90.0f, 0.0f, 90.0f));
 
-    if (_platform == "Wall Jump") {
+    if (_platform == "Wall Jump"||(_platform=="Small Wall Jump") || (_platform == "Super Small Wall Jump")) {
         if (_body->GetLinearVelocity().z < 0) {
             _body->ApplyForce(glm::vec3(-6*_body->GetLinearVelocity().x, 0.0f, 35.0f));
         }
