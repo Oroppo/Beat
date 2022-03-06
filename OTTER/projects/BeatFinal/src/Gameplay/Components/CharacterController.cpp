@@ -39,7 +39,6 @@ nlohmann::json CharacterController::ToJson() const {
 CharacterController::CharacterController() :
     IComponent()
 {
-
     _canJump = true;
     _platform = "";
 }
@@ -56,7 +55,6 @@ void CharacterController::OnEnteredTrigger(const std::shared_ptr<Gameplay::Physi
 
     std::string name = trigger->GetGameObject()->Name;
 
-
     if ((name[0] == 'B') && (name[1] == 'e') && (name[2] == 'a') && (name[3] == 't') && (name[4] == 'G')) {
         int beatNumber = (int)name[8] - 48;
 
@@ -66,15 +64,15 @@ void CharacterController::OnEnteredTrigger(const std::shared_ptr<Gameplay::Physi
             _BeatGemHits++;
             score += 500;
             SFXS.PlayEvent("event:/Coin Pickup");
-
         }
-
     }
+
     if (trigger->GetGameObject()->Name == "Vinyl") {
         score += 1000;
         _VinylScore++;
         SFXS.PlayEvent("event:/Coin Pickup");
     }
+
     if (trigger->GetGameObject()->Name == "CD") {
         score += 100;
         _CDScore++;
@@ -94,7 +92,7 @@ void CharacterController::OnEnteredTrigger(const std::shared_ptr<Gameplay::Physi
 void CharacterController::OnTriggerVolumeEntered(const std::shared_ptr<Gameplay::Physics::RigidBody>&body) {
     speed = 3.0f;
     LOG_INFO("Body has entered our trigger volume: {}", body->GetGameObject()->Name);
-    if ((_platform != body->GetGameObject()->Name) && (body->GetGameObject()->Name != "BeatGem")) {
+    if (_platform != body->GetGameObject()->Name) {
         _canJump = true;
         _platform = body->GetGameObject()->Name;
     }
@@ -154,7 +152,7 @@ void CharacterController::Update(float deltaTime) {
 
     }
     if ((!_A) && (!_D) && (!_W) && (_platform != "") && (_platform != "BeatGem")) {
-        _body->SetLinearVelocity(glm::vec3(0.0f, 0.0f, 0.0f));
+        _body->SetLinearVelocity(glm::vec3(-1.0f, 0.0f, 0.0f));
     }
 
     GetGameObject()->SetPositionY(5.61f);
