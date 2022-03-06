@@ -46,7 +46,18 @@ LevelMover::Sptr LevelMover::FromJson(const nlohmann::json & blob) {
     LevelMover::Sptr result = std::make_shared<LevelMover>();
     return result;
 }
+   
 
+void LevelMover::OnEnteredTrigger(const std::shared_ptr<Gameplay::Physics::TriggerVolume>& trigger) {
+    if (trigger->GetGameObject()->Name == "Character/Player") {
+        inTrigger = true;
+    }
+}
+void LevelMover::OnLeavingTrigger(const std::shared_ptr<Gameplay::Physics::TriggerVolume>& trigger) {
+    if (trigger->GetGameObject()->Name == "Character/Player") {
+        inTrigger = false;
+    }
+}
 
 void LevelMover::Update(float deltaTime)
 {
@@ -80,7 +91,7 @@ void LevelMover::Update(float deltaTime)
     }
 
     Gameplay::GameObject::Sptr context = GetGameObject()->SelfRef();
-    if (GetGameObject()->GetPosition().x <= -25.f) {
+    if ((GetGameObject()->GetPosition().x <= -25.f)&&(inTrigger==false)) {
         GetGameObject()->GetScene()->RemoveGameObject(context);
     }
 }

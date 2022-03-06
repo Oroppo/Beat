@@ -2,7 +2,7 @@
 #include "IComponent.h"
 #include "Gameplay/Physics/RigidBody.h"
 #include "GLFW/glfw3.h"
-
+#include "Gameplay/Physics/TriggerVolume.h"
 /// <summary>
 /// A simple behaviour that applies an impulse along the Z axis to the 
 /// rigidbody of the parent when the space key is pressed
@@ -25,11 +25,14 @@ public:
 	MAKE_TYPENAME(LevelMover);
 	virtual nlohmann::json ToJson() const override;
 	static LevelMover::Sptr FromJson(const nlohmann::json& blob);
+	virtual void OnEnteredTrigger(const std::shared_ptr<Gameplay::Physics::TriggerVolume>& trigger);
+	virtual void OnLeavingTrigger(const std::shared_ptr<Gameplay::Physics::TriggerVolume>& trigger);
+
 
 
 
 protected:
-	
+	bool inTrigger=false;
 	size_t _segmentIndex;
 	float _timer;
 	float _TravelTime;

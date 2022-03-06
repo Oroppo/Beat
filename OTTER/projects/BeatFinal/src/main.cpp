@@ -386,8 +386,8 @@ void SpawnCollectable(MeshResource::Sptr Mesh, Material::Sptr Material, std::str
 		// For Colliders X is towards Cam, Y is up/down , Z is Left and Right
 		//ICollider::Sptr CollectCollider = physics->AddCollider(BoxCollider::Create(glm::vec3(0.5f, 0.5f, 0.5f)));
 		
-		TriggerVolume::Sptr volume = Startplatform->Add<TriggerVolume>();
-		volume->AddCollider(BoxCollider::Create(glm::vec3(0.5f, 0.5f, 0.5f)));
+	//TriggerVolume::Sptr volume = Startplatform->Add<TriggerVolume>();
+	//volume->AddCollider(BoxCollider::Create(glm::vec3(0.5f, 0.5f, 0.5f)));
 		//volume->SetPostion(glm::vec3(0.0f, 0.5f, 0.0f));
 
 		if (parent != nullptr) {
