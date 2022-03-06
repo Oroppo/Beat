@@ -27,8 +27,8 @@ public:
 	static LevelMover::Sptr FromJson(const nlohmann::json& blob);
 	virtual void OnEnteredTrigger(const std::shared_ptr<Gameplay::Physics::TriggerVolume>& trigger);
 	virtual void OnLeavingTrigger(const std::shared_ptr<Gameplay::Physics::TriggerVolume>& trigger);
-
-
+	virtual void OnTriggerVolumeEntered(const std::shared_ptr<Gameplay::Physics::TriggerVolume>& trigger);
+	virtual void OnTriggerVolumeLeaving(const std::shared_ptr<Gameplay::Physics::TriggerVolume>& trigger);
 
 
 protected:
