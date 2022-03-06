@@ -1161,8 +1161,8 @@ int main() {
 	Texture2D::Sptr SpeakerTex = ResourceManager::CreateAsset<Texture2D>("textures/speakertex.png");
 	Texture2D::Sptr SquarePlatTex = ResourceManager::CreateAsset<Texture2D>("textures/SquarePlatformTex.png");
 	Texture2D::Sptr FloatingLightTex = ResourceManager::CreateAsset<Texture2D>("textures/StreetLightTex.png");
-	Texture2D::Sptr TexBeatBar = ResourceManager::CreateAsset<Texture2D>("textures/GUI/BeatBar.png");
-	Texture2D::Sptr TexBeatBarTick = ResourceManager::CreateAsset<Texture2D>("textures/GUI/BeatBarTick.png");
+	Texture2D::Sptr TexBeatBar = ResourceManager::CreateAsset<Texture2D>("textures/GUI/VinylBeatBar.png");
+	Texture2D::Sptr TexBeatBarNeedle = ResourceManager::CreateAsset<Texture2D>("textures/GUI/BeatBarNeedle.png");
 	Texture2D::Sptr TexScoreDisplay = ResourceManager::CreateAsset<Texture2D>("textures/GUI/ScoreDisplay.png");
 
 	Font::Sptr FontVCR = ResourceManager::CreateAsset<Font>("fonts/VCR.ttf", 16.f);
@@ -2065,7 +2065,7 @@ int main() {
 		
 
 		{//HUD
-			{//Beat Bar
+			{//Score Display
 				GameObject::Sptr button = scene->CreateGameObject("HUD Score Display");
 
 				RectTransform::Sptr transform = button->Add<RectTransform>();
@@ -2115,16 +2115,16 @@ int main() {
 				text->SetTextScale(4.0f);
 
 			}
-		/*
+		
 			{//Beat Bar
 				GameObject::Sptr button = scene->CreateGameObject("HUD Beat Bar");
 
 				RectTransform::Sptr transform = button->Add<RectTransform>();
 				transform->SetPosition({ 0, 0 });
 				transform->SetRotationDeg(0);
-				transform->SetSize({ 800 * 0.75, 300 * 0.75 });
+				transform->SetSize({ 1024 * 0.3, 1024 * 0.3 });
 				transform->SetMin({ 0, 0 });
-				transform->SetMax({ 800 * 0.75, 300 * 0.75 });
+				transform->SetMax({ 1024 * 0.3, 1024 * 0.3 });
 
 				GuiPanel::Sptr panel = button->Add<GuiPanel>();
 				panel->SetTexture(TexBeatBar);
@@ -2132,30 +2132,30 @@ int main() {
 				panel->SetBorderRadius(0);
 
 
-				transform->SetPosition({ (float)windowSize.x * 0.5, (float)windowSize.y * 0.9 });
+				transform->SetPosition({ (float)windowSize.x * 0.5, (float)windowSize.y * 0.98 });
 
 			}
 
 			{//Beat Tick
-				GameObject::Sptr button = scene->CreateGameObject("HUD Beat Tick");
+				GameObject::Sptr button = scene->CreateGameObject("HUD Beat Bar Needle");
 
 				RectTransform::Sptr transform = button->Add<RectTransform>();
 				transform->SetPosition({ 0, 0 });
 				transform->SetRotationDeg(0);
-				transform->SetSize({ 50 * 0.75, 170 * 0.75 });
+				transform->SetSize({ 1024 * 0.3, 1024 * 0.3 });
 				transform->SetMin({ 0, 0 });
-				transform->SetMax({ 50 * 0.75, 170 * 0.75 });
+				transform->SetMax({ 1024 * 0.3, 1024 * 0.3 });
 
 				GuiPanel::Sptr panel = button->Add<GuiPanel>();
-				panel->SetTexture(TexBeatBarTick);
+				panel->SetTexture(TexBeatBarNeedle);
 				panel->SetColor(glm::vec4(1.0f, 1.0f, 1.0f, 1.0f));
 				panel->SetBorderRadius(0);
 
 
-				transform->SetPosition({ (float)windowSize.x * 0.4, (float)windowSize.y * 0.9 });
+				transform->SetPosition({ (float)windowSize.x * 0.5, (float)windowSize.y * 0.98 });
 
 			}
-		*/
+		
 		}
 
 		GuiBatcher::SetDefaultTexture(ResourceManager::CreateAsset<Texture2D>("textures/ui-sprite.png"));
